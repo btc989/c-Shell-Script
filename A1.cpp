@@ -1,6 +1,6 @@
 #include "toyshell.h"
 #include <iostream>
-#include <string
+#include <string.h>
 using namespace std;
 
 int main()
@@ -12,7 +12,7 @@ int main()
     
     
   //maybe make this into string
-   char command[128];
+   char * command = new char[128];
    bool alias = true;
    int status=0;
    //Prompt
