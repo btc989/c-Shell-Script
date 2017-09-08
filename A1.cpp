@@ -1,67 +1,60 @@
 #include "toyshell.h"
 #include <iostream>
+#include <string
 using namespace std;
 
 int main()
 {
    ToyShell shell;
+   //get default shellname and terminator from file
+  // shell.initShellName();
+  // shell.initTerminator();
     
-  //maybe make this into vector??
+    
+  //maybe make this into string
    char command[128];
+   bool alias = true;
+   int status=0;
    //Prompt
    cout<< shell.name<<"["<<shell.count<<"]"<<shell.terminator;
    cin.getline(command, 128); 
    
-//loop through aliases to see if any matches command entered then substitute in the proper command
+
     
     
     
     
     
    //Loop until command STOP or corresponding alias is entered 
-   
+   //MIGHT NEED TO CHANGE THIS
   while(!strcmp(command, "STOP")){
       
+    command = shell.tokenize(command);
+    //check if command is alias
+    //if no more aliases are found variable is set to false;
+  /*  do{ 
+        shell.alias(command, alias); 
+    }while(alias);
+  */    
+    //Check if command is to repeat previous command
+    //Then fetch previous command to continue executing
+  /*   if(command[0] == '!')
+         command = shell.getHistoryCommand(command);
+   */   
+     //Save command to History
+   //   shell.saveHistory(command);
+     //Execute Command
+     // status = shell.execute(command);
       
-      
-      
-      
-      
-      //sets shell name
-      
-      //sets terminator
-      
-      //lists current history -> default array of 10
-      
-      //! re-executes certain command in history list
-      
-      //new alias for command
-      
-      //output all aliases that have been defined
-      
-      // savenewnames store all aliases in file
-      
-      //readnewnames read all aliases from file
-      
-      
-      
-      //if not a shell command try and execute as UNIX Command
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
+      //if anything but 0 is returned, call function to write out error message
+      /*if(!status)
+          cout<<shell.errorMessage(status)<<endl;
+      */
+    //increase command count
+      shell.increaseCount();
     //Prompt at end of loop
    cout<< shell.name<<"["<<shell.count<<"]"<<shell.terminator;
    cin.getline(command, 128);
-    //loop through aliases to see if any matches command entered then substitute in the proper command  
-      
       
   }
   
