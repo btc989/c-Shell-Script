@@ -6,10 +6,17 @@ class ToyShell
    public:
       ToyShell();
       ~ToyShell();
-      void increaseCount();
-      //void addHistory();
-      //void setShellName();
       
+     const char * tokenize(const char * command);
+     const char * alias(const char * workCommand);
+     const char * getHistoryCommand(const char * workCommand);
+     void saveHistory(const char * workCommand);
+    
+     int execute(const char * workCommand);
+     void initShellName();
+     void initTerminator();
+      
+     string errorMessage(int status);
 
     
      int count;
@@ -20,7 +27,8 @@ class ToyShell
     
     // history[10] ??
     //aliases[10][2] ??
-    
+    void increaseCount();
+      //void setShellName();
    private:
      
 };
