@@ -7,8 +7,7 @@ int main()
 {
    ToyShell shell;
    //get default shellname and terminator from file
-  // shell.initShellName();
-  // shell.initTerminator();
+   
     
     
   //maybe make this into string
