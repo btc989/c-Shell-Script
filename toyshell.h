@@ -7,12 +7,12 @@ class ToyShell
       ToyShell();
       ~ToyShell();
       
-     const char * tokenize(const char * command);
-     const char * alias(const char * workCommand);
-     const char * getHistoryCommand(const char * workCommand);
-     void saveHistory(const char * workCommand);
+      char * tokenize( char * command);
+      char * alias( char * workCommand);
+      char * getHistoryCommand( char * workCommand);
+     void saveHistory( char * workCommand);
     
-     int execute(const char * workCommand);
+     int execute( char * workCommand);
      void initShellName();
      void initTerminator();
       
