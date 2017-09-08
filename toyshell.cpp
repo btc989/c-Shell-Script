@@ -10,24 +10,28 @@ ToyShell::ToyShell()
    terminator = "->";
 }
 
+ToyShell::~ToyShell(){
+    
+}
 void ToyShell::increaseCount()
 {
    count++;
 }
 
-const char * ToyShell::tokenize(const char * command){
+ char * ToyShell::tokenize( char * command){
     
 }
-const char * ToyShell::alias(const char * workCommand){
+ char * ToyShell::alias( char * workCommand){
     
 }
-const char * ToyShell::getHistoryCommand(const char * workCommand){
+char * ToyShell::getHistoryCommand( char * workCommand){
     
 }
-void ToyShell::saveHistory(const char * workCommand){
+void ToyShell::saveHistory( char * workCommand){
     
 }
-int ToyShell::execute(const char * workCommand){
+int ToyShell::execute( char * workCommand){
+    int status = 0;
      //sets shell name
       
       //sets terminator
