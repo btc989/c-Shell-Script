@@ -1,14 +1,34 @@
-#include "toyshell.h"
+#include <string>
+using namespace std;
 
-//Constructors. If no radius is specified, the default is 5.
-ToyShell::ToyShell()
+class ToyShell
 {
-   count = 0;
-   name = "toyshell";
-   terminator = "->";
-}
+   public:
+      ToyShell();
+      ~ToyShell();
+      
+     const char * tokenize(const char * command);
+     const char * alias(const char * workCommand);
+     const char * getHistoryCommand(const char * workCommand);
+     void saveHistory(const char * workCommand);
+    
+     int execute(const char * workCommand);
+     void initShellName();
+     void initTerminator();
+      
+     string errorMessage(int status);
 
-ToyShell::increaseCount()
-{
-   count++;
-}
+    
+     int count;
+    
+     //these may have to be char arrays
+     string name;
+     string terminator;
+    
+    // history[10] ??
+    //aliases[10][2] ??
+    void increaseCount();
+      //void setShellName();
+   private:
+     
+};
