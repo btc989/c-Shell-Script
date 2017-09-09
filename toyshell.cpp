@@ -2,6 +2,8 @@
 #include <string>
 #include <stdlib.h>
 #include <fstream>
+#include <string.h>
+#include <iostream>
 //Constructors. If no radius is specified, the default is 5.
 ToyShell::ToyShell()
 {
@@ -30,14 +32,61 @@ void ToyShell::increaseCount()
    count++;
 }
 
- char * ToyShell::tokenize( char * command){
+void ToyShell::tokenize(string commandLine){
+    
+   workCommand = new command; 
+    
+   char delim[]=" ,;";
+  // static char *token[100];
+    //variable used to store the end result command
+    
+   cout<<"one"<<endl; 
+   char *workCommandLine = new char [commandLine.length() + 1];  //c-string use$
+   cout<<"two"<<endl;
+    
+    
+    
+   strcpy(workCommandLine, commandLine.c_str());
+   int i=0; //initilize the counter
+   // workCommand->token[i]= new char [commandLine.length() + 1];
+    cout<<"twoish"<<endl;
+    
+    
+   workCommand->token[i] = strdup(strtok(workCommandLine, delim));
+    
+    cout<<"three "<<workCommand->token[i]<<endl;
+    
+   do
+   {
+       cout<<"four"<<endl;
+    i++;
+     
+    
+    workCommand->token[i]=strdup(strtok(NULL, delim));
+       
+       
+   } while(workCommand->token[i]!=NULL); 
+     
+ 
+    
+    
+    
+   
+   //workCommand->token = token;
+    cout<<"five"<<endl;
+   //cout<<workCommand->token[0];
+   // cout<<"six"<<endl;
+   workCommand->size = i;
+     cout<<"seven"<<endl;
+     
+     
     
 }
  char * ToyShell::alias( char * workCommand){
     
 }
 int ToyShell::execute( char * workCommand){
-    int status = 0;
+   /* int status = 0;
     //just set command to make life easier
     string command = workCommand[0];
     //make all lowercase
@@ -96,7 +145,7 @@ string ToyShell::errorMessage(int status){
             return "Aliases could not be read from file";  
         default:
             return "";
-    }
+    }*/
 }
 
 void ToyShell::setShellName(char * newName){
@@ -136,24 +185,24 @@ char * ToyShell::getHistoryCommand( char * workCommand){
     
 }
 void ToyShell::outputHistory(){
-    if(historySize==0)
+  /*  if(historySize==0)
         cout<<"There is no command history";
     else{
         for(int i=0; i<historySize; i++)
             cout<<history[i]<<endl;
-    }
+    }*/
 }
 int ToyShell::newAlias(char * workCommand){
         
 }
 void ToyShell::outputAlias(){
-    if(aliasSizeX==0 && aliasSizeY)
+  /*  if(aliasSizeX==0 && aliasSizeY)
         cout<<"There is no declared aliases";
     else{
         //go through 2d array print out new name and the actual name
         for(int i=0; i<aliasSizeX; i++)
             cout<<alias[i][0]<< " | "<<alias[i][1]<<endl;     
-    }
+    }*/
 }
 int ToyShell::saveAlias(char * fileName){
     
