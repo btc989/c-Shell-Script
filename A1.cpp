@@ -11,12 +11,12 @@ int main()
     
     
   //maybe make this into string
-   char * command = new char[128];
+   string command;
    bool alias = true;
    int status=0;
    //Prompt
    cout<< shell.name<<"["<<shell.count<<"]"<<shell.terminator;
-   cin.getline(command, 128); 
+   getline(cin, command); 
    
 
     
@@ -26,9 +26,9 @@ int main()
     
    //Loop until command STOP or corresponding alias is entered 
    //MIGHT NEED TO CHANGE THIS
-  while(!strcmp(command, "STOP")){
+  //while(!strcmp(command, "STOP")){
       
-    command = shell.tokenize(command);
+    shell.tokenize(command);
     //check if command is alias
     //if no more aliases are found variable is set to false;
   /*  do{ 
@@ -50,12 +50,12 @@ int main()
           cout<<shell.errorMessage(status)<<endl;
       */
     //increase command count
-      shell.increaseCount();
+  //    shell.increaseCount();
     //Prompt at end of loop
-   cout<< shell.name<<"["<<shell.count<<"]"<<shell.terminator;
-   cin.getline(command, 128);
+  // cout<< shell.name<<"["<<shell.count<<"]"<<shell.terminator;
+  // cin.getline(command, 128);
       
-  }
+  //}
   
     
   
