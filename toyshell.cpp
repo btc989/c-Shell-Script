@@ -56,42 +56,47 @@ void ToyShell::tokenize(string commandLine){
      
    workCommand->size = i;   
 }
- char * ToyShell::alias( char * workCommand){
+ char * ToyShell::alias(){
     
 }
-int ToyShell::execute( char * workCommand){
-   /* int status = 0;
+int ToyShell::execute( ){
+    int status = 0;
     //just set command to make life easier
-    string command = workCommand[0];
+    string command = workCommand->token[0];
+
     //make all lowercase
-    for(int i=0; i<command.length; i++;)
+    for(int i=0; i<command.length(); i++)
         command[i] = tolower(command[i]);
-     //sets shell name
-    if(command.compare("setshellname"))
+    
+     //if command is to stop program NOTE: compare returns 0 if equal
+    if(!command.compare("stop"))
+        return 10;
+    //sets shell name
+   /* else if(!command.compare("setshellname"))
         setShellName(workCommand[1]);
       //sets terminator
-    else if( command.compare("setterminator"))
+    else if( !command.compare("setterminator"))
         setShellTerminator(workCommand[1]);
       //lists current history -> default array of 10
-    else if( command.compare("history")){
+    else if( !command.compare("history")){
         outputHistory();
     }
       //new alias for command
-    else if( command.compare("newname")){
+    else if( !command.compare("newname")){
         if(!newAlias(workCommand))
             return 2;
     }
       //output all aliases that have been defined
-    else if( command.compare("newnames")){
+    else if( !command.compare("newnames")){
             outputAlias();
     } 
       // savenewnames store all aliases in file
-     else if( command.compare("savenewnames")){
+     else if( !command.compare("savenewnames")){
         if(!saveAlias(workCommand[1]))
             return 3;
     } 
       //readnewnames read all aliases from file
-    else if( command.compare("readnewnames")){
+    else if( !command.compare("readnewnames")){
         if(!readAlias(workCommand[1]))
             return 4;
     } 
@@ -102,7 +107,7 @@ int ToyShell::execute( char * workCommand){
         //if not UNIX Command Return error
         if(!returnCode)
             return 1;
-    }
+    }*/
     return status;
 }
 
@@ -119,7 +124,7 @@ string ToyShell::errorMessage(int status){
             return "Aliases could not be read from file";  
         default:
             return "";
-    }*/
+    }
 }
 
 void ToyShell::setShellName(char * newName){
@@ -145,7 +150,7 @@ void ToyShell::setShellTerminator(char * newTerminator){
     ofs.close();
     
 }
-void ToyShell::saveHistory( char * workCommand){
+void ToyShell::saveHistory(){
     
     //dynamically add onto history array
     
@@ -153,7 +158,7 @@ void ToyShell::saveHistory( char * workCommand){
     
     
 }
-char * ToyShell::getHistoryCommand( char * workCommand){
+char * ToyShell::getHistoryCommand(){
     
     
     
@@ -166,7 +171,7 @@ void ToyShell::outputHistory(){
             cout<<history[i]<<endl;
     }*/
 }
-int ToyShell::newAlias(char * workCommand){
+int ToyShell::newAlias(){
         
 }
 void ToyShell::outputAlias(){
