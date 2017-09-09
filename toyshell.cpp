@@ -37,50 +37,24 @@ void ToyShell::tokenize(string commandLine){
    workCommand = new command; 
     
    char delim[]=" ,;";
-  // static char *token[100];
-    //variable used to store the end result command
-    
-   cout<<"one"<<endl; 
    char *workCommandLine = new char [commandLine.length() + 1];  //c-string use$
-   cout<<"two"<<endl;
-    
-    
-    
+   
    strcpy(workCommandLine, commandLine.c_str());
    int i=0; //initilize the counter
-   // workCommand->token[i]= new char [commandLine.length() + 1];
-    cout<<"twoish"<<endl;
-    
-    
+   
    workCommand->token[i] = strdup(strtok(workCommandLine, delim));
-    
-    cout<<"three "<<workCommand->token[i]<<endl;
-    
+
+   char *test; 
    do
    {
-       cout<<"four"<<endl;
     i++;
+    test=strtok(NULL, delim);
+    if(test==NULL)
+        break;
+    workCommand->token[i]=strdup(test);  
+   } while(test!=NULL); 
      
-    
-    workCommand->token[i]=strdup(strtok(NULL, delim));
-       
-       
-   } while(workCommand->token[i]!=NULL); 
-     
- 
-    
-    
-    
-   
-   //workCommand->token = token;
-    cout<<"five"<<endl;
-   //cout<<workCommand->token[0];
-   // cout<<"six"<<endl;
-   workCommand->size = i;
-     cout<<"seven"<<endl;
-     
-     
-    
+   workCommand->size = i;   
 }
  char * ToyShell::alias( char * workCommand){
     
