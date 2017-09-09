@@ -17,11 +17,11 @@ class ToyShell
     ~ToyShell();
       
     void tokenize( string command);
-    char * alias( char * workCommand);
-    char * getHistoryCommand( char * workCommand);
-    void saveHistory( char * workCommand);
+    char * alias();
+    char * getHistoryCommand();
+    void saveHistory();
     
-    int execute( char * workCommand);
+    int execute();
       
     string errorMessage(int status);
 
@@ -39,7 +39,7 @@ class ToyShell
     void setShellName(char * newName);
     void setShellTerminator(char * newTerminator);
     void outputHistory();
-    int newAlias(char * workCommand);
+    int newAlias();
     void outputAlias();
     int saveAlias(char * fileName);
     int readAlias(char * fileName);
