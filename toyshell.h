@@ -1,13 +1,22 @@
+
 #include <string>
+#include <stdlib.h>
+#include <string.h>
 using namespace std;
+
+struct command{
+    int size;
+    char *token[100];
+};
 
 class ToyShell
 {
+  command * workCommand;
    public:
     ToyShell();
     ~ToyShell();
       
-    char * tokenize( char * command);
+    void tokenize( string command);
     char * alias( char * workCommand);
     char * getHistoryCommand( char * workCommand);
     void saveHistory( char * workCommand);
