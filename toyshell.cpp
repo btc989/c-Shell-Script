@@ -97,7 +97,6 @@ int ToyShell::execute( ){
          command = workCommand->token[0];
      }
     
-
     //make all lowercase
     for(int i=0; i<command.length(); i++)
         command[i] = tolower(command[i]);
@@ -133,15 +132,19 @@ int ToyShell::execute( ){
     else if( !command.compare("readnewnames")){
         if(!readAlias(workCommand[1]))
             return 4;
-    } 
+    } */
       //if not a shell command try and execute as UNIX Command
     else{
-        int returnCode = system(workCommand);
+        string fullCommand;
+        for(int i=0; i<workCommand->size; i++)
+            fullCommand += string(workCommand->token[i])+" ";
+        
+        int returnCode = system(fullCommand);
        
         //if not UNIX Command Return error
         if(!returnCode)
             return 1;
-    }*/
+    }
     return status;
 }
 
@@ -233,8 +236,23 @@ void ToyShell::outputHistory(){
             cout<<history[i]<<endl;
     }
 }
-int ToyShell::newAlias(){
+bool ToyShell::newAlias(){
+    //if user just wants to delete a defined alias    
+    if(workCommand->size == 2)
+    {
         
+    }
+    //if user wants to create a new alias
+    else if(workCommand->size==3)
+    {
+        
+    }
+    //user entered something wrong
+    else
+    {
+        cout<<"Command entered was not correct";
+        return false;
+    }   
 }
 void ToyShell::outputAlias(){
   /*  if(aliasSizeX==0 && aliasSizeY)
