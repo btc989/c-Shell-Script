@@ -25,11 +25,7 @@ int main()
         alias = shell.alias(); 
     }while(alias);
       
-    //Check if command is to repeat previous command
-    //Then fetch previous command to continue executing
-  /*   if(command[0] == '!')
-         command = shell.getHistoryCommand(command);
-   */   
+       
      //Save command to History
       shell.saveHistory();
      //Execute Command
