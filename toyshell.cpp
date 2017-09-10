@@ -4,6 +4,7 @@
 #include <fstream>
 #include <string.h>
 #include <iostream>
+#include <sstream>
 //Constructors. If no radius is specified, the default is 5.
 ToyShell::ToyShell()
 {
@@ -87,6 +88,15 @@ int ToyShell::execute( ){
     int status = 0;
     //just set command to make life easier
     string command = workCommand->token[0];
+    
+    //Check if command is to repeat previous command
+    //Then fetch previous command to continue executing
+     if(!command.compare("!")){
+         getHistoryCommand(workCommand->token[1]);
+         //reset command since it has changed
+         command = workCommand->token[0];
+     }
+    
 
     //make all lowercase
     for(int i=0; i<command.length(); i++)
@@ -195,10 +205,25 @@ void ToyShell::saveHistory(){
     history[historySize+1]=command;
     historySize++; 
 }
-char * ToyShell::getHistoryCommand(){
+void ToyShell::getHistoryCommand(string line){
     
+ 
+    // object from the class stringstream
+    stringstream convert(line);    
+    int lineNum = 0;
+    //convert string into integer
+    convert >> lineNum;
     
-    
+    if(lineNum>= historySize){
+        cout<<"Line number entered was greater then amount of history"<<endl;
+        return;
+    }
+    //get requested command
+    string command = history[lineNum];
+    //clear out current command for replacement
+    delete[] workCommand;
+    //call tokenize to repeat process
+    tokenize(command);   
 }
 void ToyShell::outputHistory(){
     if(historySize==0)
