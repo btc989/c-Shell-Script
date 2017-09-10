@@ -43,7 +43,7 @@ class ToyShell
     void setShellName(string newName);
     void setShellTerminator(string newTerminator);
     void outputHistory();
-    int newAlias();
+    bool newAlias();
     void outputAlias();
     int saveAlias(char * fileName);
     int readAlias(char * fileName);
