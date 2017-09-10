@@ -14,23 +14,24 @@ int main()
    //MIGHT NEED TO CHANGE THIS
   do{
     
+      alias=true;
    //Prompt
    cout<< shell.name<<"["<<shell.count<<"]"<<shell.terminator;
    getline(cin, command); 
     shell.tokenize(command);
     //check if command is alias
     //if no more aliases are found variable is set to false;
-  /*  do{ 
-        shell.alias(command, alias); 
+    do{ 
+        alias = shell.alias(); 
     }while(alias);
-  */    
+      
     //Check if command is to repeat previous command
     //Then fetch previous command to continue executing
   /*   if(command[0] == '!')
          command = shell.getHistoryCommand(command);
    */   
      //Save command to History
-   //   shell.saveHistory(command);
+      shell.saveHistory();
      //Execute Command
       status = shell.execute();
       if(status==10)
