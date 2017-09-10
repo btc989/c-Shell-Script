@@ -17,7 +17,7 @@ class ToyShell
     ~ToyShell();
       
     void tokenize( string command);
-    char * alias();
+    bool alias();
     char * getHistoryCommand();
     void saveHistory();
     
@@ -32,12 +32,16 @@ class ToyShell
     string name;
     string terminator;
     
-    // history[10] ??
-    //aliases[10][2] ??
+    string * history;
+    int historySize;
+    int historyArraySize;
+    char * aliases[10][2];
+    int aliasSizeX;
+    int aliasSizeY;
     void increaseCount();
    private:
-    void setShellName(char * newName);
-    void setShellTerminator(char * newTerminator);
+    void setShellName(string newName);
+    void setShellTerminator(string newTerminator);
     void outputHistory();
     int newAlias();
     void outputAlias();
