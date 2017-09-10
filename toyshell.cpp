@@ -8,7 +8,12 @@
 ToyShell::ToyShell()
 {
    count = 0;
-   
+   aliasSizeX=0;
+   aliasSizeY=0;
+    
+   history = new string[10];
+   historySize=0;
+   historyArraySize=1;
   //get shellname and terminator from file 
    fstream read;
    read.open("shellName.txt");
@@ -56,8 +61,27 @@ void ToyShell::tokenize(string commandLine){
      
    workCommand->size = i;   
 }
- char * ToyShell::alias(){
+ bool ToyShell::alias(){
     
+     if(aliasSizeX==0)
+        return false;
+  /*   //loop through entire command->each word
+    for(int i=0; i<workCommand->size; i++) 
+    {
+        //loop through entire alias list
+         for(int j=0; j<aliasSizeX; j++)
+         {
+             //compare current word with the alias->stored in the first column of 2d array
+             if(!workCommand->token[i].compare(aliases[j][0])){
+                 
+                 workCommand->token[i]=strdup(aliases[j][1]);
+                 return true;
+             }
+
+         }
+    }*/
+     
+     return false;    
 }
 int ToyShell::execute( ){
     int status = 0;
@@ -72,16 +96,16 @@ int ToyShell::execute( ){
     if(!command.compare("stop"))
         return 10;
     //sets shell name
-   /* else if(!command.compare("setshellname"))
-        setShellName(workCommand[1]);
+    else if(!command.compare("setshellname"))
+        setShellName(workCommand->token[1]);
       //sets terminator
     else if( !command.compare("setterminator"))
-        setShellTerminator(workCommand[1]);
+        setShellTerminator(workCommand->token[1]);
       //lists current history -> default array of 10
     else if( !command.compare("history")){
         outputHistory();
     }
-      //new alias for command
+   /*   //new alias for command
     else if( !command.compare("newname")){
         if(!newAlias(workCommand))
             return 2;
@@ -127,7 +151,7 @@ string ToyShell::errorMessage(int status){
     }
 }
 
-void ToyShell::setShellName(char * newName){
+void ToyShell::setShellName(string newName){
     
     //set class variable as new name
     name = newName;
@@ -136,27 +160,40 @@ void ToyShell::setShellName(char * newName){
     ofs.open("shellName.txt", std::ofstream::out | std::ofstream::trunc);
     ofs<<name;
     ofs.close();
-    
+    return;
 }
 
-void ToyShell::setShellTerminator(char * newTerminator){
+void ToyShell::setShellTerminator(string newTerminator){
     
     //set class variable as new terminator
     terminator = newTerminator;
     //open shell name file and rewrite shell with new name 
     ofstream ofs;
     ofs.open("shellTerminator.txt", std::ofstream::out | std::ofstream::trunc);
-    ofs<<name;
+    ofs<<terminator;
     ofs.close();
     
 }
 void ToyShell::saveHistory(){
     
     //dynamically add onto history array
+    if(historySize+1>=historyArraySize){
+        string* grownArray = new string[historyArraySize+10];
+        for (int i=0; i < historyArraySize; ++i)
+           grownArray[i] = history[i];
+        // enlarge newly allocated array:
+        historyArraySize+= 10;
+        // release old memory
+        delete[] history;
+        // reassign history pointer to point to expanded array
+        history = grownArray;
+    }
     
-    
-    
-    
+    string command;
+    for(int i=0; i<workCommand->size; i++)
+        command += string(workCommand->token[i])+" ";
+    history[historySize+1]=command;
+    historySize++; 
 }
 char * ToyShell::getHistoryCommand(){
     
@@ -164,12 +201,12 @@ char * ToyShell::getHistoryCommand(){
     
 }
 void ToyShell::outputHistory(){
-  /*  if(historySize==0)
+    if(historySize==0)
         cout<<"There is no command history";
     else{
         for(int i=0; i<historySize; i++)
             cout<<history[i]<<endl;
-    }*/
+    }
 }
 int ToyShell::newAlias(){
         
