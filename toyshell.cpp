@@ -139,7 +139,7 @@ int ToyShell::execute( ){
         for(int i=0; i<workCommand->size; i++)
             fullCommand += string(workCommand->token[i])+" ";
         
-        int returnCode = system(fullCommand);
+        int returnCode = system(fullCommand.c_str());
        
         //if not UNIX Command Return error
         if(!returnCode)
