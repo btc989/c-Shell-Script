@@ -18,26 +18,29 @@ class ToyShell
       
     void tokenize( string command);
     char * alias();
-    char * getHistoryCommand();
+    void getHistoryCommand(string line);
     void saveHistory();
     int execute();
     string errorMessage(int status);
-
     
-    int count;
+    
     
     //these may have to be char arrays
     string name;
+    int count;
     string terminator;
     command * workCommand;
     char * storedA[10];
+    string * history;
+    int historySize;
+    int historyArraySize;
 
     // history[10] ??
     
     void increaseCount();
    private:
-    void setShellName(char * newName);
-    void setShellTerminator(char * newTerminator);
+    void setShellName(string newName);
+    void setShellTerminator(string newTerminator);
     void outputHistory();
     void newAlias();
     void outputAlias();

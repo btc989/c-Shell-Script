@@ -35,18 +35,15 @@ int main()
    */   
 
 
-     //Save command to History
-   //   shell.saveHistory(command);
-
-
-     //Execute Command
-      status = shell.execute();
-      if(status==10){
-        cout << "Stopping Shell" << endl;
-          break;
-      }
-
-
+  //Save command to History
+  shell.saveHistory();
+  
+  //Execute Command
+  status = shell.execute();
+  if(status==10){
+    cout << "Stopping Shell" << endl;
+      break;
+    }
       //if anything but 0 is returned, call function to write out error message
       /*if(!status)
           cout<<shell.errorMessage(status)<<endl;
