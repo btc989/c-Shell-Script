@@ -11,7 +11,6 @@ int main()
    int status=0;    
 
    //Loop until command STOP or corresponding alias is entered 
-   //MIGHT NEED TO CHANGE THIS
   do{
     
    //Prompt
@@ -27,14 +26,6 @@ int main()
     }while(alias);
   */    
 
-
-    //Check if command is to repeat previous command
-    //Then fetch previous command to continue executing
-  /*   if(command[0] == '!')
-         command = shell.getHistoryCommand(command);
-   */   
-
-
   //Save command to History
   shell.saveHistory();
   
@@ -49,7 +40,6 @@ int main()
           cout<<shell.errorMessage(status)<<endl;
       */
 
-      
     //increase command count
   shell.increaseCount();
       
