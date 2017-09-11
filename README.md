@@ -1,7 +1,7 @@
 # c-Shell-Script
 Functions working:
--tokenize
--increaseCount
+- tokenize
+- increaseCount
 
 Functions in progress:
 - newAlias
