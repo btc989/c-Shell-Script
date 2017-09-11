@@ -11,18 +11,16 @@ struct command{
 
 class ToyShell
 {
-  command * workCommand;
+   
    public:
     ToyShell();
     ~ToyShell();
       
     void tokenize( string command);
-    bool alias();
-    void getHistoryCommand(string line);
+    char * alias();
+    char * getHistoryCommand();
     void saveHistory();
-    
     int execute();
-      
     string errorMessage(int status);
 
     
@@ -31,19 +29,17 @@ class ToyShell
     //these may have to be char arrays
     string name;
     string terminator;
+    command * workCommand;
+    char * storedA[10];
+
+    // history[10] ??
     
-    string * history;
-    int historySize;
-    int historyArraySize;
-    char * aliases[10][2];
-    int aliasSizeX;
-    int aliasSizeY;
     void increaseCount();
    private:
-    void setShellName(string newName);
-    void setShellTerminator(string newTerminator);
+    void setShellName(char * newName);
+    void setShellTerminator(char * newTerminator);
     void outputHistory();
-    bool newAlias();
+    void newAlias();
     void outputAlias();
     int saveAlias(char * fileName);
     int readAlias(char * fileName);
