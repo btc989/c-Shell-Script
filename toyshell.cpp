@@ -251,20 +251,24 @@ void ToyShell::newAlias(){
         storedA[9] = strdup("teal");
 
         for (int i = 0; i < 10; i++){
+            cout << "First: ";
             cout << storedA[i] << endl;
         }
         /********check to make sure this works !!!!!!!!*/
-
+        
         if (workCommand->size == 2){  //delete alias command, only 2 tokens were stored
             bool changed = false; //used to see if anything changes int he for loop
             for(int i = 0; i < 10; i++){  //loop for the size of the alias array
-                if (storedA[i] == workCommand->token[1]){  //if any of the aliases match
+                if (strcmp(storedA[i], workCommand->token[1]) == 0){  //if any of the aliases match
                     storedA[i] = NULL; //set the matching to NULL
                     changed = true; //set the changed to true
                 }
             }
             if (!changed){  //we didn't change anyting in the for loop
                 cout << "No aliases were found with that name" << endl; //prompt user there is nothing for that name
+            }
+            else {
+                cout << "Alias deleted" << endl;
             }
         }
 
