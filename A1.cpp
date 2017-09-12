@@ -8,7 +8,8 @@ int main()
    ToyShell shell;
    string command;
    bool alias = true;
-   int status=0;    
+   int status=0;  
+   
 
    //Loop until command STOP or corresponding alias is entered 
   do{

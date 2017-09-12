@@ -30,7 +30,7 @@ class ToyShell
     int count;
     string terminator;
     command * workCommand;
-    char * storedA[10];
+    char * storedA[10][2];
     string * history;
     int historySize;
     int historyArraySize;

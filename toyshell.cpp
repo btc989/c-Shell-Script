@@ -65,7 +65,9 @@ void ToyShell::tokenize(string commandLine){
 
 bool ToyShell::alias(){
     
-   /* if(aliasSizeX==0)
+   /* 
+   string fullCommand = NULL;
+   if(aliasSizeX==0)
         return false;
      //loop through entire command->each word
     for(int i=0; i<workCommand->size; i++) 
@@ -74,14 +76,15 @@ bool ToyShell::alias(){
          for(int j=0; j<aliasSizeX; j++)
          {
              //compare current word with the alias->stored in the first column of 2d array
-             if(!workCommand->token[i].compare(aliases[j][0])){
-                 
-                string fullCommand= aliases[j][1];
+             if(workCommand->token[i].compare(aliases[j][0])){
+                                                        
+                fullCommand = aliases[j][1];  
                 for(int i=1; i<workCommand->size; i++)
                     fullCommand += string(workCommand->token[i])+" ";
     
-                tokenize(fullCommand);
-                return true;
+                tokenize(fullCommand); 
+                                //Problem here what if they say "dd | ff", it will only store the dd part and delete the "| ff"
+                return true;  //this may have to be outside the first for loop
              }
          }
     } */
@@ -260,28 +263,28 @@ void ToyShell::outputHistory(){
 void ToyShell::newAlias(){
 
         //using this to test the function
-        storedA[0] = strdup("test");
-        storedA[1] = strdup("cat");
-        storedA[2] = strdup("dog");
-        storedA[3] = strdup("red");
-        storedA[4] = strdup("blue");
-        storedA[5] = strdup("yellow");
-        storedA[6] = strdup("green");
-        storedA[7] = strdup("purple");
-        storedA[8] = strdup("cyan");
-        storedA[9] = strdup("teal");
+        storedA[0][0] = strdup("test");
+        storedA[1][0] = strdup("cat");
+        storedA[2][0] = strdup("dog");
+        storedA[3][0] = strdup("red");
+        storedA[4][0] = strdup("blue");
+        storedA[5][0] = strdup("yellow");
+        storedA[6][0] = strdup("green");
+        storedA[7][0] = strdup("purple");
+        storedA[8][0] = strdup("cyan");
+        storedA[9][0] = strdup("teal");
 
         for (int i = 0; i < 10; i++){
             cout << "First: ";
-            cout << storedA[i] << endl;
+            cout << storedA[i][0] << endl;
         }
         /********check to make sure this works !!!!!!!!*/
         
         if (workCommand->size == 2){  //delete alias command, only 2 tokens were stored
             bool changed = false; //used to see if anything changes int he for loop
             for(int i = 0; i < 10; i++){  //loop for the size of the alias array
-                if (strcmp(storedA[i], workCommand->token[1]) == 0){  //if any of the aliases match
-                    storedA[i] = NULL; //set the matching to NULL
+                if (strcmp(storedA[i][0], workCommand->token[1]) == 0){  //if any of the aliases match
+                    storedA[i][0] = NULL; //set the matching to NULL
                     changed = true; //set the changed to true
                 }
             }
@@ -302,35 +305,35 @@ void ToyShell::newAlias(){
             bool found = false; // used to see if alias exists
             int i = 0;
             while (!found && i < 10){  //search though storedA[i] for matching alias 
-                if (storedA[i] == workCommand->token[1]){  //compare alias to stored
+                if (storedA[i][0] == workCommand->token[1]){  //compare alias to stored
                     found = true;  //if found change to ture
                 }
                 i++;
             }
             
-            /*
+            /*******
             workCommand->token[1] should be the name of the new alias, or alias to overwrite
 
             if overwriting{
                 find the cString in storedA[i] with the same name as workCommand->token[1]
                 store the new command in storedA[i]
             }
-            */
+            *******/
             if (found) {  //does exist
                 //storedA[i-1] = /* the rest of the workCommand appended together */
                 cout << "*TEST NOT WORKING* Overwrote existing alias" << endl;
             }
 
 
-            /*
+            /********
             if new alias{
                 check to see if the token[>1] is a valid statement...may not have to and just assume its valid
                 store the alias in a spot where there is nothing...loop through storedA[i] until a NULL spot is found
             }
-            */
+            ********/
             else { //doesn't exist
                 i = 0;
-                while (storedA[i] != NULL && i < 10){
+                while (storedA[i][0] != NULL && i < 10){
                     i++;
                 }
                 if (i == 10)
