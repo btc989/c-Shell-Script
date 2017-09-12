@@ -31,7 +31,13 @@ ToyShell::ToyShell()
 }
 
 ToyShell::~ToyShell(){
-    
+    if(workCommand->size !=0){
+        for (int i=0; i<workCommand->size; i++)
+           free(workCommand->token[i]); //frees up each space in memory
+
+      //Clean up the array of words
+      delete [] workCommand->token;     // cleans up words allocated space
+    }
 }
 
 void ToyShell::increaseCount(){
@@ -40,27 +46,30 @@ void ToyShell::increaseCount(){
 
 void ToyShell::tokenize(string commandLine){
     
-   workCommand = new command; 
-    
-   char delim[]=" ,;";
-   char *workCommandLine = new char [commandLine.length() + 1];  //c-string use$
-   
-   strcpy(workCommandLine, commandLine.c_str());
-   int i=0; //initilize the counter
-   
-   workCommand->token[i] = strdup(strtok(workCommandLine, delim));
+   if(!commandLine.empty()){  
+       words= new char*[commandLine.length()]; //allocate word space for line
+       workCommand = new command; 
 
-   char *test; 
-   do
-   {
-    i++;
-    test=strtok(NULL, delim);
-    if(test==NULL)
-        break;
-    workCommand->token[i]=strdup(test);  
-   } while(test!=NULL); 
-     
-   workCommand->size = i;
+       char delim[]=" ,;";
+       char *workCommandLine = new char [commandLine.length() + 1];  //c-string use$
+
+       strcpy(workCommandLine, commandLine.c_str());
+       int i=0; //initilize the counter
+
+       workCommand->token[i] = strdup(strtok(workCommandLine, delim));
+
+       char *test; 
+       do
+       {
+        i++;
+        test=strtok(NULL, delim);
+        if(test==NULL)
+            break;
+        workCommand->token[i]=strdup(test);  
+       } while(test!=NULL); 
+
+       workCommand->size = i;
+  }
 }
 
 bool ToyShell::alias(){
@@ -246,7 +255,13 @@ void ToyShell::getHistoryCommand(string line){
     //get requested command
     string command = history[lineNum];
     //clear out current command for replacement
-    delete[] workCommand;
+    if(workCommand->size !=0){
+        for (int i=0; i<workCommand->size; i++)
+           free(workCommand->token[i]); //frees up each space in memory
+
+      //Clean up the array of words
+      delete [] workCommand->token;     // cleans up words allocated space
+    }
     //call tokenize to repeat process
     tokenize(command);   
 }
