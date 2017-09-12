@@ -6,7 +6,7 @@ using namespace std;
 
 struct command{
     int size;
-    char *token[100];
+    char *token;
 };
 
 class ToyShell
