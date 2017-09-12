@@ -65,7 +65,7 @@ void ToyShell::tokenize(string commandLine){
 
 bool ToyShell::alias(){
     
-    if(aliasSizeX==0)
+   /* if(aliasSizeX==0)
         return false;
      //loop through entire command->each word
     for(int i=0; i<workCommand->size; i++) 
@@ -84,7 +84,7 @@ bool ToyShell::alias(){
                 return true;
              }
          }
-    } 
+    } */
     return false;
 }
 
