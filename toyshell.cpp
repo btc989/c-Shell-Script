@@ -63,8 +63,29 @@ void ToyShell::tokenize(string commandLine){
    workCommand->size = i;
 }
 
-char * ToyShell::alias(){
+bool ToyShell::alias(){
     
+    if(aliasSizeX==0)
+        return false;
+     //loop through entire command->each word
+    for(int i=0; i<workCommand->size; i++) 
+    {
+        //loop through entire alias list
+         for(int j=0; j<aliasSizeX; j++)
+         {
+             //compare current word with the alias->stored in the first column of 2d array
+             if(!workCommand->token[i].compare(aliases[j][0])){
+                 
+                string fullCommand= aliases[j][1];
+                for(int i=1; i<workCommand->size; i++)
+                    fullCommand += string(workCommand->token[i])+" ";
+    
+                tokenize(fullCommand);
+                return true;
+             }
+         }
+    } 
+    return false;
 }
 
 int ToyShell::execute( ){
