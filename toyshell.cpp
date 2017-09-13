@@ -1,11 +1,10 @@
 #include "toyshell.h"
 #include <string>
-#include <stdlib.h>
 #include <fstream>
-#include <string.h>
 #include <iostream>
 #include <sstream>
-
+#include <cstring>
+#include <cstdlib>
 
 //Constructors. If no radius is specified, the default is 5.
 ToyShell::ToyShell()
@@ -47,12 +46,12 @@ void ToyShell::increaseCount(){
 void ToyShell::tokenize(string commandLine){
     
    if(!commandLine.empty()){  
-       words= new char*[commandLine.length()]; //allocate word space for line
+       
        workCommand = new command; 
 
        char delim[]=" ,;";
        char *workCommandLine = new char [commandLine.length() + 1];  //c-string use$
-
+       workCommand->token= new char*[commandLine.length()];
        strcpy(workCommandLine, commandLine.c_str());
        int i=0; //initilize the counter
 
