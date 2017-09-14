@@ -9,13 +9,15 @@
 //Constructors. If no radius is specified, the default is 5.
 ToyShell::ToyShell()
 {
+   int aliasLimit = 10;
+    
    count = 0;
     
    history = new string[10];
    historySize=0;
    historyArraySize=1;
     
-   int aliasLimit=10;
+   
     
    int aliasSizeX=0;
     
@@ -81,9 +83,9 @@ void ToyShell::tokenize(string commandLine){
 
 bool ToyShell::alias(){
     
-   /* 
-   string fullCommand = NULL;
-   if(aliasSizeX==0)
+   
+   string fullCommand = "";
+   if(aliasSizeX<=0)
         return false;
      //loop through entire command->each word
     for(int i=0; i<workCommand->size; i++) 
@@ -92,18 +94,32 @@ bool ToyShell::alias(){
          for(int j=0; j<aliasSizeX; j++)
          {
              //compare current word with the alias->stored in the first column of 2d array
-             if(workCommand->token[i].compare(aliases[j][0])){
-                                                        
-                fullCommand = aliases[j][1];  
-                for(int i=1; i<workCommand->size; i++)
-                    fullCommand += string(workCommand->token[i])+" ";
-    
+             if(!storedA[j][0].compare(workCommand->token[i])){
+                for(int k=0; k<i; k++)
+                    fullCommand += string(workCommand->token[k])+" ";
+                cout<<fullCommand<<endl;
+                fullCommand += storedA[j][1]+" ";
+                 cout<<fullCommand<<endl;
+                for(int l=i+1; l<workCommand->size; l++)
+                    fullCommand += string(workCommand->token[l])+" ";
+                cout<<fullCommand<<endl;
+                 
+                 if(workCommand->size !=0){
+        for (int i=0; i<workCommand->size; i++)
+           free(workCommand->token[i]); //frees up each space in memory
+
+      //Clean up the array of words
+      delete [] workCommand->token;     // cleans up words allocated space
+    }
+                 
+                 
+                 
                 tokenize(fullCommand); 
                                 //Problem here what if they say "dd | ff", it will only store the dd part and delete the "| ff"
                 return true;  //this may have to be outside the first for loop
              }
          }
-    } */
+    } 
     return false;
 }
 
@@ -320,8 +336,8 @@ void ToyShell::newAlias(){
             bool found = false; // used to see if alias exists
             string command;
             for(int i=2; i<workCommand->size; i++)
-                    command+= workCommand->token[i];
-                cout<<"command "<<command<<endl;
+                    command+= string(workCommand->token[i])+" ";
+                
             
             for(int i=0; i<aliasSizeX; i++){  //search though storedA[i] for matching alias 
                 if (storedA[i][1] == command){  //compare alias to stored
@@ -355,7 +371,7 @@ void ToyShell::newAlias(){
             ********/
             else { //doesn't exist
                 
-                if (aliasSizeX == aliasLimit){
+                if (aliasSizeX == 10){
                     cout << "no spots open to store alias" << endl;
                     return;
                 }
@@ -418,7 +434,7 @@ int ToyShell::readAlias(string fileName){
            }
             //get command for alias    
            getline(read, command);
-           if (aliasSizeX == aliasLimit){
+           if (aliasSizeX == 10){
                 cout << "no spots open to store alias" << endl;
                return 1;
            }
