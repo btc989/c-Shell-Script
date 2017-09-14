@@ -25,26 +25,30 @@ class ToyShell
     
     
     
-    //these may have to be char arrays
+   
     string name;
     int count;
     string terminator;
     command * workCommand;
-    char * storedA[10][2];
+    int aliasLimit;
+    int aliasSizeX;
+    
+    string storedA[10][2];
     string * history;
     int historySize;
     int historyArraySize;
-
-    // history[10] ??
+    
     
     void increaseCount();
    private:
+    
+    
     void setShellName(string newName);
     void setShellTerminator(string newTerminator);
     void outputHistory();
     void newAlias();
     void outputAlias();
-    int saveAlias(char * fileName);
-    int readAlias(char * fileName);
+    int saveAlias(string fileName);
+    int readAlias(string fileName);
      
 };
