@@ -319,7 +319,7 @@ void ToyShell::newAlias(){
             //search the array to see if the alias is already exists
             bool found = false; // used to see if alias exists
             string command;
-            for(int i=3; i<workCommand->size; i++)
+            for(int i=2; i<workCommand->size; i++)
                     command+= workCommand->token[i];
                 cout<<"command "<<command<<endl;
             
