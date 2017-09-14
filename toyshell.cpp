@@ -360,7 +360,7 @@ void ToyShell::newAlias(){
                     return;
                 }
                 aliasSizeX++;
-                storedA[aliasSizeX-1][0] = workCommand->token[0];
+                storedA[aliasSizeX-1][0] = workCommand->token[1];
                 storedA[aliasSizeX-1][1] = command;
             }
         }
