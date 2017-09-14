@@ -8,6 +8,8 @@ Functions working:
 - setShellName
 - setShellTerminator
 - outputAlias
+- readAlias
+- saveAlias
 
 Functions in progress:
 - newAlias
