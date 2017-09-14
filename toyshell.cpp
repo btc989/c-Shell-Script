@@ -102,18 +102,13 @@ bool ToyShell::alias(){
                  cout<<fullCommand<<endl;
                 for(int l=i+1; l<workCommand->size; l++)
                     fullCommand += string(workCommand->token[l])+" ";
-                cout<<fullCommand<<endl;
-                 
-                 if(workCommand->size !=0){
-        for (int i=0; i<workCommand->size; i++)
-           free(workCommand->token[i]); //frees up each space in memory
+                
+                for (int i=0; i<workCommand->size; i++)
+                    free(workCommand->token[i]); //frees up each space in memory
 
-      //Clean up the array of words
-      delete [] workCommand->token;     // cleans up words allocated space
-    }
-                 
-                 
-                 
+                //Clean up the array of words
+                delete [] workCommand->token;     // cleans up words allocated space
+              
                 tokenize(fullCommand); 
                                 //Problem here what if they say "dd | ff", it will only store the dd part and delete the "| ff"
                 return true;  //this may have to be outside the first for loop
@@ -181,18 +176,22 @@ int ToyShell::execute( ){
     else if( !command.compare("newnames")){
             outputAlias();
     } 
-/*
+
       // savenewnames store all aliases in file
      else if( !command.compare("savenewnames")){
-        if(!saveAlias(workCommand[1]))
-            return 3;
+        if(workCommand->size>1)
+            saveAlias(workCommand->token[1]);
+        else
+             cout<<"Missing Parameter: file name"<<endl;
     } 
 
       //readnewnames read all aliases from file
     else if( !command.compare("readnewnames")){
-        if(!readAlias(workCommand[1]))
-            return 4;
-    } */
+        if(workCommand->size>1)
+            readAlias(workCommand->token[1]);
+        else
+             cout<<"Missing Parameter: file name"<<endl;
+    } 
 
       //if not a shell command try and execute as UNIX Command
     else{
@@ -438,10 +437,10 @@ int ToyShell::readAlias(string fileName){
                 cout << "no spots open to store alias" << endl;
                return 1;
            }
-           aliasSizeX++;
-           //storedA[aliasSizeX][0] = newAlias;
-           //storedA[aliasSizeX][1] = command;       
-              
+           
+           storedA[aliasSizeX][0] = newAlias;
+           storedA[aliasSizeX][1] = command;       
+           aliasSizeX++;  
        }
        read.close();
     }
