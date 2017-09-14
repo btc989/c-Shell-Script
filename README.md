@@ -7,6 +7,7 @@ Functions working:
 - outputHistory
 - setShellName
 - setShellTerminator
+- outputAlias
 
 Functions in progress:
 - newAlias
