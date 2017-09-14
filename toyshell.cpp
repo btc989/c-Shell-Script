@@ -14,6 +14,12 @@ ToyShell::ToyShell()
    history = new string[10];
    historySize=0;
    historyArraySize=1;
+    
+   int aliasLimit=10;
+    
+   int aliasSizeX=0;
+    
+    cout<<"in intit "<<aliasSizeX<<endl;
   //get shellname and terminator from file 
    fstream read;
    read.open("shellName.txt");
@@ -21,12 +27,14 @@ ToyShell::ToyShell()
        while(!read.eof())
            read>>name;
    }
+   read.close();
    fstream read2;    
   read2.open("shellTerminator.txt");
    if(read2.is_open()){
        while(!read2.eof())
            read2>>terminator;
-   }    
+   }   
+   read2.close();
 }
 
 ToyShell::~ToyShell(){
@@ -101,6 +109,7 @@ bool ToyShell::alias(){
 
 int ToyShell::execute( ){
 
+    
     int status = 0;
     //just set command to make life easier
     string command = workCommand->token[0];
@@ -126,12 +135,19 @@ int ToyShell::execute( ){
         return 10;
 
     //sets shell name
-    else if(!command.compare("setshellname"))
-        setShellName(workCommand->token[1]);
-
+    else if(!command.compare("setshellname")){
+        if(workCommand->size>1)
+            setShellName(workCommand->token[1]);
+        else
+             cout<<"Missing Parameter: history line number"<<endl;
+    }
     //sets terminator
-    else if( !command.compare("setterminator"))
-        setShellTerminator(workCommand->token[1]);
+    else if( !command.compare("setterminator")){
+        if(workCommand->size>1)
+            setShellTerminator(workCommand->token[1]);
+        else
+             cout<<"Missing Parameter: history line number"<<endl;
+    }
 
     //lists current history -> default array of 10
     else if( !command.compare("history")){
@@ -144,12 +160,12 @@ int ToyShell::execute( ){
             
     }
     
-    /*
+    
       //output all aliases that have been defined
     else if( !command.compare("newnames")){
             outputAlias();
     } 
-
+/*
       // savenewnames store all aliases in file
      else if( !command.compare("savenewnames")){
         if(!saveAlias(workCommand[1]))
@@ -276,29 +292,13 @@ void ToyShell::outputHistory(){
 
 void ToyShell::newAlias(){
 
-        //using this to test the function
-        storedA[0][0] = strdup("test");
-        storedA[1][0] = strdup("cat");
-        storedA[2][0] = strdup("dog");
-        storedA[3][0] = strdup("red");
-        storedA[4][0] = strdup("blue");
-        storedA[5][0] = strdup("yellow");
-        storedA[6][0] = strdup("green");
-        storedA[7][0] = strdup("purple");
-        storedA[8][0] = strdup("cyan");
-        storedA[9][0] = strdup("teal");
-
-        for (int i = 0; i < 10; i++){
-            cout << "First: ";
-            cout << storedA[i][0] << endl;
-        }
         /********check to make sure this works !!!!!!!!*/
         
         if (workCommand->size == 2){  //delete alias command, only 2 tokens were stored
             bool changed = false; //used to see if anything changes int he for loop
             for(int i = 0; i < 10; i++){  //loop for the size of the alias array
-                if (strcmp(storedA[i][0], workCommand->token[1]) == 0){  //if any of the aliases match
-                    storedA[i][0] = NULL; //set the matching to NULL
+                if (!storedA[i][0].compare( workCommand->token[1]) == 0){  //if any of the aliases match
+                    storedA[i][0] = ""; //set the matching to NULL
                     changed = true; //set the changed to true
                 }
             }
@@ -314,15 +314,21 @@ void ToyShell::newAlias(){
         
         else if(workCommand->size > 2){  //more than 2 tokens
             
-
+            
+            
             //search the array to see if the alias is already exists
             bool found = false; // used to see if alias exists
-            int i = 0;
-            while (!found && i < 10){  //search though storedA[i] for matching alias 
-                if (storedA[i][0] == workCommand->token[1]){  //compare alias to stored
+            string command;
+            for(int i=3; i<workCommand->size; i++)
+                    command+= workCommand->token[i];
+                cout<<"command "<<command<<endl;
+            
+            for(int i=0; i<aliasSizeX; i++){  //search though storedA[i] for matching alias 
+                if (storedA[i][1] == command){  //compare alias to stored
                     found = true;  //if found change to ture
+                    break;
                 }
-                i++;
+                
             }
             
             /*******
@@ -335,6 +341,8 @@ void ToyShell::newAlias(){
             *******/
             if (found) {  //does exist
                 //storedA[i-1] = /* the rest of the workCommand appended together */
+              
+                
                 cout << "*TEST NOT WORKING* Overwrote existing alias" << endl;
             }
 
@@ -346,40 +354,85 @@ void ToyShell::newAlias(){
             }
             ********/
             else { //doesn't exist
-                i = 0;
-                while (storedA[i][0] != NULL && i < 10){
-                    i++;
-                }
-                if (i == 10)
+                
+                if (aliasSizeX == aliasLimit){
                     cout << "no spots open to store alias" << endl;
-                else {
-                    //storedA[i] = /*  the rest of the workCommand appended together */
-                    cout << "*TEST NOT WORKING* Created new alias" << endl;
+                    return;
                 }
+                aliasSizeX++;
+                storedA[aliasSizeX-1][0] = workCommand->token[0];
+                storedA[aliasSizeX-1][1] = command;
             }
-
-            
         }
-
         else {  //only 1 token was specified and nothing else
             cout << "You didn't specify any alias" << endl;
         }
 }
 
 void ToyShell::outputAlias(){
-  /*  if(aliasSizeX==0 && aliasSizeY)
+    if(aliasSizeX==0)
         cout<<"There is no declared aliases";
     else{
         //go through 2d array print out new name and the actual name
         for(int i=0; i<aliasSizeX; i++)
-            cout<<alias[i][0]<< " | "<<alias[i][1]<<endl;     
-    }*/
+            cout<<storedA[i][0]<< " | "<<storedA[i][1]<<endl;     
+    }
 }
 
-int ToyShell::saveAlias(char * fileName){
+int ToyShell::saveAlias(string fileName){
+     //open shell name file and rewrite shell with new name 
+    ofstream ofs;
+    ofs.open(fileName.c_str(), std::ofstream::out | std::ofstream::trunc);
+    if(ofs.is_open()){
+        for(int i=0; i<aliasSizeX; i++){
+                ofs<<storedA[i][0]<<endl;
+                ofs<<storedA[i][1]<<endl; 
+
+        }
+        ofs.close();
+    }
+    else{
+        cout<<"Error: Could not open file"<<endl;
+        return 1;
+    }
+    
+    return 0;
+    
     
 }
 
-int ToyShell::readAlias(char * fileName){
+int ToyShell::readAlias(string fileName){
+    string newAlias="";
+    string command="";
+    fstream read;    
+    read.open(fileName.c_str());
+    if(read.is_open()){
+       while(!read.eof()){
+           //read entire line in from file
+           //ASSUMPTIONS IS THAT ALIAS IS PLACED ON FIRST LINE AND THE COMMAND IS PLACED ON THE SECOND
+           getline(read, newAlias);
+           //incase file not formated correctly
+           if(read.eof()){
+               cout<<"Error:given file is not formated properly. Odd number of lines"<<endl;
+               return 1;
+           }
+            //get command for alias    
+           getline(read, command);
+           if (aliasSizeX == aliasLimit){
+                cout << "no spots open to store alias" << endl;
+               return 1;
+           }
+           aliasSizeX++;
+           //storedA[aliasSizeX][0] = newAlias;
+           //storedA[aliasSizeX][1] = command;       
+              
+       }
+       read.close();
+    }
+    else{
+        cout<<"Error: Could not open file"<<endl;
+        return 1;
+    }
     
+    return 0;
 }
