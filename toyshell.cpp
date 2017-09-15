@@ -356,6 +356,8 @@ void ToyShell::newAlias(){
             for(int i = 0; i < 10; i++){  //loop for the size of the alias array
                 if (!storedA[i][0].compare( workCommand->token[1]) == 0){  //if any of the aliases match
                     storedA[i][0] = ""; //set the matching to NULL
+                    storedA[i][1] = ""; //set the matching to NULL
+                    aliasSizeX--;
                     changed = true; //set the changed to true
                 }
             }
