@@ -6,22 +6,19 @@
 #include <cstring>
 #include <cstdlib>
 
-//Constructors. If no radius is specified, the default is 5.
+/* Constructor called on inital creation of toyshell object
+* Opens two files to get name and terminator of shell
+* If files do not exist create them and fill in default values
+*/
 ToyShell::ToyShell()
 {
    int aliasLimit = 10;
-    
    count = 0;
-    
    history = new string[10];
    historySize=0;
    historyArraySize=1;
-    
-   
-    
    int aliasSizeX=0;
     
-    cout<<"in intit "<<aliasSizeX<<endl;
   //get shellname and terminator from file 
    fstream read;
    read.open("shellName.txt");
@@ -39,6 +36,10 @@ ToyShell::ToyShell()
    read2.close();
 }
 
+/* Deconstructor called at end of program
+* Clears all memory allocated by the new and strup commands
+* 
+*/
 ToyShell::~ToyShell(){
     if(workCommand->size !=0){
         for (int i=0; i<workCommand->size; i++)
@@ -48,11 +49,18 @@ ToyShell::~ToyShell(){
       delete [] workCommand->token;     // cleans up words allocated space
     }
 }
-
+/* IncreaseCount is called at the end on loop in main
+* Keeps track of how many commands have been entered
+* 
+*/
 void ToyShell::increaseCount(){
    count++;
 }
-
+/* Tokenize is called when a command is entered
+* It converts the passed string into a cstring
+* This cstring is then broken apart into seperate words using strtok
+* The seperated command is stored as well as its size.
+*/
 void ToyShell::tokenize(string commandLine){
     
    if(!commandLine.empty()){  
@@ -80,10 +88,16 @@ void ToyShell::tokenize(string commandLine){
        workCommand->size = i;
   }
 }
-
+/* Alias called before the execution of a command
+* Each part of the command is looped through to check if any word matchs
+* the list of given aliases
+* if a match is made the actual command is substituted in for the alias
+* the allocated memory is then cleared and the command is sent to tokenize 
+* to be seperated again
+*Returns true if an alias was found to continue alias loop in main
+*Returns false if there is no aliases
+*/
 bool ToyShell::alias(){
-    
-   
    string fullCommand = "";
    if(aliasSizeX<=0)
         return false;
@@ -95,32 +109,36 @@ bool ToyShell::alias(){
          {
              //compare current word with the alias->stored in the first column of 2d array
              if(!storedA[j][0].compare(workCommand->token[i])){
+                 //grabs any part of the command before the alias
                 for(int k=0; k<i; k++)
                     fullCommand += string(workCommand->token[k])+" ";
-                cout<<fullCommand<<endl;
+                //adds the alias
                 fullCommand += storedA[j][1]+" ";
-                 cout<<fullCommand<<endl;
+                 //adds any part of the command after the alias
                 for(int l=i+1; l<workCommand->size; l++)
                     fullCommand += string(workCommand->token[l])+" ";
-                
+                 
+                //frees up each space in memory->clears out tokenize
                 for (int i=0; i<workCommand->size; i++)
-                    free(workCommand->token[i]); //frees up each space in memory
+                    free(workCommand->token[i]); 
 
                 //Clean up the array of words
                 delete [] workCommand->token;     // cleans up words allocated space
-              
+                //sends the string to be seperated and stored
                 tokenize(fullCommand); 
-                                //Problem here what if they say "dd | ff", it will only store the dd part and delete the "| ff"
+                                
                 return true;  //this may have to be outside the first for loop
              }
          }
     } 
     return false;
 }
-
+/* Execute checks the given command and calls the corresonding function
+*Returns 0 if all executed
+*Returns any other int as an error code
+*/
 int ToyShell::execute( ){
 
-    
     int status = 0;
     //just set command to make life easier
     string command = workCommand->token[0];
@@ -150,14 +168,14 @@ int ToyShell::execute( ){
         if(workCommand->size>1)
             setShellName(workCommand->token[1]);
         else
-             cout<<"Missing Parameter: history line number"<<endl;
+             cout<<"Missing Parameter: new shell name"<<endl;
     }
     //sets terminator
     else if( !command.compare("setterminator")){
         if(workCommand->size>1)
             setShellTerminator(workCommand->token[1]);
         else
-             cout<<"Missing Parameter: history line number"<<endl;
+             cout<<"Missing Parameter: new shell terminator"<<endl;
     }
 
     //lists current history -> default array of 10
@@ -170,8 +188,6 @@ int ToyShell::execute( ){
         newAlias();
             
     }
-    
-    
       //output all aliases that have been defined
     else if( !command.compare("newnames")){
             outputAlias();
@@ -222,7 +238,9 @@ string ToyShell::errorMessage(int status){
             return "";
     }
 }
-
+/* Setshellname opens default file and stores the new shell name
+*  it also sets the variable name to the new shell name
+*/
 void ToyShell::setShellName(string newName){
     
     //set class variable as new name
@@ -234,7 +252,9 @@ void ToyShell::setShellName(string newName){
     ofs.close();
     
 }
-
+/* Setshellterminator opens default file and stores the new shell terminator
+*  it also sets the variable terminator to the new shell terminator
+*/
 void ToyShell::setShellTerminator(string newTerminator){
     
     //set class variable as new terminator
@@ -246,7 +266,10 @@ void ToyShell::setShellTerminator(string newTerminator){
     ofs.close();
     
 }
-
+/* saveHistory saves each command entered
+*  The default array size is 10, if more then 10 commands are entered
+*  Then more space is dynamically allocated
+*/
 void ToyShell::saveHistory(){
     
     //dynamically add onto history array
@@ -268,10 +291,12 @@ void ToyShell::saveHistory(){
     history[historySize+1]=command;
     historySize++; 
 }
-
+/* Gethistorycommand takes the line number given 
+*  converts it into an int and then finds the corresponding 
+*  location in the history array
+*/
 void ToyShell::getHistoryCommand(string line){
     
- 
     // object from the class stringstream
     stringstream convert(line);    
     int lineNum = 0;
@@ -295,7 +320,9 @@ void ToyShell::getHistoryCommand(string line){
     //call tokenize to repeat process
     tokenize(command);   
 }
-
+/* outputHistory outputs all history saved
+*  
+*/
 void ToyShell::outputHistory(){
     if(historySize==0)
         cout<<"There is no command history";
@@ -304,7 +331,11 @@ void ToyShell::outputHistory(){
             cout<<history[i]<<endl;
     }
 }
-
+/* newAlias has three different processes
+*  Deleting an alias
+*  Replacing an alias
+*  Adding a brand new alias
+*/
 void ToyShell::newAlias(){
 
         /********check to make sure this works !!!!!!!!*/
@@ -393,7 +424,9 @@ void ToyShell::outputAlias(){
             cout<<storedA[i][0]<< " | "<<storedA[i][1]<<endl;     
     }
 }
-
+/* saveAlias opens given file and stores all aliases
+*  if file does not exist it is created
+*/
 int ToyShell::saveAlias(string fileName){
      //open shell name file and rewrite shell with new name 
     ofstream ofs;
@@ -411,11 +444,11 @@ int ToyShell::saveAlias(string fileName){
         return 1;
     }
     
-    return 0;
-    
-    
+    return 0;  
 }
-
+/* readAlias opens a given file and reads in all aliases from file
+*  it saves existing aliases and appends new aliases to the array
+*/
 int ToyShell::readAlias(string fileName){
     string newAlias="";
     string command="";
