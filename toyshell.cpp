@@ -13,11 +13,12 @@
 ToyShell::ToyShell()
 {
    int aliasLimit = 10;
+   int aliasSizeX=0;
    count = 0;
    history = new string[10];
    historySize=0;
-   historyArraySize=1;
-   int aliasSizeX=0;
+   historyArraySize=10;
+   
     
   //get shellname and terminator from file 
    fstream read;
@@ -25,15 +26,17 @@ ToyShell::ToyShell()
    if(read.is_open()){
        while(!read.eof())
            read>>name;
+       read.close();
    }
-   read.close();
+   
    fstream read2;    
   read2.open("shellTerminator.txt");
    if(read2.is_open()){
        while(!read2.eof())
            read2>>terminator;
+       read2.close();
    }   
-   read2.close();
+   
 }
 
 /* Deconstructor called at end of program
@@ -99,6 +102,7 @@ void ToyShell::tokenize(string commandLine){
 */
 bool ToyShell::alias(){
    string fullCommand = "";
+    
    if(aliasSizeX<=0)
         return false;
      //loop through entire command->each word
@@ -268,12 +272,14 @@ void ToyShell::setShellTerminator(string newTerminator){
 }
 /* saveHistory saves each command entered
 *  The default array size is 10, if more then 10 commands are entered
-*  Then more space is dynamically allocated
+*  Then array is shifted to remove first element
 */
 void ToyShell::saveHistory(){
     
     //dynamically add onto history array
     if(historySize+1>=historyArraySize){
+        
+        /*If we want to add the dynamic allocation back
         string* grownArray = new string[historyArraySize+10];
         for (int i=0; i < historyArraySize; ++i)
            grownArray[i] = history[i];
@@ -282,7 +288,12 @@ void ToyShell::saveHistory(){
         // release old memory
         delete[] history;
         // reassign history pointer to point to expanded array
-        history = grownArray;
+        history = grownArray;*/
+        for(int i=0; i<historySize; i++){
+            if(i<historySize)
+                history[i] = history[i+1];
+        }
+        historySize--;
     }
     
     string command;
