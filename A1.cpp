@@ -19,13 +19,13 @@ int main()
    getline(cin, command); 
    shell.tokenize(command);
 
-
+    alias = true;
     //check if command is alias
     //if no more aliases are found variable is set to false;
-  /*  do{ 
-        shell.alias(command, alias); 
+    do{ 
+        alias = shell.alias(); 
     }while(alias);
-  */    
+     
 
   //Save command to History
   shell.saveHistory();
@@ -45,17 +45,5 @@ int main()
   shell.increaseCount();
       
   }while(status != 10);
-  
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-
    return 0;
 }
