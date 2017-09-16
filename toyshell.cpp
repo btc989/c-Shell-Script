@@ -28,14 +28,28 @@ ToyShell::ToyShell()
            read>>name;
        read.close();
    }
+   else{
+       //create shellName.txt and set default name
+        read.open("shellName.txt", fstream::out);
+        read << "Toyshell";
+        name = "Toyshell";
+        read.close();
+    }
    
    fstream read2;    
-  read2.open("shellTerminator.txt");
+   read2.open("shellTerminator.txt");
    if(read2.is_open()){
        while(!read2.eof())
            read2>>terminator;
        read2.close();
    }   
+   else{
+       //create shellTerminator.txt and set default terminator
+       read2.open("shellTerminator.txt", fstream::out);
+       read2 << "->";
+       terminator = "->";
+       read2.close();
+   }
    
 }
 
