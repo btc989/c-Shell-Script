@@ -16,34 +16,36 @@ int main()
     
    //Prompt
    cout<< shell.name<<"["<<shell.count<<"]"<<shell.terminator;
-   getline(cin, command); 
-   shell.tokenize(command);
+   getline(cin, command);
+   if(!command.empty()){
+       shell.tokenize(command);
 
-    alias = true;
-    //check if command is alias
-    //if no more aliases are found variable is set to false;
-    do{ 
-        alias = shell.alias(); 
-    }while(alias);
-     
+        alias = true;
+        //check if command is alias
+        //if no more aliases are found variable is set to false;
+        do{ 
+            alias = shell.alias(); 
+        }while(alias);
 
-  //Save command to History
-  shell.saveHistory();
-  
-  //Execute Command
-  status = shell.execute();
-  if(status==10){
-    cout << "Stopping Shell" << endl;
-      break;
-    }
-      //if anything but 0 is returned, call function to write out error message
-      /*if(!status)
-          cout<<shell.errorMessage(status)<<endl;
-      */
 
-    //increase command count
-  shell.increaseCount();
-      
-  }while(status != 10);
+      //Save command to History
+      shell.saveHistory();
+
+      //Execute Command
+      status = shell.execute();
+      if(status==10){
+        cout << "Stopping Shell" << endl;
+          break;
+        }
+          //if anything but 0 is returned, call function to write out error message
+          /*if(!status)
+              cout<<shell.errorMessage(status)<<endl;
+          */
+
+        //increase command count
+      shell.increaseCount();
+   }
+  }while(status != 10);  
+
    return 0;
 }
