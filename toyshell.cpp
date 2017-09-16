@@ -354,7 +354,7 @@ void ToyShell::newAlias(){
         if (workCommand->size == 2){  //delete alias command, only 2 tokens were stored
             bool changed = false; //used to see if anything changes int he for loop
             for(int i = 0; i < 10; i++){  //loop for the size of the alias array
-                if (!storedA[i][0].compare( workCommand->token[1]) == 0){  //if any of the aliases match
+                if (storedA[i][0] == workCommand->token[1]){  //if any of the aliases match
                     storedA[i][0] = ""; //set the matching to NULL
                     storedA[i][1] = ""; //set the matching to NULL
                     aliasSizeX--;
@@ -377,51 +377,71 @@ void ToyShell::newAlias(){
             
             //search the array to see if the alias is already exists
             bool found = false; // used to see if alias exists
-            string command;
-            for(int i=2; i<workCommand->size; i++)
+            string command="";
+            for(int i=2; i<workCommand->size; i++){
+                  if(workCommand->size != 3)
                     command+= string(workCommand->token[i])+" ";
-                
-            
-            for(int i=0; i<aliasSizeX; i++){  //search though storedA[i] for matching alias 
-                if (storedA[i][1] == command){  //compare alias to stored
-                    found = true;  //if found change to ture
-                    break;
-                }
-                
+                 else
+                     command = string(workCommand->token[i]);
             }
             
-            /*******
-            workCommand->token[1] should be the name of the new alias, or alias to overwrite
-
-            if overwriting{
-                find the cString in storedA[i] with the same name as workCommand->token[1]
-                store the new command in storedA[i]
-            }
-            *******/
-            if (found) {  //does exist
-                //storedA[i-1] = /* the rest of the workCommand appended together */
-              
-                
-                cout << "*TEST NOT WORKING* Overwrote existing alias" << endl;
-            }
-
-
-            /********
-            if new alias{
-                check to see if the token[>1] is a valid statement...may not have to and just assume its valid
-                store the alias in a spot where there is nothing...loop through storedA[i] until a NULL spot is found
-            }
-            ********/
-            else { //doesn't exist
-                
-                if (aliasSizeX == 10){
-                    cout << "no spots open to store alias" << endl;
-                    return;
+            
+            //make all lowercase
+            for(int i=0; i<command.length(); i++)
+                command[i] = tolower(command[i]);
+            
+            string alias = workCommand->token[1];
+            //make all lowercase
+            for(int i=0; i<alias.length(); i++)
+                alias[i] = tolower(alias[i]);
+            
+            if(command == alias)
+                cout<<"Alias is same as a command, alias not created"<<endl;
+            else{
+            
+            
+                for(int i=0; i<aliasSizeX; i++){  //search though storedA[i] for matching alias 
+                    if (storedA[i][1] == command){  //compare alias to stored
+                        found = true;  //if found change to ture
+                        storedA[i][0] = workCommand->token[1];
+                        break;
+                    }
+                    if (storedA[i][1] == alias){  //compare alias to stored
+                        found = true;  //if found change to ture
+                        storedA[i][1] = command;
+                        break;
+                    }
+                    
                 }
-                aliasSizeX++;
-                storedA[aliasSizeX-1][0] = workCommand->token[1];
-                storedA[aliasSizeX-1][1] = command;
+
+                /*******
+                workCommand->token[1] should be the name of the new alias, or alias to overwrite
+
+                if overwriting{
+                    find the cString in storedA[i] with the same name as workCommand->token[1]
+                    store the new command in storedA[i]
+                }
+                *******/
+
+
+                /********
+                if new alias{
+                    check to see if the token[>1] is a valid statement...may not have to and just assume its valid
+                    store the alias in a spot where there is nothing...loop through storedA[i] until a NULL spot is found
+                }
+                ********/
+                if(!found){ //doesn't exist
+
+                    if (aliasSizeX == 10){
+                        cout << "no spots open to store alias" << endl;
+                        return;
+                    }
+                    aliasSizeX++;
+                    storedA[aliasSizeX-1][0] = workCommand->token[1];
+                    storedA[aliasSizeX-1][1] = command;
+                }
             }
+            
         }
         else {  //only 1 token was specified and nothing else
             cout << "You didn't specify any alias" << endl;
@@ -429,7 +449,7 @@ void ToyShell::newAlias(){
 }
 
 void ToyShell::outputAlias(){
-    if(aliasSizeX==0)
+    if(aliasSizeX<=0)
         cout<<"There is no declared aliases";
     else{
         //go through 2d array print out new name and the actual name
