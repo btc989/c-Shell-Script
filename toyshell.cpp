@@ -406,6 +406,7 @@ void ToyShell::newAlias(){
                         storedA[i][0] = workCommand->token[1];
                         break;
                     }
+                    //if replacing existing alias with new command
                     if (storedA[i][1] == alias){  //compare alias to stored
                         found = true;  //if found change to ture
                         storedA[i][1] = command;
