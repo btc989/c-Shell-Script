@@ -508,10 +508,20 @@ int ToyShell::readAlias(string fileName){
                 cout << "no spots open to store alias" << endl;
                return 1;
            }
+           bool found =false;
+           for(int i = 0; i < aliasSizeX; i++){  //loop for the size of the alias array
+
+                if (newAlias == storedA[i][0]){
+                    found = true;
+                    break;
+                }  //if any of the aliases match
+           }
            
-           storedA[aliasSizeX][0] = newAlias;
-           storedA[aliasSizeX][1] = command;       
-           aliasSizeX++;  
+           if(!found){
+                storedA[aliasSizeX][0] = newAlias;
+                storedA[aliasSizeX][1] = command;       
+                aliasSizeX++; 
+           }
        }
        read.close();
     }
