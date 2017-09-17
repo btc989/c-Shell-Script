@@ -9,7 +9,7 @@ int main()
    string command;
    bool alias = true;
    int status=0;  
-   
+   shell.aliasSizeX=0;
 
    //Loop until command STOP or corresponding alias is entered 
   do{
@@ -18,6 +18,7 @@ int main()
    cout<< shell.name<<"["<<shell.count<<"]"<<shell.terminator;
    getline(cin, command);
    if(!command.empty()){
+       shell.original = command;
        shell.tokenize(command);
 
         alias = true;
@@ -25,6 +26,7 @@ int main()
         //if no more aliases are found variable is set to false;
         do{ 
             alias = shell.alias(); 
+            
         }while(alias);
 
 
