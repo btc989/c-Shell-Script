@@ -164,7 +164,7 @@ int ToyShell::execute( ){
     //Check if command is to repeat previous command
     //Then fetch previous command to continue executing
      if(!command.compare("!")){
-         if(workCommand->size == 1){
+         if(workCommand->size == 2){
             getHistoryCommand(workCommand->token[1]);
             //reset command since it has changed
             command = workCommand->token[0];
