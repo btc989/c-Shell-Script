@@ -164,7 +164,7 @@ int ToyShell::execute( ){
     //Check if command is to repeat previous command
     //Then fetch previous command to continue executing
      if(!command.compare("!")){
-         if(workCommand->size = 1){
+         if(workCommand->size == 1){
             getHistoryCommand(workCommand->token[1]);
             //reset command since it has changed
             command = workCommand->token[0];
@@ -344,7 +344,6 @@ void ToyShell::getHistoryCommand(string line){
     //get requested command
     string command = history[lineNum];
     
-    cout<<""
     
     //clear out current command for replacement
     if(workCommand->size !=0){
