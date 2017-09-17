@@ -290,7 +290,10 @@ void ToyShell::setShellTerminator(string newTerminator){
 void ToyShell::saveHistory(){
     
     //dynamically add onto history array
-    if(historySize+1>=historyArraySize){
+    string command;
+    for(int i=0; i<workCommand->size; i++)
+        command += string(workCommand->token[i])+" ";
+    if(historySize>=historyArraySize){
         
         /*If we want to add the dynamic allocation back
         string* grownArray = new string[historyArraySize+10];
@@ -302,18 +305,18 @@ void ToyShell::saveHistory(){
         delete[] history;
         // reassign history pointer to point to expanded array
         history = grownArray;*/
+        
         for(int i=0; i<historySize; i++){
-            if(i<historySize)
-                history[i] = history[i+1];
+            if(i<historySize-1)
+                history[i] = history[i+1];       
         }
-        historySize--;
+        history[historySize-1]=command;
     }
+    else{
     
-    string command;
-    for(int i=0; i<workCommand->size; i++)
-        command += string(workCommand->token[i])+" ";
-    history[historySize+1]=command;
-    historySize++; 
+        history[historySize]=command;
+        historySize++; 
+    }
 }
 /* Gethistorycommand takes the line number given 
 *  converts it into an int and then finds the corresponding 
@@ -326,13 +329,18 @@ void ToyShell::getHistoryCommand(string line){
     int lineNum = 0;
     //convert string into integer
     convert >> lineNum;
-    
+    lineNum--;
     if(lineNum>= historySize){
         cout<<"Line number entered was greater then amount of history"<<endl;
         return;
     }
+    if(lineNum< 0){
+        cout<<"Line number entered was less then 0"<<endl;
+        return;
+    }
     //get requested command
     string command = history[lineNum];
+    
     //clear out current command for replacement
     if(workCommand->size !=0){
         for (int i=0; i<workCommand->size; i++)
