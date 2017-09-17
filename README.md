@@ -10,9 +10,10 @@ Functions working:
 - outputAlias
 - readAlias
 - saveAlias
-
-Functions in progress:
 - newAlias
 - execute
+
+Functions in progress:
+
 
 
