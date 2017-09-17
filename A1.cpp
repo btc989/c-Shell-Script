@@ -30,8 +30,7 @@ int main()
         }while(alias);
 
 
-      //Save command to History
-      shell.saveHistory();
+      
 
       //Execute Command
       status = shell.execute();
@@ -44,6 +43,8 @@ int main()
               cout<<shell.errorMessage(status)<<endl;
           */
 
+       //Save command to History
+      shell.saveHistory();
         //increase command count
       shell.increaseCount();
    }
