@@ -382,7 +382,8 @@ void ToyShell::newAlias(){
             if (changed){
                 cout << "Alias deleted" << endl;
             }
-        
+            if (workCommand->size == 2)  //used to break out of the function call if you call a delete without somehting to delete
+                return;
           //////  
             else{
                 //search the array to see if the alias is already exists
