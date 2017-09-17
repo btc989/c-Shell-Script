@@ -204,7 +204,6 @@ int ToyShell::execute( ){
     //new alias for command
     else if( !command.compare("newname")){
         newAlias();
-            
     }
       //output all aliases that have been defined
     else if( !command.compare("newnames")){
@@ -361,34 +360,34 @@ void ToyShell::outputHistory(){
 *  Replacing an alias
 *  Adding a brand new alias
 */
-void ToyShell::newAlias(){
+void ToyShell::newAlias(){          
 
-        /********check to make sure this works !!!!!!!!*/
-        
-        if (workCommand->size == 2){  //delete alias command, only 2 tokens were stored
-            bool changed = false; //used to see if anything changes int he for loop
+        if(workCommand->size >= 2){  //more than 2 tokens
+
+            //////////
+            bool changed = false; //used to see if anything changes in the for loop
+            string temp = "";
+            
+            for (int i = 1; i < workCommand->size - 1; i++){  //create a string out of workCommand
+                temp += string(workCommand->token[i]) + " ";
+            }
+            temp += string(workCommand->token[workCommand->size - 1]);
+            
+            cout << "this is temp: " << temp << endl;
             for(int i = 0; i < 10; i++){  //loop for the size of the alias array
-                if (storedA[i][0] == workCommand->token[1]){  //if any of the aliases match
+                if (storedA[i][1] == temp){  //if any of the aliases match
                     storedA[i][0] = ""; //set the matching to NULL
                     storedA[i][1] = ""; //set the matching to NULL
                     aliasSizeX--;
                     changed = true; //set the changed to true
                 }
             }
-            if (!changed){  //we didn't change anyting in the for loop
-                cout << "No aliases were found with that name" << endl; //prompt user there is nothing for that name
-            }
-            else {
+            if (changed){
                 cout << "Alias deleted" << endl;
             }
-        }
-
-        /**************/
         
-        else if(workCommand->size > 2){  //more than 2 tokens
-            
-            
-            
+          //////  
+        else{
             //search the array to see if the alias is already exists
             bool found = false; // used to see if alias exists
             string command="";
@@ -409,11 +408,10 @@ void ToyShell::newAlias(){
             for(int i=0; i<alias.length(); i++)
                 alias[i] = tolower(alias[i]);
             
-            if(command == alias)
+            if(command == alias) //if alias is the same as the command
                 cout<<"Alias is same as a command, alias not created"<<endl;
             else{
-            
-            
+
                 for(int i=0; i<aliasSizeX; i++){  //search though storedA[i] for matching alias 
                     if (storedA[i][1] == command){  //compare alias to stored
                         found = true;  //if found change to ture
@@ -458,6 +456,7 @@ void ToyShell::newAlias(){
             }
             
         }
+    }
         else {  //only 1 token was specified and nothing else
             cout << "You didn't specify any alias" << endl;
         }
@@ -465,7 +464,7 @@ void ToyShell::newAlias(){
 
 void ToyShell::outputAlias(){
     if(aliasSizeX<=0)
-        cout<<"There is no declared aliases";
+        cout<<"There is no declared aliases" << endl;
     else{
         //go through 2d array print out new name and the actual name
         for(int i=0; i<aliasSizeX; i++)
