@@ -24,14 +24,16 @@ class ToyShell
     string errorMessage(int status);
     
     
-    
+    int aliasLimit;
+    int aliasSizeX;
    
+    string original;
     string name;
     int count;
     string terminator;
     command * workCommand;
-    int aliasLimit;
-    int aliasSizeX;
+     
+    
     
     string storedA[10][2];
     string * history;
