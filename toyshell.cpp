@@ -165,9 +165,12 @@ int ToyShell::execute( ){
     //Then fetch previous command to continue executing
      if(!command.compare("!")){
          if(workCommand->size == 2){
-            getHistoryCommand(workCommand->token[1]);
+            int test = getHistoryCommand(workCommand->token[1]);
             //reset command since it has changed
-            command = workCommand->token[0];
+            if(test == 1)
+                return status;
+             
+            command = workCommand->token[0]; 
          }
          else{
              cout<<"Missing Parameter: history line number"<<endl;
@@ -325,7 +328,7 @@ void ToyShell::saveHistory(){
 *  converts it into an int and then finds the corresponding 
 *  location in the history array
 */
-void ToyShell::getHistoryCommand(string line){
+int ToyShell::getHistoryCommand(string line){
     
     // object from the class stringstream
     stringstream convert(line);    
@@ -335,11 +338,11 @@ void ToyShell::getHistoryCommand(string line){
     lineNum--;
     if(lineNum>= historySize){
         cout<<"Line number entered was greater then amount of history"<<endl;
-        return;
+        return 1;
     }
     if(lineNum< 0){
         cout<<"Line number entered was less then 0"<<endl;
-        return;
+        return 1;
     }
     //get requested command
     string command = history[lineNum];
@@ -355,7 +358,8 @@ void ToyShell::getHistoryCommand(string line){
     }
     original=command;
     //call tokenize to repeat process
-    tokenize(command);   
+    tokenize(command);
+    return 0;
 }
 /* outputHistory outputs all history saved
 *  
