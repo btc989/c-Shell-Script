@@ -367,15 +367,12 @@ void ToyShell::newAlias(){
             //////////
             bool changed = false; //used to see if anything changes in the for loop
             string temp = "";
-            
-            for (int i = 1; i < workCommand->size - 1; i++){  //create a string out of workCommand
+            for (int i = 1; i < workCommand->size; i++){  //create a string out of workCommand
                 temp += string(workCommand->token[i]) + " ";
             }
-            temp += string(workCommand->token[workCommand->size - 1]);
             
-            cout << "this is temp: " << temp << endl;
             for(int i = 0; i < 10; i++){  //loop for the size of the alias array
-                if (storedA[i][1] == temp){  //if any of the aliases match
+                if (temp == storedA[i][1]){  //if any of the aliases match
                     storedA[i][0] = ""; //set the matching to NULL
                     storedA[i][1] = ""; //set the matching to NULL
                     aliasSizeX--;
@@ -392,12 +389,11 @@ void ToyShell::newAlias(){
                 bool found = false; // used to see if alias exists
                 string command="";
                 for(int i=2; i<workCommand->size; i++){
-                        if(workCommand->size != 3)
+                    if(workCommand->size != 3)
                         command+= string(workCommand->token[i])+" ";
                     else
-                        command = string(workCommand->token[i]);
+                        command = string(workCommand->token[i])+" ";
                 }
-            
             
                 //make all lowercase
                 for(int i=0; i<command.length(); i++)
