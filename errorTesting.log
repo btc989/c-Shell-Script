@@ -1,0 +1,35 @@
+Script started on Sun Sep 17 11:50:37 2017
+Script on a049403[1]% ./toyshell
+toyshell[0]->setshellname
+Missing Parameter: new shell name
+toyshell[1]->!
+Missing Parameter: history line number
+sh: -c: line 0: syntax error near unexpected token `newline'
+sh: -c: line 0: `! '
+toyshell[2]->setshellterminator
+sh: setshellterminator: command not found
+toyshell[3]->setterminator
+Missing Parameter: new shell terminator
+toyshell[4]->newnames
+There is no declared aliases
+toyshell[5]->newname
+You didn't specify any alias
+toyshell[6]->! -1
+Line number entered was less then 0
+sh: -1: command not found
+toyshell[7]->readnewnames 
+Missing Parameter: file name
+toyshell[8]->readnewnames bla
+Error: Could not open file
+toyshell[9]->! 20
+Line number entered was greater then amount of history
+sh: 20: command not found
+toyshell[10]->
+toyshell[10]->
+toyshell[10]->
+toyshell[10]->stop
+Stopping Shell
+Script on a049403[2]% exit
+exit
+
+Script done on Sun Sep 17 11:54:35 2017

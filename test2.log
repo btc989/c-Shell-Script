@@ -1,0 +1,303 @@
+Script started on Sun Sep 17 11:40:21 2017
+Script on a049403[1]% ./toyshell
+toyshell[0]->ls -l
+total 116
+-rw------- 1 clary20b csugrd  1177 Sep 17  2017 A1.cpp
+-rw------- 1 clary20b csugrd  5160 Sep 17 11:25 A1.o
+drwx------ 3 clary20b csugrd  4096 Sep  9 12:16 labs
+-rw------- 1 clary20b csugrd     8 Sep 17 11:30 shellName.txt
+-rw------- 1 clary20b csugrd     2 Sep 17 11:31 shellTerminator.txt
+-rw------- 1 clary20b csugrd     0 Sep 17 11:40 test2.log
+-rwx------ 1 clary20b csugrd 32395 Sep 17 11:39 toyshell
+-rw------- 1 clary20b csugrd 16722 Sep 17  2017 toyshell.cpp
+-rw------- 1 clary20b csugrd   949 Sep 17 10:43 toyshell.h
+-rw------- 1 clary20b csugrd 33840 Sep 17 11:39 toyshell.o
+toyshell[1]->history
+ls -l 
+toyshell[2]->! 1
+total 116
+-rw------- 1 clary20b csugrd  1177 Sep 17  2017 A1.cpp
+-rw------- 1 clary20b csugrd  5160 Sep 17 11:25 A1.o
+drwx------ 3 clary20b csugrd  4096 Sep  9 12:16 labs
+-rw------- 1 clary20b csugrd     8 Sep 17 11:30 shellName.txt
+-rw------- 1 clary20b csugrd     2 Sep 17 11:31 shellTerminator.txt
+-rw------- 1 clary20b csugrd     0 Sep 17 11:40 test2.log
+-rwx------ 1 clary20b csugrd 32395 Sep 17 11:39 toyshell
+-rw------- 1 clary20b csugrd 16722 Sep 17  2017 toyshell.cpp
+-rw------- 1 clary20b csugrd   949 Sep 17 10:43 toyshell.h
+-rw------- 1 clary20b csugrd 33840 Sep 17 11:39 toyshell.o
+toyshell[3]->setshellname tsh
+tsh[4]->who
+clary20b pts/0        Sep 17 09:40 (142.3.200.201)
+gardinmi pts/1        Sep 14 18:32 (142.3.200.201)
+pasion3d pts/2        Sep 16 13:46 (142.3.200.201)
+clary20b pts/3        Sep 17 11:40
+tsh[5]->history
+ls -l 
+history 
+ls -l 
+setshellname tsh 
+who 
+tsh[6]->! 2
+ls -l 
+history 
+ls -l 
+setshellname tsh 
+who 
+history 
+tsh[7]->! 3
+total 116
+-rw------- 1 clary20b csugrd  1177 Sep 17  2017 A1.cpp
+-rw------- 1 clary20b csugrd  5160 Sep 17 11:25 A1.o
+drwx------ 3 clary20b csugrd  4096 Sep  9 12:16 labs
+-rw------- 1 clary20b csugrd     3 Sep 17 11:40 shellName.txt
+-rw------- 1 clary20b csugrd     2 Sep 17 11:31 shellTerminator.txt
+-rw------- 1 clary20b csugrd     0 Sep 17 11:40 test2.log
+-rwx------ 1 clary20b csugrd 32395 Sep 17 11:39 toyshell
+-rw------- 1 clary20b csugrd 16722 Sep 17  2017 toyshell.cpp
+-rw------- 1 clary20b csugrd   949 Sep 17 10:43 toyshell.h
+-rw------- 1 clary20b csugrd 33840 Sep 17 11:39 toyshell.o
+tsh[8]->! 5
+clary20b pts/0        Sep 17 09:40 (142.3.200.201)
+gardinmi pts/1        Sep 14 18:32 (142.3.200.201)
+pasion3d pts/2        Sep 16 13:46 (142.3.200.201)
+clary20b pts/3        Sep 17 11:40
+tsh[9]->! 20
+Line number entered was greater then amount of history
+sh: 20: command not found
+tsh[10]->newname mycopy cp
+tsh[11]->
+tsh[11]->newname dog cat
+tsh[12]->setterminator :
+tsh[13]:savenewnames myaliases
+tsh[14]:newnames
+mycopy | cp
+dog | cat
+tsh[15]:dog myaliases
+mycopy
+cp
+dog
+cat
+tsh[16]:pico myaliases
+[1;1H[J[7m   UW PICO(tm) 4.10              New Buffer                                  [27m[44;1H[K[45;1H[K[44;1H[7m^[27m[7mG[27m Get Help [7m^[27m[7mO[27m WriteOut [7m^[27m[7mR[27m Read File[7m^[27m[7mY[27m Prev Pg  [7m^[27m[7mK[27m Cut Text [7m^[27m[7mC[27m Cur Pos  [K[45;1H[7m^[27m[7mX[27m Exit     [7m^[27m[7mJ[27m Justify  [7m^[27m[7mW[27m Where is [7m^[27m[7mV[27m Next Pg  [7m^[27m[7mU[27m UnCut Tex[7m^[27m[7mT[27m To Spell [K[3;1H[43;1H[K[43;31H[7m[ Reading file ][27m[43;1H[K[43;31H[7m[ Read 4 lines ][27m[1;34H[7mFile: myaliases[27m[3;1Hmycopy[4;1Hcp[5;1Hdog[6;1Hcat[3;1H[44;1H[K[45;1H[Ktsh[17]:mycopy /etc/motd myfile
+tsh[18]:history
+who 
+! 20 
+newname mycopy cp 
+newname dog cat 
+setterminator : 
+savenewnames myaliases 
+newnames 
+cat myaliases 
+pico myaliases 
+cp /etc/motd myfile 
+tsh[19]:newname history history
+Alias is same as a command, alias not created
+tsh[20]:! 1
+tsh[21]:dog myfile
+
+========================================================================
+
+        I F   Y O U   F O R G E T   Y O U R   P A S S W O R D
+        =====================================================
+
+   - If you know your UofR/Hyperion/Novell user id and password
+     you can change your CS password at:
+
+       https://www.cs.uregina.ca/Password
+
+     If you need assistance with your UofR user id and password
+     go to the Computing Serices Help Desk in ED137.
+
+   - For assistance with your CS user id and password, and for
+     all other problems with your CS account, go to CL119 when a
+     Lab Instructor is holding office hours.
+
+     Bring Photo ID and proof of your Student Number.  Your UofR
+     Student ID provides both.
+
+     Not everyone who holds office hours in CL119 is a Lab Instructor.
+     Check the schedule by the door or at:
+
+       http://www.cs.uregina.ca/Dept/OfficeHours/
+          
+========================================================================
+
+tsh[22]:cat myfile
+
+========================================================================
+
+        I F   Y O U   F O R G E T   Y O U R   P A S S W O R D
+        =====================================================
+
+   - If you know your UofR/Hyperion/Novell user id and password
+     you can change your CS password at:
+
+       https://www.cs.uregina.ca/Password
+
+     If you need assistance with your UofR user id and password
+     go to the Computing Serices Help Desk in ED137.
+
+   - For assistance with your CS user id and password, and for
+     all other problems with your CS account, go to CL119 when a
+     Lab Instructor is holding office hours.
+
+     Bring Photo ID and proof of your Student Number.  Your UofR
+     Student ID provides both.
+
+     Not everyone who holds office hours in CL119 is a Lab Instructor.
+     Check the schedule by the door or at:
+
+       http://www.cs.uregina.ca/Dept/OfficeHours/
+          
+========================================================================
+
+tsh[23]:history
+savenewnames myaliases 
+newnames 
+cat myaliases 
+pico myaliases 
+cp /etc/motd myfile 
+history 
+newname history history 
+! 1 
+cat myfile 
+cat myfile 
+tsh[24]:newname h history
+tsh[25]:newname mycopy rm
+tsh[26]:ls
+A1.cpp	myaliases      shellTerminator.txt  toyshell.cpp
+A1.o	myfile	       test2.log	    toyshell.h
+labs	shellName.txt  toyshell		    toyshell.o
+tsh[27]:mycopy myfile
+tsh[28]:ls
+A1.cpp	labs	   shellName.txt	test2.log  toyshell.cpp  toyshell.o
+A1.o	myaliases  shellTerminator.txt	toyshell   toyshell.h
+tsh[29]:savenewnames myaliases
+tsh[30]:history
+! 1 
+cat myfile 
+cat myfile 
+history 
+newname h history 
+newname mycopy rm 
+ls 
+rm myfile 
+ls 
+savenewnames myaliases 
+tsh[31]:dog myaliases
+mycopy
+rm
+dog
+cat
+1
+
+h
+history
+tsh[32]:setshellname toyshell
+toyshell[33]:newnames
+mycopy | rm
+dog | cat
+1 | 
+h | history
+toyshell[34]:newname mycopy cp
+toyshell[35]:setterminator ->
+toyshell[36]->readnewnames myaliases
+toyshell[37]->newnames
+mycopy | cp
+dog | cat
+1 | 
+h | history
+toyshell[38]->dog
+a
+a
+b
+b
+c
+c
+toyshell[39]->history
+savenewnames myaliases 
+history 
+cat myaliases 
+setshellname toyshell 
+newnames 
+newname mycopy cp 
+setterminator -> 
+readnewnames myaliases 
+newnames 
+cat 
+toyshell[40]->! 2
+mycopy
+rm
+dog
+cat
+1
+
+h
+history
+toyshell[41]->mycopy yaliases
+cp: missing destination file operand after `yaliases'
+Try `cp --help' for more information.
+toyshell[42]->history
+setshellname toyshell 
+newnames 
+newname mycopy cp 
+setterminator -> 
+readnewnames myaliases 
+newnames 
+cat 
+history 
+cat myaliases 
+cp yaliases 
+toyshell[43]->! 8
+mycopy
+rm
+dog
+cat
+1
+
+h
+history
+toyshell[44]->history
+newname mycopy cp 
+setterminator -> 
+readnewnames myaliases 
+newnames 
+cat 
+history 
+cat myaliases 
+cp yaliases 
+history 
+cat myaliases 
+toyshell[45]->newname aa ls -l
+toyshell[46]->newname bb grep toyshell
+toyshell[47]->newname cc grep .cpp
+toyshell[48]->newname dd aa | bb
+toyshell[49]->aa
+total 120
+-rw------- 1 clary20b csugrd  1177 Sep 17  2017 A1.cpp
+-rw------- 1 clary20b csugrd  5160 Sep 17 11:25 A1.o
+drwx------ 3 clary20b csugrd  4096 Sep  9 12:16 labs
+-rw------- 1 clary20b csugrd    31 Sep 17 11:44 myaliases
+-rw------- 1 clary20b csugrd     8 Sep 17 11:44 shellName.txt
+-rw------- 1 clary20b csugrd     2 Sep 17 11:45 shellTerminator.txt
+-rw------- 1 clary20b csugrd     0 Sep 17 11:40 test2.log
+-rwx------ 1 clary20b csugrd 32395 Sep 17 11:39 toyshell
+-rw------- 1 clary20b csugrd 16722 Sep 17  2017 toyshell.cpp
+-rw------- 1 clary20b csugrd   949 Sep 17 10:43 toyshell.h
+-rw------- 1 clary20b csugrd 33840 Sep 17 11:39 toyshell.o
+toyshell[50]->aa | bb
+-rwx------ 1 clary20b csugrd 32395 Sep 17 11:39 toyshell
+-rw------- 1 clary20b csugrd 16722 Sep 17  2017 toyshell.cpp
+-rw------- 1 clary20b csugrd   949 Sep 17 10:43 toyshell.h
+-rw------- 1 clary20b csugrd 33840 Sep 17 11:39 toyshell.o
+toyshell[51]->aa | bb | cc
+-rw------- 1 clary20b csugrd 16722 Sep 17  2017 toyshell.cpp
+toyshell[52]->dd | cc
+-rw------- 1 clary20b csugrd 16722 Sep 17  2017 toyshell.cpp
+toyshell[53]->stop
+Stopping Shell
+Script on a049403[2]% exit
+exit
+
+Script done on Sun Sep 17 11:48:28 2017
