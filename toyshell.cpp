@@ -353,6 +353,7 @@ void ToyShell::getHistoryCommand(string line){
       //Clean up the array of words
       delete [] workCommand->token;     // cleans up words allocated space
     }
+    original=command;
     //call tokenize to repeat process
     tokenize(command);   
 }
