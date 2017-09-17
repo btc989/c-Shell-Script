@@ -18,7 +18,7 @@ class ToyShell
       
     void tokenize( string command);
     bool alias();
-    void getHistoryCommand(string line);
+    int getHistoryCommand(string line);
     void saveHistory();
     int execute();
     string errorMessage(int status);
