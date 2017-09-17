@@ -116,7 +116,7 @@ void ToyShell::tokenize(string commandLine){
 */
 bool ToyShell::alias(){
    string fullCommand = "";
-    
+
    if(aliasSizeX<=0)
         return false;
      //loop through entire command->each word
@@ -362,101 +362,80 @@ void ToyShell::outputHistory(){
 */
 void ToyShell::newAlias(){          
 
-        if(workCommand->size >= 2){  //more than 2 tokens
-
-            //////////
-            bool changed = false; //used to see if anything changes in the for loop
-            string temp = "";
-            for (int i = 1; i < workCommand->size; i++){  //create a string out of workCommand
-                temp += string(workCommand->token[i]) + " ";
-            }
+    if(workCommand->size >= 2){  //more than 2 tokens
             
-            for(int i = 0; i < 10; i++){  //loop for the size of the alias array
-                if (temp == storedA[i][1]){  //if any of the aliases match
+        //frees up each space in memory->clears out tokenize
+        for (int i=0; i<workCommand->size; i++)
+            free(workCommand->token[i]); 
+
+        //Clean up the array of words
+        delete [] workCommand->token;     // cleans up words allocated space
+        //sends the string to be seperated and stored
+        tokenize(original);
+            
+        bool changed = false; //used to see if anything changes in the for loop
+        bool found = false;
+        string temp = "";
+        if(workCommand->size>2){
+            for (int i = 2; i < workCommand->size; i++){  //create a string out of workCommand
+
+                if(workCommand->size != i+1)
+                    temp+= string(workCommand->token[i])+" ";
+                else
+                    temp += string(workCommand->token[i]);
+            }
+        }
+            
+        //make all lowercase
+        for(int i=0; i<temp.length(); i++)
+            temp[i] = tolower(temp[i]);
+            
+        string alias = workCommand->token[1];
+        //make all lowercase
+        for(int i=0; i<alias.length(); i++)
+            alias[i] = tolower(alias[i]);
+             
+            
+        if(temp == alias) //if alias is the same as the command
+                cout<<"Alias is same as a command, alias not created"<<endl;
+        else{
+            
+            for(int i = 0; i < aliasSizeX; i++){  //loop for the size of the alias array
+                if (alias == storedA[i][0] && workCommand->size == 2){  //if any of the aliases match
                     storedA[i][0] = ""; //set the matching to NULL
                     storedA[i][1] = ""; //set the matching to NULL
                     aliasSizeX--;
                     changed = true; //set the changed to true
                 }
-            }
-            if (changed){
-                cout << "Alias deleted" << endl;
-            }
-            if (workCommand->size == 2)  //used to break out of the function call if you call a delete without somehting to delete
-                return;
-          //////  
-            else{
-                //search the array to see if the alias is already exists
-                bool found = false; // used to see if alias exists
-                string command="";
-                for(int i=2; i<workCommand->size; i++){
-                    if(workCommand->size != 3)
-                        command+= string(workCommand->token[i])+" ";
-                    else
-                        command = string(workCommand->token[i])+" ";
-                }
-            
-                //make all lowercase
-                for(int i=0; i<command.length(); i++)
-                    command[i] = tolower(command[i]);
-            
-                string alias = workCommand->token[1];
-                //make all lowercase
-                for(int i=0; i<alias.length(); i++)
-                    alias[i] = tolower(alias[i]);
-            
-                if(command == alias) //if alias is the same as the command
-                    cout<<"Alias is same as a command, alias not created"<<endl;
-                else{
-
-                    for(int i=0; i<aliasSizeX; i++){  //search though storedA[i] for matching alias 
-                        if (storedA[i][1] == command){  //compare alias to stored
+                
+                if (storedA[i][1] == temp && workCommand->size > 2){  //compare alias to stored
                             found = true;  //if found change to ture
                             storedA[i][0] = workCommand->token[1];
                             break;
-                        }
-                        //if replacing existing alias with new command
-                        if (storedA[i][1] == alias){  //compare alias to stored
+                }
+                //if replacing existing alias with new command
+                if (storedA[i][0] == alias && workCommand->size > 2){  //compare alias to stored
                             found = true;  //if found change to ture
-                            storedA[i][1] = command;
+                            storedA[i][1] = temp;
                             break;
-                        }
-                    
                 }
-
-                /*******
-                workCommand->token[1] should be the name of the new alias, or alias to overwrite
-
-                if overwriting{
-                    find the cString in storedA[i] with the same name as workCommand->token[1]
-                    store the new command in storedA[i]
-                }
-                *******/
-
-
-                /********
-                if new alias{
-                    check to see if the token[>1] is a valid statement...may not have to and just assume its valid
-                    store the alias in a spot where there is nothing...loop through storedA[i] until a NULL spot is found
-                }
-                ********/
-                    if(!found){ //doesn't exist
-
-                        if (aliasSizeX == 10){
-                            cout << "no spots open to store alias" << endl;
-                            return;
-                        }
-                        aliasSizeX++;
-                        storedA[aliasSizeX-1][0] = workCommand->token[1];
-                        storedA[aliasSizeX-1][1] = command;
-                    }
-                }
-            
             }
-        }
-        else {  //only 1 token was specified and nothing else
+            
+            if(!found){ //doesn't exist
+
+                if (aliasSizeX == 10){
+                    cout << "no spots open to store alias" << endl;
+                    return;
+                }
+                aliasSizeX++;
+                storedA[aliasSizeX-1][0] = workCommand->token[1];
+                storedA[aliasSizeX-1][1] = temp;
+            }
+        }     
+    }
+    else {  //only 1 token was specified and nothing else
             cout << "You didn't specify any alias" << endl;
-        }
+    }
 }
 
 void ToyShell::outputAlias(){
