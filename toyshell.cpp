@@ -401,23 +401,31 @@ void ToyShell::newAlias(){
         else{
             
             for(int i = 0; i < aliasSizeX; i++){  //loop for the size of the alias array
+
                 if (alias == storedA[i][0] && workCommand->size == 2){  //if any of the aliases match
-                    storedA[i][0] = ""; //set the matching to NULL
-                    storedA[i][1] = ""; //set the matching to NULL
+                    
+                    if(aliasSizeX > 1){
+                        storedA[i][0] = storedA[aliasSizeX-1][0]; //set the matching to NULL
+                        storedA[i][1] = storedA[aliasSizeX-1][1]; //set the matching to NULL
+                    }
+                    else{
+                        storedA[i][0] = ""; //set the matching to NULL
+                        storedA[i][1] = ""; //set the matching to NULL
+                    }
+                        
                     aliasSizeX--;
                     changed = true; //set the changed to true
+                    return;
                 }
                 
                 if (storedA[i][1] == temp && workCommand->size > 2){  //compare alias to stored
-                            found = true;  //if found change to ture
-                            storedA[i][0] = workCommand->token[1];
-                            break;
+                    storedA[i][0] = alias;
+                    return;
                 }
                 //if replacing existing alias with new command
                 if (storedA[i][0] == alias && workCommand->size > 2){  //compare alias to stored
-                            found = true;  //if found change to ture
-                            storedA[i][1] = temp;
-                            break;
+                    storedA[i][1] = temp;
+                    return;
                 }
             }
             
