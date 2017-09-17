@@ -505,8 +505,7 @@ int ToyShell::readAlias(string fileName){
            getline(read, newAlias);
            //incase file not formated correctly
            if(read.eof()){
-               cout<<"Error:given file is not formated properly. Odd number of lines"<<endl;
-               return 1;
+               return 0;
            }
             //get command for alias    
            getline(read, command);
