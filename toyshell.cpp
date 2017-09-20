@@ -103,6 +103,11 @@ void ToyShell::tokenize(string commandLine){
        } while(test!=NULL); 
 
        workCommand->size = i;
+       
+       
+       
+       
+       
   }
 }
 /* Alias called before the execution of a command
@@ -116,9 +121,12 @@ void ToyShell::tokenize(string commandLine){
 */
 bool ToyShell::alias(){
    string fullCommand = "";
-
+   string command = workCommand->token[0];
    if(aliasSizeX<=0)
         return false;
+    if(!command.compare("newname")|| !command.compare("NEWNAME"))
+        return false;
+    
      //loop through entire command->each word
     for(int i=0; i<workCommand->size; i++) 
     {
@@ -356,7 +364,7 @@ int ToyShell::getHistoryCommand(string line){
       //Clean up the array of words
       delete [] workCommand->token;     // cleans up words allocated space
     }
-    original=command;
+    //original=command;
     //call tokenize to repeat process
     tokenize(command);
     return 0;
@@ -382,13 +390,13 @@ void ToyShell::newAlias(){
     if(workCommand->size >= 2){  //more than 2 tokens
             
         //frees up each space in memory->clears out tokenize
-        for (int i=0; i<workCommand->size; i++)
+     /*   for (int i=0; i<workCommand->size; i++)
             free(workCommand->token[i]); 
 
         //Clean up the array of words
         delete [] workCommand->token;     // cleans up words allocated space
         //sends the string to be seperated and stored
-        tokenize(original);
+        tokenize(original);*/
             
         bool changed = false; //used to see if anything changes in the for loop
         bool found = false;
