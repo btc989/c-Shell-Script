@@ -27,7 +27,7 @@ class ToyShell
     int aliasLimit;
     int aliasSizeX;
    
-    string original;
+    //string original;
     string name;
     int count;
     string terminator;
