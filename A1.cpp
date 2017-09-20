@@ -10,15 +10,27 @@ int main()
    bool alias = true;
    int status=0;  
    shell.aliasSizeX=0;
-
+   int found =0;
    //Loop until command STOP or corresponding alias is entered 
   do{
     
    //Prompt
    cout<< shell.name<<"["<<shell.count<<"]"<<shell.terminator;
    getline(cin, command);
+      
+   //find if any comments are in string
+    found = command.find('&');
+    if(found >=0){ //omit any text after comment
+        if(found==0 )
+            command="";
+        else
+            command = command.substr(0,found);
+    }  
+      
    if(!command.empty()){
-       shell.original = command;
+       
+       
+       //shell.original = command;
        shell.tokenize(command);
 
         alias = true;
