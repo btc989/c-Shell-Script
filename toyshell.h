@@ -17,12 +17,14 @@ class ToyShell
     ~ToyShell();
       
     void tokenize( string command);
+    void tokenizePath( char* command);
     bool alias();
     int getHistoryCommand(string line);
     void saveHistory();
     int execute();
     string errorMessage(int status);
-    
+    int unixCommand();
+    void unixExecution();
     
     int aliasLimit;
     int aliasSizeX;
@@ -32,6 +34,7 @@ class ToyShell
     int count;
     string terminator;
     command * workCommand;
+    command * path;
      
     
     
