@@ -5,6 +5,8 @@
 #include <sstream>
 #include <cstring>
 #include <cstdlib>
+#include <unistd.h>
+#include <sys/wait.h>
 
 /* Constructor called on inital creation of toyshell object
 * Opens two files to get name and terminator of shell
@@ -102,13 +104,40 @@ void ToyShell::tokenize(string commandLine){
         workCommand->token[i]=strdup(test);  
        } while(test!=NULL); 
 
-       workCommand->size = i;
-       
-       
-       
-       
-       
+       workCommand->size = i;    
   }
+}
+/* TokenizePath is called when a unix command needs to be executed
+* It converts the passed string into a cstring
+* This cstring is then broken apart into seperate words using strtok
+* The seperated command is stored as well as its size.
+*/
+void ToyShell::tokenizePath(char* commandLine){
+    
+ 
+       
+       path = new command; 
+
+       char delim[]=":";
+       char *workCommandLine = new char [strlen(commandLine) + 1];  //c-string use$
+       path->token= new char*[strlen(commandLine)];
+       strcpy(workCommandLine, commandLine);
+       int i=0; //initilize the counter
+
+       path->token[i] = strdup(strtok(workCommandLine, delim));
+
+       char *test; 
+       do
+       {
+        i++;
+        test=strtok(NULL, delim);
+        if(test==NULL)
+            break;
+        path->token[i]=strdup(test);  
+       } while(test!=NULL); 
+
+       path->size = i;    
+  
 }
 /* Alias called before the execution of a command
 * Each part of the command is looped through to check if any word matchs
@@ -242,14 +271,19 @@ int ToyShell::execute( ){
 
       //if not a shell command try and execute as UNIX Command
     else{
-        string fullCommand;
+        
+        status = unixCommand();
+        
+            
+        
+       /* string fullCommand;
          for(int i=0; i<workCommand->size; i++)
              fullCommand += string(workCommand->token[i])+" ";
          int returnCode = system(fullCommand.c_str());
         
          //if not UNIX Command Return error
          if(!returnCode)
-            return 1;
+            return 1;*/
     }
     return status;
 
@@ -546,6 +580,109 @@ int ToyShell::readAlias(string fileName){
         cout<<"Error: Could not open file"<<endl;
         return 1;
     }
-    
     return 0;
 }
+int ToyShell::unixCommand(){
+    
+    pid_t childPid = 0;
+    pid_t waitPid;
+    int status;
+
+    childPid = fork ();
+    if (childPid == -1)
+    {
+        fprintf (stderr, "Process %d failed to fork!\n", getpid ());
+        return 1 ;
+    }
+    //in child process
+    if (childPid == 0)
+    {
+        unixExecution();
+        //return 10 to stop shell if error has occurred with execve
+        return 10;
+    }
+    //in parent
+    else
+    {
+        //if process is  supposed to wait
+        string command = workCommand->token[workCommand->size-1];
+        
+        if(command.compare("-")){
+            do
+            {
+                waitPid = wait (&status);  
+            } while (waitPid != childPid);      
+        }
+        else{
+            //store not waited for job
+        }
+        //otherwise continue
+        return 0;
+    }   
+}
+
+void ToyShell::unixExecution(){
+  //first get full path 
+  char* pPath;
+  pPath = getenv ("PATH");
+  bool found = false;
+  string spath="";
+  string command="";
+  if (pPath!=NULL){
+  
+      //then seperate and tokenize the path by :
+      tokenizePath(pPath);
+      
+      //loop through each name in path/
+      for(int i=0; i<path->size; i++){
+          
+        //append command to the end
+        spath= path->token[i];
+        spath +="/";
+        spath +=workCommand->token[0];
+      
+      //check if file is there 
+      //and if it is executable
+       if((access(spath.c_str(), X_OK))==0){
+           found=true;
+           break;
+       }   
+      }
+      
+      if(found){
+          //not sure what this should be set to
+           char *envp[] = { NULL };
+           
+          //make sure last character is null
+          //there is extra space here since in 
+          //tokenize workCommand allocates 
+          //enough space for all the characters
+          workCommand->token[workCommand->size]= '\0';
+          
+          //then use excev
+           execve(spath.c_str(),workCommand->token, envp);
+      }
+      
+      else{
+          cout<<"Error: Command entered not recongized"<<endl;
+      }
+        //frees up each space in memory->clears out tokenize
+        for (int i=0; i<path->size; i++)
+                    free(path->token[i]); 
+
+        //Clean up the array of words
+        delete [] path->token;
+  }
+}
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
