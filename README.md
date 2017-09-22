@@ -12,8 +12,9 @@ Functions working:
 - saveAlias
 - newAlias
 - execute
-
+- backjobs
+-Unix Command re-implementation
 Functions in progress:
-Unix Command re-implementation
+-Front Jobs
 
 
