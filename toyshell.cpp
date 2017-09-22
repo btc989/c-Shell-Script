@@ -274,6 +274,10 @@ int ToyShell::execute( ){
              cout<<"Missing Parameter: file name"<<endl;
     } 
 
+    //output all background process
+    else if( !command.compare("backjobs")){
+        backJobs();   
+    } 
       //if not a shell command try and execute as UNIX Command
     else{
         
@@ -711,18 +715,14 @@ void ToyShell::storeBackJob(int processId){
     jobs[jobSize].jobId = jobStored;
     jobs[jobSize].processId = processId;
     jobs[jobSize].line = command;
-    jobs[jobSize].status = 0 ;
     jobs[jobSize].timeInfo = localtime (&rawtime); 
     
     
     cout<<"Job has been added to background process"<<endl;
     
-    cout<<"Status   "<<"Job Id  "<<"Process Id  "<<"Command  "<<"Time Created   "<<endl;
+    cout<<"Job Id  "<<"Process Id  "<<"Command  "<<"Time Created   "<<endl;
     
-     if(jobs[jobSize].status==0)
-        cout<<"Running ";
-    else
-        cout<<"Done ";
+     
      
  cout<<jobs[jobSize].jobId<<"   "<<jobs[jobSize].processId<<"   "<< jobs[jobSize].line<<"  "<<asctime(jobs[jobSize].timeInfo)<<"   "<<endl;
     
@@ -730,8 +730,51 @@ void ToyShell::storeBackJob(int processId){
     jobStored++;
     
 }
+
+void ToyShell::backJobs(){
     
+    pid_t waitPid;
+    pid_t pid;
+    int status;
     
+    if(jobSize==0){
+        cout<<"There are no background jobs executing"<<endl;
+        return;
+    }
+    
+    cout<<"Status   "<<"Job Id  "<<"Process Id  "<<"Command  "<<"Time Created   "<<endl;
+    
+    for(int i=0; i<jobSize; i++){
+        
+       pid= jobs[i].processId;
+       waitPid = waitpid(pid, NULL, WNOHANG);          
+       if(waitPid==0)
+        cout<<"Running ";
+       else
+        cout<<"Done ";
+     
+        cout<<jobs[i].jobId<<"   "<<jobs[i].processId<<"   "<< jobs[i].line<<"  "<<asctime(jobs[i].timeInfo)<<"   "<<endl; 
+        
+        //mark job for deletion from list
+        if(waitPid!=0)
+            jobs[i].jobId=0;    
+    }
+    
+    //removes executing job from the array.
+    for(int i=0; i<jobSize; i++){
+        
+        if(jobs[i].jobId==0)
+        {
+            if(i!=jobSize-1){
+                jobs[i].jobId=jobs[jobSize-1].jobId;
+                jobs[i].processId=jobs[jobSize-1].processId;
+                jobs[i].line=jobs[jobSize-1].line; 
+                jobs[i].timeInfo=jobs[jobSize-1].timeInfo;
+            }
+            jobSize--;  
+        }
+    }  
+}
 
     
     
