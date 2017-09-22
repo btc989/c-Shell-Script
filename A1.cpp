@@ -10,6 +10,7 @@ int main()
    bool alias = true;
    int status=0;  
    shell.aliasSizeX=0;
+   shell.jobSize=0;
    int found =0;
    //Loop until command STOP or corresponding alias is entered 
   do{
@@ -27,8 +28,7 @@ int main()
             command = command.substr(0,found);
     }  
       
-   if(!command.empty()){
-       
+   if(!command.empty()){     
        
        //shell.original = command;
        shell.tokenize(command);
@@ -39,10 +39,7 @@ int main()
         do{ 
             alias = shell.alias(); 
             
-        }while(alias);
-
-
-      
+        }while(alias);   
 
       //Execute Command
       status = shell.execute();
