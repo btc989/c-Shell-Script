@@ -2,13 +2,22 @@
 #include <string>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include <time.h> 
 using namespace std;
-
+ extern char **environ;
 struct command{
     int size;
     char **token;
 };
-
+struct job{
+    int jobId;
+    int processId;
+    string line;
+    int status;
+    struct tm * timeInfo;
+    
+};
 class ToyShell
 {
    
@@ -24,7 +33,7 @@ class ToyShell
     int execute();
     string errorMessage(int status);
     int unixCommand();
-    void unixExecution();
+    void unixExecution(string spath);
     
     int aliasLimit;
     int aliasSizeX;
@@ -35,7 +44,11 @@ class ToyShell
     string terminator;
     command * workCommand;
     command * path;
-     
+    
+    int jobLimit;
+    int jobSize;
+    int jobStored;
+    job * jobs;
     
     
     string storedA[10][2];
@@ -55,5 +68,5 @@ class ToyShell
     void outputAlias();
     int saveAlias(string fileName);
     int readAlias(string fileName);
-     
+    void storeBackJob(int processId);
 };
