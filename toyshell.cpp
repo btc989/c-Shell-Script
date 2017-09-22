@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <time.h> 
 
 /* Constructor called on inital creation of toyshell object
 * Opens two files to get name and terminator of shell
@@ -15,12 +16,16 @@
 ToyShell::ToyShell()
 {
    int aliasLimit = 10;
+   int jobLimit = 10;
+   int jobSize = 0;
+   int jobStored = 1;
    int aliasSizeX=0;
    count = 0;
    history = new string[10];
    historySize=0;
    historyArraySize=10;
    
+   jobs = new job[10];
     
   //get shellname and terminator from file 
    fstream read;
@@ -588,48 +593,25 @@ int ToyShell::unixCommand(){
     pid_t waitPid;
     int status;
 
-    childPid = fork ();
-    if (childPid == -1)
-    {
-        fprintf (stderr, "Process %d failed to fork!\n", getpid ());
-        return 1 ;
-    }
-    //in child process
-    if (childPid == 0)
-    {
-        unixExecution();
-        //return 10 to stop shell if error has occurred with execve
-        return 10;
-    }
-    //in parent
-    else
-    {
-        //if process is  supposed to wait
-        string command = workCommand->token[workCommand->size-1];
-        
-        if(command.compare("-")){
-            do
-            {
-                waitPid = wait (&status);  
-            } while (waitPid != childPid);      
-        }
-        else{
-            //store not waited for job
-        }
-        //otherwise continue
-        return 0;
-    }   
-}
+    //first get full path 
+    char* pPath;
+    pPath = getenv ("PATH");
+    bool found = false;
+    bool isWait = true;
+    string spath="";
+   
+    string command = workCommand->token[workCommand->size-1];
 
-void ToyShell::unixExecution(){
-  //first get full path 
-  char* pPath;
-  pPath = getenv ("PATH");
-  bool found = false;
-  string spath="";
-  string command="";
-  if (pPath!=NULL){
-  
+    //if process is  not supposed to wait
+    if(!command.compare("-")){
+        
+        isWait = false;
+        //remove - sign 
+        workCommand->token[workCommand->size-1]= '\0';
+        workCommand->size=workCommand->size-1 ;  
+        cout<<"made it"<<endl;
+    } 
+    if (pPath!=NULL){
       //then seperate and tokenize the path by :
       tokenizePath(pPath);
       
@@ -650,39 +632,107 @@ void ToyShell::unixExecution(){
       }
       
       if(found){
-          //not sure what this should be set to
-           char *envp[] = { NULL };
-           
-          //make sure last character is null
-          //there is extra space here since in 
-          //tokenize workCommand allocates 
-          //enough space for all the characters
-          workCommand->token[workCommand->size]= '\0';
           
-          //then use excev
-           execve(spath.c_str(),workCommand->token, envp);
-      }
+        childPid = fork ();
+        if (childPid == -1)
+        {
+            fprintf (stderr, "Process %d failed to fork!\n", getpid ());
+            return 1 ;
+        }
+        //in child process
+        if (childPid == 0)
+        {
+            unixExecution(spath);
+            //return 10 to stop shell if error has occurred with execve
+            return 10;
+        }
+        //in parent
+        else
+        {
+            //if parent should wait for child to return
+            if(isWait){
+                do
+                {
+                    waitPid = wait (&status);  
+                } while (waitPid != childPid);      
+            }
+            else{
+                //store not waited for job
+                
+                storeBackJob(childPid);
+                
+                
+                
+            }
+            //otherwise continue
+            return 0;
+        }
+     }
+     else
+        cout<<"Error: Command entered not recongized"<<endl;
       
-      else{
-          cout<<"Error: Command entered not recongized"<<endl;
-      }
-        //frees up each space in memory->clears out tokenize
-        for (int i=0; i<path->size; i++)
-                    free(path->token[i]); 
+    //frees up each space in memory->clears out tokenize
+    for (int i=0; i<path->size; i++)
+            free(path->token[i]); 
 
-        //Clean up the array of words
-        delete [] path->token;
+    //Clean up the array of words
+    delete [] path->token;
   }
+}
+
+void ToyShell::unixExecution(string spath){
+  
+    //make sure last character is null
+    //there is extra space here since in 
+    //tokenize workCommand allocates 
+    //enough space for all the characters
+    workCommand->token[workCommand->size]= '\0';
+          
+    //then use excev
+    execve(spath.c_str(),workCommand->token, environ);
+     
+}
+    
+void ToyShell::storeBackJob(int processId){
+    
+    if(jobLimit-1 < jobSize){
+        cout<<"Error: Maximum number of jobs being executed, please wait for process to finish then try again"<<endl;
+        return;
+    }
+    
+    time_t rawtime;
+    time (&rawtime);
+    string command="";
+    for(int i=0; i<workCommand->size; i++){
+        command+= workCommand->token[i];
+        command +=" ";
+    }
+    
+    jobs[jobSize].jobId = jobStored;
+    jobs[jobSize].processId = processId;
+    jobs[jobSize].line = command;
+    jobs[jobSize].status = 0 ;
+    jobs[jobSize].timeInfo = localtime (&rawtime); 
+    
+    
+    cout<<"Job has been added to background process"<<endl;
+    
+    cout<<"Status   "<<"Job Id  "<<"Process Id  "<<"Command  "<<"Time Created   "<<endl;
+    
+     if(jobs[jobSize].status==0)
+        cout<<"Running ";
+    else
+        cout<<"Done ";
+     
+ cout<<jobs[jobSize].jobId<<"   "<<jobs[jobSize].processId<<"   "<< jobs[jobSize].line<<"  "<<asctime(jobs[jobSize].timeInfo)<<"   "<<endl;
+    
+    jobSize++;
+    jobStored++;
+    
 }
     
     
-    
-    
-    
-    
-    
-    
-    
+
     
     
 
