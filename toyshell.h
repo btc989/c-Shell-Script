@@ -14,7 +14,6 @@ struct job{
     int jobId;
     int processId;
     string line;
-    int status;
     struct tm * timeInfo;
     
 };
@@ -69,4 +68,5 @@ class ToyShell
     int saveAlias(string fileName);
     int readAlias(string fileName);
     void storeBackJob(int processId);
+    void backJobs();
 };
