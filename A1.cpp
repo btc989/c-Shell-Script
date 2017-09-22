@@ -11,6 +11,7 @@ int main()
    int status=0;  
    shell.aliasSizeX=0;
    shell.jobSize=0;
+   shell.jobStored=1;
    int found =0;
    //Loop until command STOP or corresponding alias is entered 
   do{
