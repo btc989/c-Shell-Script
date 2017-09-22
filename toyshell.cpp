@@ -278,6 +278,13 @@ int ToyShell::execute( ){
     else if( !command.compare("backjobs")){
         backJobs();   
     } 
+    // moves background job to foreground
+     else if( !command.compare("frontjob")){
+        if(workCommand->size>1)
+            frontJob(workCommand->token[1]);
+        else
+             cout<<"Missing Parameter: job id"<<endl;
+    } 
       //if not a shell command try and execute as UNIX Command
     else{
         
@@ -776,6 +783,52 @@ void ToyShell::backJobs(){
     }  
 }
 
+void ToyShell::frontJob(string temp){
+    int status;
+    pid_t waitPid;
+    int j=0;
+    int processId=0;
+    int found = false;
+    // object from the class stringstream
+    stringstream convert(temp);    
+    int jobId = 0;
+    //convert string into integer
+    convert >> jobId;
     
+    if(jobId <0 || jobId>jobStored){
+        cout<<"Error: invalid job id entered"<<endl;
+        return;
+    }
+    
+    //find process id for corresponding job id
+    for(int i=0; i<jobSize; i++){
+        if(jobs[i].jobId==jobId)
+        {
+            processId = jobs[i].processId;
+            j = i;
+            found = true;
+            break;
+        }    
+    }
+    if(found){
+        do
+        { 
+            waitPid = wait (&status);
+        } while (waitPid != processId);
+
+        //removes completed job from the table
+        if(j=jobSize-1){
+            jobs[j].jobId=jobs[jobSize-1].jobId;
+            jobs[j].processId=jobs[jobSize-1].processId;
+            jobs[j].line=jobs[jobSize-1].line; 
+            jobs[j].timeInfo=jobs[jobSize-1].timeInfo;
+        }
+        jobSize--;   
+    }
+    else{
+        cout<<"Error: process not found"<<endl;
+        return;
+    }
+}
     
 
