@@ -69,4 +69,5 @@ class ToyShell
     int readAlias(string fileName);
     void storeBackJob(int processId);
     void backJobs();
+    void frontJob(string);
 };
