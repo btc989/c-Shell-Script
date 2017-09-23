@@ -427,7 +427,7 @@ void ToyShell::outputHistory(){
         cout<<"There is no command history";
     else{
         for(int i=0; i<historySize; i++)
-            cout<<history[i]<<endl;
+            cout<<"Line "<<i+1<<" "<<history[i]<<endl;
     }
 }
 /* newAlias has three different processes
