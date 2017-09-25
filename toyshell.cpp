@@ -288,8 +288,10 @@ int ToyShell::execute( ){
 
     //conditional excecution command
     else if ( !command.compare("cond")){
-        /*If the condition is true run the command*/
-        condition();
+        if (workCommand->size >= 6) //must be at least this big
+            condition();
+        else
+            cout << "Missing Parameters" << endl;
     }
 
       //if not a shell command try and execute as UNIX Command
@@ -850,10 +852,29 @@ void ToyShell::condition(){
     //command is token[5]+
 
     //used to see the output
+    //DELETE AFTER1
     cout << "size: " << workCommand->size << endl;
     for (int i = 0; i < workCommand->size; i++){
         cout << "spot[" << i << "]: " << workCommand->token[i] << endl;
     }
+    //DELETE AFTER1
 
+    string expressF = ""; //used for front of expression
+    string expressB = ""; //used for back of expression
+    string command = ""; //used to store the command to execute
+
+    expressF = workCommand->token[2];  //setting the command to variables for easy working
+    expressB = workCommand->token[3];
+    for (int i = 5; i < (workCommand->size - 1); i++){ //while in loop add to string
+        command += string(workCommand->token[i]) + " ";
+    }
+    command += string(workCommand->token[(workCommand->size - 1)]);
+
+    //DELETE AFTER2
+    cout << "expressF: " << expressF << endl;
+    cout << "expressB: " << expressB << endl;
+    cout << "command: " << command << endl;
+    //DELETE AFTER2
+ 
     
 }
