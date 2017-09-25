@@ -285,6 +285,13 @@ int ToyShell::execute( ){
         else
              cout<<"Missing Parameter: job id"<<endl;
     } 
+
+    //conditional excecution command
+    else if ( !command.compare("cond")){
+        /*If the condition is true run the command*/
+        condition();
+    }
+
       //if not a shell command try and execute as UNIX Command
     else{
         
@@ -831,4 +838,22 @@ void ToyShell::frontJob(string temp){
     }
 }
     
+void ToyShell::condition(){
+    //cond (expression) command
+    //CHECKE <file_name>, CHECKD <file_name>, CHECKR <file_name>, CHECKW <file_name>, and CHECKX <file_name> 
+    
+    /* Assumptions */
+    //cond is the token[0]
+    //open bracket is token[1]
+    //numeric expression is token[2] and token[3]
+    //close bracket is token[4]
+    //command is token[5]+
 
+    //used to see the output
+    cout << "size: " << workCommand->size << endl;
+    for (int i = 0; i < workCommand->size; i++){
+        cout << "spot[" << i << "]: " << workCommand->token[i] << endl;
+    }
+
+    
+}
