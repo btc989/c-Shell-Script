@@ -908,10 +908,13 @@ int ToyShell::condition(){
     }
 
     else if(!expressF.compare("checke")){
-        
-        
-        
-        
+        //check if file is there 
+        //and if it is writeable
+        if((access(expressB.c_str(), F_OK))==0){
+            found=true;
+        }   
+        else
+            cout << "File does not exist" << endl;
     }
 
     else if(!expressF.compare("checkw")){
