@@ -1,5 +1,6 @@
 Script started on Sun Sep 17 13:20:37 2017
-Script on a049404[1]% ./run
+Script on a049404[1]% ./run
+
 toyshell[0]->ls -l
 total 116
 -rw------- 1 kopp202r csugrd  1231 Sep 17 13:13 A1.cpp
@@ -272,7 +273,8 @@ toyshell[51]->dd | cc
 -rw------- 1 kopp202r csugrd 17437 Sep 17 13:13 toyshell.cpp
 toyshell[52]->esit    stop
 Stopping Shell
-Script on a049404[2]% exit
+Script on a049404[2]% exit
+
 exit
 
 Script done on Sun Sep 17 13:24:51 2017
