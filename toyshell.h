@@ -70,4 +70,5 @@ class ToyShell
     void storeBackJob(int processId);
     void backJobs();
     void frontJob(string);
+    void backCommand();
 };

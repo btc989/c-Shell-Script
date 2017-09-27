@@ -285,6 +285,13 @@ int ToyShell::execute( ){
         else
              cout<<"Missing Parameter: job id"<<endl;
     } 
+
+    else if (!command.compare("back")){
+        if(workCommand->size>1)
+            cout << "Too may parameters" << endl;
+        else
+            backCommand();
+    }
       //if not a shell command try and execute as UNIX Command
     else{
         
@@ -831,4 +838,14 @@ void ToyShell::frontJob(string temp){
     }
 }
     
+void ToyShell::backCommand(){
+    char* pPath;
+    pPath = getenv ("OLDPWD");  //get the previous directory
 
+    //DELETE AFTER1
+    cout << pPath << endl;
+    //DELETE AFTER1
+
+    
+
+}
