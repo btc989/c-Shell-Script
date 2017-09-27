@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <sys/stat.h>
 #include <time.h> 
 
 /* Constructor called on inital creation of toyshell object
@@ -901,8 +902,19 @@ int ToyShell::condition(){
     }
 
     else if(!expressF.compare("checkd")){
-        
-        
+        struct stat* filestatus_buffer; //used for the stat function 
+        int temp = 0;
+        for (int i = 0; i < path->size; i++){
+            spath = path->token[i];
+            spath += "/";
+            spath += expressB;
+            cout << "File Path: " << spath << endl;
+
+            temp = stat(spath.c_str(), filestatus_buffer); 
+            cout << "Temp: " << temp << endl; 
+            //cout << errno << endl; //this will break the stat command when its uncommented, so will any message
+               
+        }
         
         
     }
@@ -938,7 +950,7 @@ int ToyShell::condition(){
     }    
     
     if(found){
-            cout<<"found it"<<endl;
+        cout<<"found it"<<endl;
             //clear out work command
             if(workCommand->size !=0){
                 for (int i=0; i<workCommand->size; i++)
@@ -946,12 +958,12 @@ int ToyShell::condition(){
 
               //Clean up the array of words
               delete [] workCommand->token;     // cleans up words allocated space
-              }
+            }
         tokenize(command);
         cout<<"partial "<<workCommand->token[0]<<endl;
             //call execute again
-            int status = execute();
-            return status;
+        int status = execute();
+        return status;
 
     }   
 }
