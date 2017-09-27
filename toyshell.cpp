@@ -845,7 +845,20 @@ void ToyShell::backCommand(){
     //DELETE AFTER1
     cout << pPath << endl;
     //DELETE AFTER1
+   
 
-    
+    //clear out work command
+    if(workCommand->size !=0){
+        for (int i=0; i<workCommand->size; i++)
+            free(workCommand->token[i]); //frees up each space in memory
+
+        //Clean up the array of words
+        delete [] workCommand->token;     // cleans up words allocated space
+    }
+    tokenize(command);
+    cout<<"partial "<<workCommand->token[0]<<endl;
+    //call execute again
+    execute();
+
 
 }
