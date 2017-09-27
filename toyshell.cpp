@@ -840,7 +840,16 @@ void ToyShell::frontJob(string temp){
     }
 }
     
-void ToyShell::condition(){
+int ToyShell::condition(){
+    
+    //first get full path 
+    char* pPath;
+    pPath = getenv ("PATH");
+    bool found = false;
+
+    string spath="";
+    //then seperate and tokenize the path by :
+    tokenizePath(pPath);
     //cond (expression) command
     //CHECKE <file_name>, CHECKD <file_name>, CHECKR <file_name>, CHECKW <file_name>, and CHECKX <file_name> 
     
@@ -876,5 +885,93 @@ void ToyShell::condition(){
     cout << "command: " << command << endl;
     //DELETE AFTER2
  
+    //make file check lowercase
+     //make all lowercase
+    for(int i=0; i<expressF.length(); i++)
+        expressF[i] = tolower(expressF[i]);
     
+    if(!expressF.compare("checkr")){
+    
+        //loop through each name in path/
+        for(int i=0; i<path->size; i++){
+
+            //append command to the end
+            spath= path->token[i];
+            spath +="/";
+            spath +=expressB;
+
+          //check if file is there 
+          //and if it is executable
+           if((access(spath.c_str(), R_OK))==0){
+               found=true;
+               break;
+           }   
+          }     
+    }
+    else if(!expressF.compare("checkd")){
+        
+        
+        
+        
+    }
+    else if(!expressF.compare("checke")){
+        
+        
+        
+        
+    }
+    else if(!expressF.compare("checkw")){
+        
+        //loop through each name in path/
+        for(int i=0; i<path->size; i++){
+
+            //append command to the end
+            spath= path->token[i];
+            spath +="/";
+            spath +=expressB;
+
+          //check if file is there 
+          //and if it is executable
+           if((access(spath.c_str(), W_OK))==0){
+               found=true;
+               break;
+           }   
+          }   
+    }
+    else if(!expressF.compare("checkx")){
+        
+        //loop through each name in path/
+        for(int i=0; i<path->size; i++){
+
+            //append command to the end
+            spath= path->token[i];
+            spath +="/";
+            spath +=expressB;
+
+          //check if file is there 
+          //and if it is executable
+           if((access(spath.c_str(), X_OK))==0){
+               found=true;
+               break;
+           }   
+          }    
+    }
+    
+    if(found){
+            cout<<"found it"<<endl;
+            //clear out work command
+            if(workCommand->size !=0){
+                for (int i=0; i<workCommand->size; i++)
+                   free(workCommand->token[i]); //frees up each space in memory
+
+              //Clean up the array of words
+              delete [] workCommand->token;     // cleans up words allocated space
+              }
+        tokenize(command);
+        cout<<"partial"<<workCommand->token[0]<<endl;
+            //call execute again
+            int status = execute();
+            return status;
+
+    }   
 }
