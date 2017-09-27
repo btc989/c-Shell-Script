@@ -890,72 +890,49 @@ int ToyShell::condition(){
     for(int i=0; i<expressF.length(); i++)
         expressF[i] = tolower(expressF[i]);
     
-    if(!expressF.compare("checkr")){
-    
-        //loop through each name in path/
-        for(int i=0; i<path->size; i++){
-
-            //append command to the end
-            spath= path->token[i];
-            spath +="/";
-            spath +=expressB;
-
+    if(!expressF.compare("checkr")){  
           //check if file is there 
-          //and if it is executable
-           if((access(spath.c_str(), R_OK))==0){
-               found=true;
-               break;
-           }   
-          }     
+          //and if it is readable
+        if((access(expressB.c_str(), R_OK))==0){
+            found=true;
+        }
+        else
+            cout << "File is not readable" << endl;   
     }
+
     else if(!expressF.compare("checkd")){
         
         
         
         
     }
+
     else if(!expressF.compare("checke")){
         
         
         
         
     }
+
     else if(!expressF.compare("checkw")){
-        
-        //loop through each name in path/
-        for(int i=0; i<path->size; i++){
-
-            //append command to the end
-            spath= path->token[i];
-            spath +="/";
-            spath +=expressB;
-
           //check if file is there 
-          //and if it is executable
-           if((access(spath.c_str(), W_OK))==0){
-               found=true;
-               break;
-           }   
-          }   
-    }
+          //and if it is writeable
+        if((access(expressB.c_str(), W_OK))==0){
+            found=true;
+        }   
+        else
+            cout << "File is not writeable" << endl;
+    }   
+
     else if(!expressF.compare("checkx")){
-        
-        //loop through each name in path/
-        for(int i=0; i<path->size; i++){
-
-            //append command to the end
-            spath= path->token[i];
-            spath +="/";
-            spath +=expressB;
-
           //check if file is there 
           //and if it is executable
-           if((access(spath.c_str(), X_OK))==0){
-               found=true;
-               break;
-           }   
-          }    
-    }
+        if((access(expressB.c_str(), X_OK))==0){
+            found=true;
+        }  
+        else   
+            cout << "File is not executable" << endl; 
+    }    
     
     if(found){
             cout<<"found it"<<endl;
@@ -968,7 +945,7 @@ int ToyShell::condition(){
               delete [] workCommand->token;     // cleans up words allocated space
               }
         tokenize(command);
-        cout<<"partial"<<workCommand->token[0]<<endl;
+        cout<<"partial "<<workCommand->token[0]<<endl;
             //call execute again
             int status = execute();
             return status;
