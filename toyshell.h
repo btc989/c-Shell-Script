@@ -73,4 +73,5 @@ class ToyShell
     void backCommand();
     bool condition();
     int conditionHelper(bool);
+    void changeDirectories();
 };
