@@ -296,8 +296,24 @@ int ToyShell::execute( ){
 
     //conditional excecution command
     else if ( !command.compare("cond")){
-        if (workCommand->size >= 6) //must be at least this big
-            condition();
+        if (workCommand->size >= 6) {//must be at least this big
+            int status = 0;
+            bool temp = false;
+            temp = condition();
+            status = conditionHelper(temp);
+        }
+        else
+            cout << "Missing Parameters" << endl;
+    }
+
+    //conditional excecution command
+    else if ( !command.compare("notcond")){
+        if (workCommand->size >= 6) {//must be at least this big
+            int status = 0;
+            bool temp = false;
+            temp = condition();
+            status = conditionHelper(!temp);
+        }
         else
             cout << "Missing Parameters" << endl;
     }
@@ -848,7 +864,7 @@ void ToyShell::frontJob(string temp){
     }
 }
     
-int ToyShell::condition(){
+bool ToyShell::condition(){
     //cond (expression) command
     //CHECKE <file_name>, CHECKD <file_name>, CHECKR <file_name>, CHECKW <file_name>, and CHECKX <file_name> 
 
@@ -860,7 +876,6 @@ int ToyShell::condition(){
     //command is token[5]+
 
 
-
     //first get full path 
     char* pPath;
     pPath = getenv ("PATH");
@@ -869,14 +884,6 @@ int ToyShell::condition(){
     
     //then seperate and tokenize the path by :
     tokenizePath(pPath);
-    
-    //DELETE AFTER1
-    //used to see the output
-    cout << "size: " << workCommand->size << endl;
-    for (int i = 0; i < workCommand->size; i++){
-        cout << "spot[" << i << "]: " << workCommand->token[i] << endl;
-    }
-    //DELETE AFTER1
 
     string expressF = ""; //used for front of expression
     string expressB = ""; //used for back of expression
@@ -888,12 +895,6 @@ int ToyShell::condition(){
         command += string(workCommand->token[i]) + " ";
     }
     command += string(workCommand->token[(workCommand->size - 1)]);
-
-    //DELETE AFTER2
-    cout << "expressF: " << expressF << endl;
-    cout << "expressB: " << expressB << endl;
-    cout << "command: " << command << endl;
-    //DELETE AFTER2
  
     //make file check lowercase
     //make all lowercase
@@ -917,11 +918,9 @@ int ToyShell::condition(){
             spath = path->token[i];
             spath += "/";
             spath += expressB;
-            cout << "File Path: " << spath << endl;
             
             //temp = stat(spath.c_str(), filestatus_buffer); 
             temp = stat(spath.c_str(), &filestatus_buffer); 
-            cout << "Temp: " << temp << endl; 
             
             if(temp>=0 && S_ISDIR( filestatus_buffer.st_mode))
                  found = true;
@@ -960,21 +959,29 @@ int ToyShell::condition(){
             cout << "File is not executable" << endl; 
     }    
     
-    if(found){
-        cout<<"found it"<<endl;
-            //clear out work command
-            if(workCommand->size !=0){
-                for (int i=0; i<workCommand->size; i++)
-                   free(workCommand->token[i]); //frees up each space in memory
+    return found; 
+}
 
-              //Clean up the array of words
-              delete [] workCommand->token;     // cleans up words allocated space
-            }
+int ToyShell::conditionHelper(bool found) {
+    if(found){
+        string command = "";
+        for (int i = 5; i < (workCommand->size - 1); i++){ //while in loop add to string
+            command += string(workCommand->token[i]) + " ";
+        }
+        command += string(workCommand->token[(workCommand->size - 1)]);
+
+        //clear out work command
+        if(workCommand->size !=0){
+            for (int i=0; i<workCommand->size; i++)
+                free(workCommand->token[i]); //frees up each space in memory
+
+            //Clean up the array of words
+            delete [] workCommand->token;     // cleans up words allocated space
+        }
         tokenize(command);
-        cout<<"partial "<<workCommand->token[0]<<endl;
             //call execute again
         int status = execute();
         return status;
-
-    }   
+    } 
+    return 0;
 }
