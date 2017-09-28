@@ -842,18 +842,9 @@ void ToyShell::frontJob(string temp){
 }
     
 int ToyShell::condition(){
-    
-    //first get full path 
-    char* pPath;
-    pPath = getenv ("PATH");
-    bool found = false;
-
-    string spath="";
-    //then seperate and tokenize the path by :
-    tokenizePath(pPath);
     //cond (expression) command
     //CHECKE <file_name>, CHECKD <file_name>, CHECKR <file_name>, CHECKW <file_name>, and CHECKX <file_name> 
-    
+
     /* Assumptions */
     //cond is the token[0]
     //open bracket is token[1]
@@ -861,8 +852,19 @@ int ToyShell::condition(){
     //close bracket is token[4]
     //command is token[5]+
 
-    //used to see the output
+
+
+    //first get full path 
+    char* pPath;
+    pPath = getenv ("PATH");
+    bool found = false;
+    string spath="";
+    
+    //then seperate and tokenize the path by :
+    tokenizePath(pPath);
+    
     //DELETE AFTER1
+    //used to see the output
     cout << "size: " << workCommand->size << endl;
     for (int i = 0; i < workCommand->size; i++){
         cout << "spot[" << i << "]: " << workCommand->token[i] << endl;
@@ -887,7 +889,7 @@ int ToyShell::condition(){
     //DELETE AFTER2
  
     //make file check lowercase
-     //make all lowercase
+    //make all lowercase
     for(int i=0; i<expressF.length(); i++)
         expressF[i] = tolower(expressF[i]);
     
