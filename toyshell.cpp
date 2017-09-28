@@ -841,12 +841,9 @@ void ToyShell::frontJob(string temp){
 void ToyShell::backCommand(){
     char* pPath;
     pPath = getenv ("OLDPWD");  //get the previous directory
-
-    //DELETE AFTER1
-    cout << pPath << endl;
-    //DELETE AFTER1
-   
-
+    string command = "cd "; 
+    command += pPath;
+  
     //clear out work command
     if(workCommand->size !=0){
         for (int i=0; i<workCommand->size; i++)
@@ -856,9 +853,6 @@ void ToyShell::backCommand(){
         delete [] workCommand->token;     // cleans up words allocated space
     }
     tokenize(command);
-    cout<<"partial "<<workCommand->token[0]<<endl;
     //call execute again
     execute();
-
-
 }
