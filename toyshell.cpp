@@ -300,6 +300,10 @@ int ToyShell::execute( ){
         else
             backCommand();
     }
+     else if (!command.compare("cd")){
+        
+        changeDirectories();
+    }
     //conditional excecution command
     else if ( !command.compare("cond")){
         if (workCommand->size >= 6) {//must be at least this big
@@ -314,7 +318,7 @@ int ToyShell::execute( ){
 
     //conditional excecution command
     else if ( !command.compare("notcond")){
-        if (workCommand->size >= 6) {//must be at least this big
+        if (workCommand->size >= 5) {//must be at least this big
             int status = 0;
             bool temp = false;
             temp = condition();
@@ -328,17 +332,6 @@ int ToyShell::execute( ){
     else{
         
         status = unixCommand();
-        
-            
-        
-       /* string fullCommand;
-         for(int i=0; i<workCommand->size; i++)
-             fullCommand += string(workCommand->token[i])+" ";
-         int returnCode = system(fullCommand.c_str());
-        
-         //if not UNIX Command Return error
-         if(!returnCode)
-            return 1;*/
     }
     return status;
 
@@ -869,14 +862,75 @@ void ToyShell::frontJob(string temp){
         return;
     }
 }
-    
+
+void ToyShell::changeDirectories(){
+    string command="";
+   
+    if(workCommand->size ==1 ){
+        //go to home 
+        char* pPath;
+        pPath = getenv ("HOME");
+        chdir(pPath); 
+        setenv("PWD",pPath,1);
+    }
+    else
+    {
+        command = workCommand->token[1];
+        if(!command.compare("..")){
+            char* pPath;
+            pPath = getenv ("PWD");  //get the previous directory
+
+            char * ptr;
+            //find last occurence of /
+            ptr = strrchr( pPath, '/' );
+
+            string sPath="";
+            //create a new string up to the last /
+            for(int i=0; i<ptr-pPath ; i++)
+            {
+                sPath+=pPath[i];
+            }
+             //change directory
+            chdir(sPath.c_str()); 
+            setenv("PWD",sPath.c_str(),1);
+        }
+        else{
+            //change into specific directory
+            char* pPath;
+            pPath = getenv ("PWD");  //get the previous directory
+
+            char * ptr;
+            //find last occurence of /
+            ptr = strrchr( pPath, '/' );
+
+            string sPath="";
+            //create a new string up to the last /
+            for(int i=0; i<strlen(pPath) ; i++)
+            {
+                sPath+=pPath[i];
+            }
+            sPath+="/"+command;
+             //change directory
+            if(chdir(sPath.c_str()) < 0)
+                cout<<"Path could not be found"<<endl;
+            else
+                setenv("PWD",sPath.c_str(),1);
+        }
+    }   
+}
+
 void ToyShell::backCommand(){
+    
+    cout<<"test"<<endl;
     char* pPath;
     pPath = getenv ("OLDPWD");  //get the previous directory
-    string command = "cd "; 
-    command += pPath;
+   
+    //string command = "cd "; 
+   // command += pPath;
   
-    //clear out work command
+    cout<<pPath<<endl;
+    chdir(pPath);
+  /*  //clear out work command
     if(workCommand->size !=0){
         for (int i=0; i<workCommand->size; i++)
             free(workCommand->token[i]); //frees up each space in memory
@@ -887,7 +941,7 @@ void ToyShell::backCommand(){
     cout << command << endl;
     tokenize(command);
     //call execute again
-    execute();
+    execute();*/
 }
 
 bool ToyShell::condition(){
@@ -920,7 +974,10 @@ bool ToyShell::condition(){
     for (int i = 5; i < (workCommand->size - 1); i++){ //while in loop add to string
         command += string(workCommand->token[i]) + " ";
     }
-    command += string(workCommand->token[(workCommand->size - 1)]);
+    
+    if(workCommand->size >= 6)
+        command += string(workCommand->token[(workCommand->size - 1)]);
+    
  
     //make file check lowercase
     //make all lowercase
@@ -932,6 +989,7 @@ bool ToyShell::condition(){
           //and if it is readable
         if((access(expressB.c_str(), R_OK))==0){
             found=true;
+            cout << "File is readable" << endl; 
         }
         else
             cout << "File is not readable" << endl;   
@@ -948,8 +1006,10 @@ bool ToyShell::condition(){
             //temp = stat(spath.c_str(), filestatus_buffer); 
             temp = stat(spath.c_str(), &filestatus_buffer); 
             
-            if(temp>=0 && S_ISDIR( filestatus_buffer.st_mode))
+            if(temp>=0 && S_ISDIR( filestatus_buffer.st_mode)){
                  found = true;
+                 cout<<"Name is a directory"<<endl;
+            }
             //cout << errno << endl; //this will break the stat command when its uncommented, so will any message
                
         } 
@@ -960,6 +1020,7 @@ bool ToyShell::condition(){
         //and if it is writeable
         if((access(expressB.c_str(), F_OK))==0){
             found=true;
+            cout << "File does exist" << endl;
         }   
         else
             cout << "File does not exist" << endl;
@@ -970,6 +1031,7 @@ bool ToyShell::condition(){
           //and if it is writeable
         if((access(expressB.c_str(), W_OK))==0){
             found=true;
+            cout << "File is writeable" << endl;
         }   
         else
             cout << "File is not writeable" << endl;
@@ -980,6 +1042,7 @@ bool ToyShell::condition(){
           //and if it is executable
         if((access(expressB.c_str(), X_OK))==0){
             found=true;
+            cout << "File is executable" << endl;
         }  
         else   
             cout << "File is not executable" << endl; 
@@ -989,7 +1052,7 @@ bool ToyShell::condition(){
 }
 
 int ToyShell::conditionHelper(bool found) {
-    if(found){
+    if(found && workCommand->size >= 6){
         string command = "";
         for (int i = 5; i < (workCommand->size - 1); i++){ //while in loop add to string
             command += string(workCommand->token[i]) + " ";
