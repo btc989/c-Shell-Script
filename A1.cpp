@@ -22,7 +22,7 @@ int main()
    getline(cin, command);
       
    //find if any comments are in string
-    found = command.find('&');
+    found = command.find('$');
     if(found >=0){ //omit any text after comment
         if(found==0 )
             command="";
