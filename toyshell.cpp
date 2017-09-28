@@ -9,6 +9,13 @@
 #include <sys/wait.h>
 #include <sys/stat.h>
 #include <time.h> 
+#include <sys/types.h>
+#include <cstdio>
+#include <dirent.h>
+
+
+
+
 
 /* Constructor called on inital creation of toyshell object
 * Opens two files to get name and terminator of shell
@@ -904,21 +911,23 @@ int ToyShell::condition(){
     }
 
     else if(!expressF.compare("checkd")){
-        struct stat* filestatus_buffer; //used for the stat function 
+        struct stat filestatus_buffer; //used for the stat function 
         int temp = 0;
         for (int i = 0; i < path->size; i++){
             spath = path->token[i];
             spath += "/";
             spath += expressB;
             cout << "File Path: " << spath << endl;
-
-            temp = stat(spath.c_str(), filestatus_buffer); 
+            
+            //temp = stat(spath.c_str(), filestatus_buffer); 
+            temp = stat(spath.c_str(), &filestatus_buffer); 
             cout << "Temp: " << temp << endl; 
+            
+            if(temp>=0 && S_ISDIR( filestatus_buffer.st_mode))
+                 found = true;
             //cout << errno << endl; //this will break the stat command when its uncommented, so will any message
                
-        }
-        
-        
+        } 
     }
 
     else if(!expressF.compare("checke")){
