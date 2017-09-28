@@ -884,6 +884,7 @@ void ToyShell::backCommand(){
         //Clean up the array of words
         delete [] workCommand->token;     // cleans up words allocated space
     }
+    cout << command << endl;
     tokenize(command);
     //call execute again
     execute();
