@@ -1,11 +1,11 @@
-
 #include <string>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <time.h> 
 using namespace std;
- extern char **environ;
+
+extern char **environ;
 struct command{
     int size;
     char **token;
@@ -71,4 +71,6 @@ class ToyShell
     void backJobs();
     void frontJob(string);
     void backCommand();
+    bool condition();
+    int conditionHelper(bool);
 };

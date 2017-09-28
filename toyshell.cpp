@@ -7,7 +7,15 @@
 #include <cstdlib>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <sys/stat.h>
 #include <time.h> 
+#include <sys/types.h>
+#include <cstdio>
+#include <dirent.h>
+
+
+
+
 
 /* Constructor called on inital creation of toyshell object
 * Opens two files to get name and terminator of shell
@@ -292,6 +300,30 @@ int ToyShell::execute( ){
         else
             backCommand();
     }
+    //conditional excecution command
+    else if ( !command.compare("cond")){
+        if (workCommand->size >= 6) {//must be at least this big
+            int status = 0;
+            bool temp = false;
+            temp = condition();
+            status = conditionHelper(temp);
+        }
+        else
+            cout << "Missing Parameters" << endl;
+    }
+
+    //conditional excecution command
+    else if ( !command.compare("notcond")){
+        if (workCommand->size >= 6) {//must be at least this big
+            int status = 0;
+            bool temp = false;
+            temp = condition();
+            status = conditionHelper(!temp);
+        }
+        else
+            cout << "Missing Parameters" << endl;
+    }
+
       //if not a shell command try and execute as UNIX Command
     else{
         
@@ -855,4 +887,126 @@ void ToyShell::backCommand(){
     tokenize(command);
     //call execute again
     execute();
+}
+
+bool ToyShell::condition(){
+    //cond (expression) command
+    //CHECKE <file_name>, CHECKD <file_name>, CHECKR <file_name>, CHECKW <file_name>, and CHECKX <file_name> 
+
+    /* Assumptions */
+    //cond is the token[0]
+    //open bracket is token[1]
+    //numeric expression is token[2] and token[3]
+    //close bracket is token[4]
+    //command is token[5]+
+
+
+    //first get full path 
+    char* pPath;
+    pPath = getenv ("PATH");
+    bool found = false;
+    string spath="";
+    
+    //then seperate and tokenize the path by :
+    tokenizePath(pPath);
+
+    string expressF = ""; //used for front of expression
+    string expressB = ""; //used for back of expression
+    string command = ""; //used to store the command to execute
+
+    expressF = workCommand->token[2];  //setting the command to variables for easy working
+    expressB = workCommand->token[3];
+    for (int i = 5; i < (workCommand->size - 1); i++){ //while in loop add to string
+        command += string(workCommand->token[i]) + " ";
+    }
+    command += string(workCommand->token[(workCommand->size - 1)]);
+ 
+    //make file check lowercase
+    //make all lowercase
+    for(int i=0; i<expressF.length(); i++)
+        expressF[i] = tolower(expressF[i]);
+    
+    if(!expressF.compare("checkr")){  
+          //check if file is there 
+          //and if it is readable
+        if((access(expressB.c_str(), R_OK))==0){
+            found=true;
+        }
+        else
+            cout << "File is not readable" << endl;   
+    }
+
+    else if(!expressF.compare("checkd")){
+        struct stat filestatus_buffer; //used for the stat function 
+        int temp = 0;
+        for (int i = 0; i < path->size; i++){
+            spath = path->token[i];
+            spath += "/";
+            spath += expressB;
+            
+            //temp = stat(spath.c_str(), filestatus_buffer); 
+            temp = stat(spath.c_str(), &filestatus_buffer); 
+            
+            if(temp>=0 && S_ISDIR( filestatus_buffer.st_mode))
+                 found = true;
+            //cout << errno << endl; //this will break the stat command when its uncommented, so will any message
+               
+        } 
+    }
+
+    else if(!expressF.compare("checke")){
+        //check if file is there 
+        //and if it is writeable
+        if((access(expressB.c_str(), F_OK))==0){
+            found=true;
+        }   
+        else
+            cout << "File does not exist" << endl;
+    }
+
+    else if(!expressF.compare("checkw")){
+          //check if file is there 
+          //and if it is writeable
+        if((access(expressB.c_str(), W_OK))==0){
+            found=true;
+        }   
+        else
+            cout << "File is not writeable" << endl;
+    }   
+
+    else if(!expressF.compare("checkx")){
+          //check if file is there 
+          //and if it is executable
+        if((access(expressB.c_str(), X_OK))==0){
+            found=true;
+        }  
+        else   
+            cout << "File is not executable" << endl; 
+    }    
+    
+    return found; 
+}
+
+int ToyShell::conditionHelper(bool found) {
+    if(found){
+        string command = "";
+        for (int i = 5; i < (workCommand->size - 1); i++){ //while in loop add to string
+            command += string(workCommand->token[i]) + " ";
+        }
+        command += string(workCommand->token[(workCommand->size - 1)]);
+
+        //clear out work command
+        if(workCommand->size !=0){
+            for (int i=0; i<workCommand->size; i++)
+                free(workCommand->token[i]); //frees up each space in memory
+
+            //Clean up the array of words
+            delete [] workCommand->token;     // cleans up words allocated space
+        }
+        tokenize(command);
+            //call execute again
+        int status = execute();
+        return status;
+    } 
+    return 0;
 }
