@@ -653,7 +653,6 @@ int ToyShell::unixCommand(){
         //remove - sign 
         workCommand->token[workCommand->size-1]= '\0';
         workCommand->size=workCommand->size-1 ;  
-        cout<<"made it"<<endl;
     } 
     if (pPath!=NULL){
       //then seperate and tokenize the path by :
