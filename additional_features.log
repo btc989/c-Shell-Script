@@ -1,0 +1,63 @@
+Script started on Fri Sep 29 11:43:40 2017
+Script on a049403[1]% make
+make: Warning: File `toyshell.cpp' has modification time 2.5e+03 s in the future
+g++ -c  toyshell.cpp -o toyshell.o
+g++ -c  A1.cpp -o A1.o
+g++ -o toyshell toyshell.o A1.o
+make: warning:  Clock skew detected.  Your build may be incomplete.
+Script on a049403[2]% ./toyshell
+toyshell[0]%ls
+A1.cpp			 file1	      shellName.txt	   toyshell.cpp
+A1.o			 makefile     shellTerminator.txt  toyshell.h
+additional_features.log  myaliases    tester		   toyshell.o
+error_testing_A2.log	 savealiases  toyshell
+toyshell[1]%cd ..
+toyshell[2]%ls
+A1  A2	labs
+toyshell[3]%cd 
+toyshell[4]%ls
+Calculator.cpp	Videos		 cs115		  example.cpp  lab1.log
+Desktop		a.out		 cs330		  example.log  lab2.cpp
+Documents	assignment	 cs340		  hello        lab3
+Downloads	assignment1	 cs350		  hello.cpp    lab3.cpp
+Fraction.cpp	assignment1.cpp  eightpuzzle.cpp  hello.log    lab3.log
+Music		assignment1.log  eightpuzzle.h	  is_even      largest
+Pictures	commands.log	 ex1		  is_even.cpp  largest.cpp
+Public		convert		 ex1.cpp	  is_even.log  largest.log
+SunWS_cache	convert.cpp	 ex1.log	  lab1	       public_html
+Templates	convert.log	 example	  lab1.cpp     workspace
+toyshell[5]%cd cs330
+toyshell[6]%ls
+A1  A2	labs
+toyshell[7]%back
+cd /home/hercules/c/clary20b
+toyshell[8]%ls
+Calculator.cpp	Videos		 cs115		  example.cpp  lab1.log
+Desktop		a.out		 cs330		  example.log  lab2.cpp
+Documents	assignment	 cs340		  hello        lab3
+Downloads	assignment1	 cs350		  hello.cpp    lab3.cpp
+Fraction.cpp	assignment1.cpp  eightpuzzle.cpp  hello.log    lab3.log
+Music		assignment1.log  eightpuzzle.h	  is_even      largest
+Pictures	commands.log	 ex1		  is_even.cpp  largest.cpp
+Public		convert		 ex1.cpp	  is_even.log  largest.log
+SunWS_cache	convert.cpp	 ex1.log	  lab1	       public_html
+Templates	convert.log	 example	  lab1.cpp     workspace
+toyshell[9]%cd cs 330
+Path could not be found
+toyshell[10]%cd cs330
+toyshell[11]%ls
+A1  A2	labs
+toyshell[12]%cd a2
+Path could not be found
+toyshell[13]%cd A2
+toyshell[14]%ls
+A1.cpp			 file1	      shellName.txt	   toyshell.cpp
+A1.o			 makefile     shellTerminator.txt  toyshell.h
+additional_features.log  myaliases    tester		   toyshell.o
+error_testing_A2.log	 savealiases  toyshell
+toyshell[15]%stop
+Stopping Shell
+Script on a049403[3]% exit
+exit
+
+Script done on Fri Sep 29 11:44:55 2017

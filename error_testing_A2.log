@@ -1,0 +1,139 @@
+Script started on Fri Sep 29 11:36:31 2017
+Script on a049403[1]% make
+make: Warning: File `toyshell.cpp' has modification time 2.9e+03 s in the future
+g++ -c  toyshell.cpp -o toyshell.o
+g++ -c  A1.cpp -o A1.o
+g++ -o toyshell toyshell.o A1.o
+make: warning:  Clock skew detected.  Your build may be incomplete.
+Script on a049403[2]% ./toyshell
+toyshell[0]%kkkkkkkk
+Error: Command entered not recongized
+toyshell[1]%cd jfjfjffj
+Path could not be found
+toyshell[2]%frontjobs
+Error: Command entered not recongized
+toyshell[3]%frontjob
+Missing Parameter: job id
+toyshell[4]%frontjob -1
+Error: invalid job id entered
+toyshell[5]%frontjob 10
+Error: invalid job id entered
+toyshell[6]%back 2
+Too may parameters
+toyshell[7]%cond
+Missing Parameters
+toyshell[8]%sleep 50-
+sleep: invalid time interval `50-'
+Try `sleep --help' for more information.
+toyshell[9]%sleep 5 -
+made it
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+1   21606   sleep 5   Fri Sep 29 11:39:45 2017
+   
+toyshell[10]%sleep 50 -
+made it
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+2   22049   sleep 50   Fri Sep 29 11:39:49 2017
+   
+toyshell[11]%sleep 10 -
+made it
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+3   22517   sleep 10   Fri Sep 29 11:39:55 2017
+   
+toyshell[12]%sleep 1000 -
+made it
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+4   22937   sleep 1000   Fri Sep 29 11:39:59 2017
+   
+toyshell[13]%sleep 5 -
+made it
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+5   23634   sleep 5   Fri Sep 29 11:40:07 2017
+   
+toyshell[14]%sleep 9 -
+made it
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+6   24088   sleep 9   Fri Sep 29 11:40:12 2017
+   
+toyshell[15]%sleep 25 -
+made it
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+7   24545   sleep 25   Fri Sep 29 11:40:17 2017
+   
+toyshell[16]%sleep 100 -
+made it
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+8   25248   sleep 100   Fri Sep 29 11:40:25 2017
+   
+toyshell[17]%sleep 90 -
+made it
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+9   25675   sleep 90   Fri Sep 29 11:40:30 2017
+   
+toyshell[18]%sleep 35 -
+made it
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+10   26075   sleep 35   Fri Sep 29 11:40:34 2017
+   
+toyshell[19]%sleep 55 -
+made it
+Error: Maximum number of jobs being executed, please wait for process to finish then try again
+toyshell[20]%backjobs
+Status   Job Id  Process Id  Command  Time Created   
+Done 1   21606   sleep 5   Fri Sep 29 11:40:34 2017
+   
+Done 2   22049   sleep 50   Fri Sep 29 11:40:34 2017
+   
+Done 3   22517   sleep 10   Fri Sep 29 11:40:34 2017
+   
+Running 4   22937   sleep 1000   Fri Sep 29 11:40:34 2017
+   
+Done 5   23634   sleep 5   Fri Sep 29 11:40:34 2017
+   
+Done 6   24088   sleep 9   Fri Sep 29 11:40:34 2017
+   
+Done 7   24545   sleep 25   Fri Sep 29 11:40:34 2017
+   
+Running 8   25248   sleep 100   Fri Sep 29 11:40:34 2017
+   
+Running 9   25675   sleep 90   Fri Sep 29 11:40:34 2017
+   
+Running 10   26075   sleep 35   Fri Sep 29 11:40:34 2017
+   
+toyshell[21]%backjobs
+Status   Job Id  Process Id  Command  Time Created   
+Running 10   26075   sleep 35   Fri Sep 29 11:40:34 2017
+   
+Running 9   25675   sleep 90   Fri Sep 29 11:40:34 2017
+   
+Running 8   25248   sleep 100   Fri Sep 29 11:40:34 2017
+   
+Running 4   22937   sleep 1000   Fri Sep 29 11:40:34 2017
+   
+Done 0   24545   sleep 25   Fri Sep 29 11:40:34 2017
+   
+toyshell[22]%fo
+Error: Command entered not recongized
+toyshell[23]%frontjob 2
+Error: process not found
+toyshell[24]%cond ( checke blah ) ls
+File does not exist
+toyshell[25]%cond ( checkd blah ) ls
+toyshell[26]%cond ( checkx blah ) ls
+File is not executable
+toyshell[27]%stop
+Stopping Shell
+Script on a049403[3]% exit
+exit
+
+Script done on Fri Sep 29 11:42:42 2017
