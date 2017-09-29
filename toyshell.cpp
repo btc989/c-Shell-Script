@@ -934,19 +934,6 @@ void ToyShell::backCommand(){
     chdir(oldpwd.c_str());
     setenv("PWD",oldpwd.c_str(),1);
     oldpwd = temp;
-
-  /*  //clear out work command
-    if(workCommand->size !=0){
-        for (int i=0; i<workCommand->size; i++)
-            free(workCommand->token[i]); //frees up each space in memory
-
-        //Clean up the array of words
-        delete [] workCommand->token;     // cleans up words allocated space
-    }
-    cout << command << endl;
-    tokenize(command);
-    //call execute again
-    execute();*/
 }
 
 bool ToyShell::condition(){
