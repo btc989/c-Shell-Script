@@ -32,7 +32,7 @@ ToyShell::ToyShell()
    history = new string[10];
    historySize=0;
    historyArraySize=10;
-   oldpwd = "";
+   oldpwd = getenv ("PWD");
 
    jobs = new job[10];
     
@@ -926,13 +926,14 @@ void ToyShell::changeDirectories(){
 
 void ToyShell::backCommand(){
 
-    if (oldpwd == "")
-        oldpwd = getenv ("PWD"); 
     string stuff = "cd ";
     stuff += oldpwd;
     cout << stuff << endl;
+
+    string temp = getenv ("PWD");
     chdir(oldpwd.c_str());
     setenv("PWD",oldpwd.c_str(),1);
+    oldpwd = temp;
 
   /*  //clear out work command
     if(workCommand->size !=0){
