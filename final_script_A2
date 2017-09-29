@@ -1,0 +1,194 @@
+Script started on Fri Sep 29 09:57:37 2017
+Script on a049404[1]% g++ -c A1.cpp toyshell.cpp 
+Script on a049404[2]% g++ 0o[K[K-o run A1.o toyshell.o
+Script on a049404[3]% ./run
+toyshell[0]%$ t This is a comment - it is treaded      ated like a blank line.
+toyshell[0]%$ This is alos a      so a comment.
+toyshell[0]%
+toyshell[0]%sleep 1000 - $St   Start a backgroup  und process.
+made it
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+1   26977   sleep 1000   Fri Sep 29 09:58:36 2017
+   
+toyshell[1]%sleep 15 - $a  Adn  nd another.
+made it
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+2   26978   sleep 15   Fri Sep 29 09:58:47 2017
+   
+toyshell[2]%backjobs          BACKJOBS $ Should  u ld show both of the above processes.
+Status   Job Id  Process Id  Command  Time Created   
+Running 1   26977   sleep 1000   Fri Sep 29 09:58:47 2017
+   
+Done 2   26978   sleep 15   Fri Sep 29 09:58:47 2017
+   
+toyshell[3]%cp /home/venus/hilder/cs330/assignment2/datafiles/alpha file1
+toyshell[4]%BACKJOBS $ Might still show a sleep process running.
+Status   Job Id  Process Id  Command  Time Created   
+Running 1   26977   sleep 1000   Fri Sep 29 09:58:47 2017
+   
+toyshell[5]%$ Enter all comments as shown above. Enter all a comments
+toyshell[5]%$ shown below  , as well.
+toyshell[5]%cat file1 $ file1 should be there.
+apples
+cucumbers
+oranges
+bananas
+grapefruit
+grapes
+tangarines
+grape fruit
+toyshell[6]%sleep 1000 -
+made it
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+3   26989   sleep 1000   Fri Sep 29 10:00:26 2017
+   
+toyshell[7]%BACKJOBS
+Status   Job Id  Process Id  Command  Time Created   
+Running 1   26977   sleep 1000   Fri Sep 29 10:00:26 2017
+   
+Running 3   26989   sleep 1000   Fri Sep 29 10:00:26 2017
+   
+toyshell[8]%BACKJOBS
+Status   Job Id  Process Id  Command  Time Created   
+Running 1   26977   sleep 1000   Fri Sep 29 10:00:26 2017
+   
+Running 3   26989   sleep 1000   Fri Sep 29 10:00:26 2017
+   
+toyshell[9]%sleep 5
+toyshell[10]%sleep 1000 -
+made it
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+4   26993   sleep 1000   Fri Sep 29 10:00:48 2017
+   
+toyshell[11]%BACKJOBS
+Status   Job Id  Process Id  Command  Time Created   
+Running 1   26977   sleep 1000   Fri Sep 29 10:00:48 2017
+   
+Running 3   26989   sleep 1000   Fri Sep 29 10:00:48 2017
+   
+Running 4   26993   sleep 1000   Fri Sep 29 10:00:48 2017
+   
+toyshell[12]%sleep 20 -
+made it
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+5   26994   sleep 20   Fri Sep 29 10:00:55 2017
+   
+toyshell[13]%f FRONTJOB 5
+toyshell[14]%wh ho
+odo198   tty1         Sep 29 09:24 (:0)
+caron24k pts/0        Sep 29 00:08 (142.3.200.201)
+odo198   pts/1        Sep 29 09:39 (:0.0)
+kopp202r pts/2        Sep 29 09:33 (142.3.200.201)
+kopp202r pts/3        Sep 29 09:57
+toyshell[15]%NEWNAME mycopy cp
+toyshell[16]%NEWNAME dog cat
+toyshell[17]%SAVENEWNAMES myaliases
+toyshell[18]%NEWNE AMES
+mycopy | cp
+dog | cat
+toyshell[19]%why
+Error: Command entered not recongized
+toyshell[20]%mycopy /etc/mod td file2
+toyshell[21]%NEWNAME mycopy rm
+toyshell[22]%ls -
+made it
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+6   27020   ls   Fri Sep 29 10:01:58 2017
+   
+toyshell[23]%A1.cpp		  file1		   junk       savealiases	   testdir
+A1.o		  file2		   myaliases  shellName.txt	   toyshell.cpp
+README.md	  final_script_A1  partners   shellTerminator.txt  toyshell.h
+errorTesting.log  final_script_A2  run	      test.txt		   toyshell.o
+
+toyshell[23]%SAVE    mycopy file2
+toyshell[24]%ls
+A1.cpp		  final_script_A1  run			testdir
+A1.o		  final_script_A2  savealiases		toyshell.cpp
+README.md	  junk		   shellName.txt	toyshell.h
+errorTesting.log  myaliases	   shellTerminator.txt	toyshell.o
+file1		  partners	   test.txt
+toyshell[25]%SAVENEWNAMES myaliases
+toyshell[26]%NEWNAMES
+mycopy | rm
+dog | cat
+toyshell[27]%when -
+made it
+Error: Command entered not recongized
+toyshell[28]%NEWNAMES    mycopy cp
+toyshell[29]%READNEWNAMES myaliases
+toyshell[30]%NEWNAMES
+mycopy | cp
+dog | cat
+toyshell[31]%COND ( CHECKR myaliases ) dog myaliases -
+File is readable
+made it
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+7   27024   cat myaliases   Fri Sep 29 10:02:59 2017
+   
+toyshell[32]%mycopy
+rm
+dog
+cat
+
+toyshell[32]%COND ( CHECKX /bin/cp ) cp myaliases junk
+File is executable
+toyshell[33]%mkdir junkdir
+toyshell[34]%COND ( CHECKD junkdir ) rmdir junkdir
+Name is a directory
+Name is a directory
+toyshell[35]%cp myaliases savealiases
+toyshell[36]%NOT  COND ( CHECKD myaliases ) mycopy myaliases
+cp: missing destination file operand after `myaliases'
+Try `cp --help' for more information.
+toyshell[37]%COND ( CHECKE savealiases ) NOT  COND ( CHECKE myaliases ) cp savealias ses myaliases
+File does exist
+File does exist
+toyshell[38]%BACKJOBS
+Status   Job Id  Process Id  Command  Time Created   
+Running 1   26977   sleep 1000   Fri Sep 29 10:02:59 2017
+   
+Running 3   26989   sleep 1000   Fri Sep 29 10:02:59 2017
+   
+Running 4   26993   sleep 1000   Fri Sep 29 10:02:59 2017
+   
+Done 6   27020   ls   Fri Sep 29 10:02:59 2017
+   
+Done 7   27024   cat myaliases   Fri Sep 29 10:02:59 2017
+   
+toyshell[39]%ls
+A1.cpp		  final_script_A1  run			testdir
+A1.o		  final_script_A2  savealiases		toyshell.cpp
+README.md	  junk		   shellName.txt	toyshell.h
+errorTesting.log  myaliases	   shellTerminator.txt	toyshell.o
+file1		  partners	   test.txt
+toyshell[40]%BACKJOBS
+Status   Job Id  Process Id  Command  Time Created   
+Running 1   26977   sleep 1000   Fri Sep 29 10:02:59 2017
+   
+Running 3   26989   sleep 1000   Fri Sep 29 10:02:59 2017
+   
+Running 4   26993   sleep 1000   Fri Sep 29 10:02:59 2017
+   
+Done 0   27024   cat myaliases   Fri Sep 29 10:02:59 2017
+   
+toyshell[41]%BACKJOBS
+Status   Job Id  Process Id  Command  Time Created   
+Running 1   26977   sleep 1000   Fri Sep 29 10:02:59 2017
+   
+Running 3   26989   sleep 1000   Fri Sep 29 10:02:59 2017
+   
+Running 4   26993   sleep 1000   Fri Sep 29 10:02:59 2017
+   
+toyshell[42]%s STOP
+Stopping Shell
+Script on a049404[4]% exit
+exit
+
+Script done on Fri Sep 29 10:06:22 2017
