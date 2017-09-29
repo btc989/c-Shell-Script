@@ -48,7 +48,7 @@ class ToyShell
     int jobSize;
     int jobStored;
     job * jobs;
-    
+    string oldpwd;
     
     string storedA[10][2];
     string * history;
