@@ -1,7 +1,10 @@
 Script started on Fri Sep 29 09:57:37 2017
-Script on a049404[1]% g++ -c A1.cpp toyshell.cpp 
-Script on a049404[2]% g++ 0o[K[K-o run A1.o toyshell.o
-Script on a049404[3]% ./run
+Script on a049404[1]% g++ -c A1.cpp toyshell.cpp 
+
+Script on a049404[2]% g++ 0o[K[K-o run A1.o toyshell.o
+
+Script on a049404[3]% ./run
+
 toyshell[0]%$ t This is a comment - it is treaded      ated like a blank line.
 toyshell[0]%$ This is alos a      so a comment.
 toyshell[0]%
@@ -188,7 +191,8 @@ Running 4   26993   sleep 1000   Fri Sep 29 10:02:59 2017
    
 toyshell[42]%s STOP
 Stopping Shell
-Script on a049404[4]% exit
+Script on a049404[4]% exit
+
 exit
 
 Script done on Fri Sep 29 10:06:22 2017
