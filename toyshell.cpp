@@ -32,7 +32,8 @@ ToyShell::ToyShell()
    history = new string[10];
    historySize=0;
    historyArraySize=10;
-   
+   oldpwd = "";
+
    jobs = new job[10];
     
   //get shellname and terminator from file 
@@ -870,6 +871,7 @@ void ToyShell::changeDirectories(){
         //go to home 
         char* pPath;
         pPath = getenv ("HOME");
+        oldpwd = getenv ("PWD");
         chdir(pPath); 
         setenv("PWD",pPath,1);
     }
@@ -891,6 +893,7 @@ void ToyShell::changeDirectories(){
                 sPath+=pPath[i];
             }
              //change directory
+            oldpwd = getenv ("PWD");
             chdir(sPath.c_str()); 
             setenv("PWD",sPath.c_str(),1);
         }
@@ -913,23 +916,24 @@ void ToyShell::changeDirectories(){
              //change directory
             if(chdir(sPath.c_str()) < 0)
                 cout<<"Path could not be found"<<endl;
-            else
+            else{
+                oldpwd = getenv ("PWD");
                 setenv("PWD",sPath.c_str(),1);
+            }
         }
     }   
 }
 
 void ToyShell::backCommand(){
-    
-    cout<<"test"<<endl;
-    char* pPath;
-    pPath = getenv ("OLDPWD");  //get the previous directory
-   
-    //string command = "cd "; 
-   // command += pPath;
-  
-    cout<<pPath<<endl;
-    chdir(pPath);
+
+    if (oldpwd == "")
+        oldpwd = getenv ("PWD"); 
+    string stuff = "cd ";
+    stuff += oldpwd;
+    cout << stuff << endl;
+    chdir(oldpwd.c_str());
+    setenv("PWD",oldpwd.c_str(),1);
+
   /*  //clear out work command
     if(workCommand->size !=0){
         for (int i=0; i<workCommand->size; i++)
