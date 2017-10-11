@@ -70,6 +70,7 @@ class ToyShell
     void storeBackJob(int processId);
     void backJobs();
     void frontJob(string);
+    int cull(string);
     void backCommand();
     bool condition();
     int conditionHelper(bool);

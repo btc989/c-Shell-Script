@@ -1,5 +1,6 @@
 #include "toyshell.h"
 #include <string>
+
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -14,7 +15,8 @@
 #include <dirent.h>
 
 
-
+#include <stdio.h>
+#include <stdlib.h>
 
 
 /* Constructor called on inital creation of toyshell object
@@ -230,6 +232,7 @@ int ToyShell::execute( ){
      }
     
     
+    
     //make all lowercase
     for(int i=0; i<command.length(); i++)
         command[i] = tolower(command[i]);
@@ -294,6 +297,14 @@ int ToyShell::execute( ){
         else
              cout<<"Missing Parameter: job id"<<endl;
     } 
+    
+    // moves kill background job
+     else if(!command.compare("cull")){
+        if(workCommand->size>1)
+            status=cull(workCommand->token[1]);
+        else
+             cout<<"Missing Parameter: job id"<<endl;
+    } 
 
     else if (!command.compare("back")){
         if(workCommand->size>1)
@@ -328,8 +339,15 @@ int ToyShell::execute( ){
         else
             cout << "Missing Parameters" << endl;
     }
-
-      //if not a shell command try and execute as UNIX Command
+    else if ( !command.compare("display")){
+        //print any text after display
+       for(int i=1; i<workCommand->size; i++)
+       {
+           cout<<workCommand->token[i]<<" ";
+       }
+        cout<<endl;
+    }
+    //if not a shell command try and execute as UNIX Command
     else{
         
         status = unixCommand();
@@ -861,6 +879,70 @@ void ToyShell::frontJob(string temp){
         cout<<"Error: process not found"<<endl;
         return;
     }
+}
+
+int ToyShell::cull(string temp){
+    int status;
+    pid_t waitPid;
+    int j=0;
+    int processId=0;
+    int found = false;
+    // object from the class stringstream
+    stringstream convert(temp);    
+    int jobId = 0;
+    //convert string into integer
+    convert >> jobId;
+    
+    if(jobId <0 || jobId>jobStored){
+        cout<<"Error: invalid job id entered"<<endl;
+        return 1;
+    }
+    
+    //find process id for corresponding job id
+    for(int i=0; i<jobSize; i++){
+        if(jobs[i].jobId==jobId)
+        {
+            processId = jobs[i].processId;
+            j = i;
+            found = true;
+            break;
+        }    
+    }
+    if(found){
+        //convert int to string
+        stringstream out;
+        out << processId;
+        string pid = out.str();
+
+        //kill the remaining job
+        string command = "kill "+pid;
+       
+        //clear out work command
+        if(workCommand->size !=0){
+            for (int i=0; i<workCommand->size; i++)
+                free(workCommand->token[i]); //frees up each space in memory
+
+            //Clean up the array of words
+            delete [] workCommand->token;     // cleans up words allocated space
+        }
+        tokenize(command);
+        status = unixCommand();
+        
+        //removes completed job from the table
+        if(j=jobSize-1){
+            jobs[j].jobId=jobs[jobSize-1].jobId;
+            jobs[j].processId=jobs[jobSize-1].processId;
+            jobs[j].line=jobs[jobSize-1].line; 
+            jobs[j].timeInfo=jobs[jobSize-1].timeInfo;
+        }
+        cout<<"hehe "<<endl;
+        jobSize--;   
+    }
+    else{
+        cout<<"Error: process not found"<<endl;
+        return 1;
+    }
+    return status;
 }
 
 void ToyShell::changeDirectories(){
