@@ -25,6 +25,7 @@ class ToyShell
     ~ToyShell();
       
     void tokenize( string command);
+    void tokenizeTemp( string command);
     void tokenizePath( char* command);
     bool alias();
     int getHistoryCommand(string line);
@@ -42,6 +43,7 @@ class ToyShell
     int count;
     string terminator;
     command * workCommand;
+    command * tempCommand;
     command * path;
     
     int jobLimit;
@@ -54,7 +56,8 @@ class ToyShell
     string * history;
     int historySize;
     int historyArraySize;
-    
+    int input;
+    int output;
     
     void increaseCount();
    private:
@@ -75,4 +78,6 @@ class ToyShell
     bool condition();
     int conditionHelper(bool);
     void changeDirectories();
+    string checkPath(string);
+    int piping();
 };

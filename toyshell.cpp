@@ -15,8 +15,6 @@
 #include <dirent.h>
 
 
-#include <stdio.h>
-#include <stdlib.h>
 
 
 /* Constructor called on inital creation of toyshell object
@@ -36,6 +34,8 @@ ToyShell::ToyShell()
    historyArraySize=10;
    oldpwd = getenv ("PWD");
 
+   input=0;
+   output=1;
    jobs = new job[10];
     
   //get shellname and terminator from file 
@@ -123,6 +123,33 @@ void ToyShell::tokenize(string commandLine){
        workCommand->size = i;    
   }
 }
+void ToyShell::tokenizeTemp(string commandLine){
+    
+   if(!commandLine.empty()){  
+       
+       tempCommand = new command; 
+
+       char delim[]=" ,;";
+       char *workCommandLine = new char [commandLine.length() + 1];  //c-string use$
+       tempCommand->token= new char*[commandLine.length()];
+       strcpy(workCommandLine, commandLine.c_str());
+       int i=0; //initilize the counter
+
+       tempCommand->token[i] = strdup(strtok(workCommandLine, delim));
+
+       char *test; 
+       do
+       {
+        i++;
+        test=strtok(NULL, delim);
+        if(test==NULL)
+            break;
+        tempCommand->token[i]=strdup(test);  
+       } while(test!=NULL); 
+
+       tempCommand->size = i;    
+  }
+}
 /* TokenizePath is called when a unix command needs to be executed
 * It converts the passed string into a cstring
 * This cstring is then broken apart into seperate words using strtok
@@ -134,7 +161,7 @@ void ToyShell::tokenizePath(char* commandLine){
        
        path = new command; 
 
-       char delim[]=":";
+       char delim[]=" :";
        char *workCommandLine = new char [strlen(commandLine) + 1];  //c-string use$
        path->token= new char*[strlen(commandLine)];
        strcpy(workCommandLine, commandLine);
@@ -231,6 +258,15 @@ int ToyShell::execute( ){
          }
      }
     
+    //Check for any pipe commands
+    for(int i=0; i<workCommand->size; i++){
+        string temp = workCommand->token[i];
+        if(!temp.compare("@")){
+            status = piping();
+            return status;
+        }
+        
+    }
     
     
     //make all lowercase
@@ -1146,4 +1182,202 @@ int ToyShell::conditionHelper(bool found) {
         return status;
     } 
     return 0;
+}
+
+
+int ToyShell::piping(){
+    
+    pid_t childPid = 0;
+    pid_t waitPid;
+    int status;
+
+ 
+    bool isWait1 = true;
+    bool isWait2 = true;
+    string spath="";
+    int tempIn= input;
+    int tempOut = output;
+    int temp_des[2];
+    temp_des[0] = fileno(stdin);
+    temp_des[1] = fileno(stdout);
+    
+    for(int i=0; i<workCommand->size; i++)
+    {
+        string temp= workCommand->token[i];
+        if(!temp.compare("@") || i== workCommand->size-1)//hit pipe or end of command
+        {
+            
+            if(i-1<0 || i>= workCommand->size)
+            {
+                cout<<"Error: formatting of pipe command is off"<<endl;
+                return 1;
+            }
+            
+            //get all parts of first UNIX command
+            string command1="";
+            int j=0;
+            if(i== workCommand->size-1)
+            {
+                for( j =i; j>-1; j--)
+                {
+                    string temp= workCommand->token[j];
+                    if(!temp.compare("@")){
+                        j++;;
+                        i++;
+                        break;
+                    }
+                }
+            }
+            else{
+                for( j =i-1; j>=0; j--)
+                {
+                    string temp= workCommand->token[j];
+                    if(!temp.compare("@") || j==0)
+                        break;
+                }
+            }
+           
+           
+            command1 = workCommand->token[j];
+            string commandRest="";
+            for(int k=j; k<i; k++)
+                commandRest += string(workCommand->token[k])+" ";
+            
+            
+            
+            
+            cout<<"test  "<<commandRest<<endl;
+        
+            
+            tokenizeTemp(commandRest);
+         
+            //Check if both commands are unix commands
+            
+            string spath1 = checkPath(command1);
+            cout<<"spath1 "<<spath1<<endl;
+            for(int i=0; i<tempCommand->size; i++)
+                cout<<tempCommand->token[i]<<endl;
+            
+            if(!spath1.compare(command1))
+            {
+                cout<<"Error: UNIX command "<<command1<<" entered was not recongized"<<endl;
+                return 1;
+            }
+           
+            
+            int f_des[2];
+
+            if (pipe(f_des)==-1)
+            {
+                    perror("Pipe");
+                    return 1;
+            }
+         
+            childPid = fork ();
+            if (childPid == -1)
+            {
+                fprintf (stderr, "Process %d failed to fork!\n", getpid ());
+                return 1 ;
+            }
+            //in child process
+            if (childPid == 0)
+            {
+                dup2(f_des[1], temp_des[1]);
+                close(f_des[0]);
+                close(f_des[1]);
+                
+                
+               
+                execve(spath1.c_str(),tempCommand->token, environ);
+                //unixExecution(spath1);
+                //return 10 to stop shell if error has occurred with execve
+                //return 10;
+                
+               // dup2(f_des[1], fileno(stdout));
+                     //   close(f_des[0]);
+                     //   close(f_des[1]);
+                        //execlp(command1.c_str(), command1.c_str(), NULL);
+                cout<<"Bad things happened"<<endl;
+                        exit(3);
+                
+            }
+            //in parent
+            else
+            {
+                
+                
+                //if parent should wait for child to return
+                
+                   // do
+                   // {
+                       // waitPid = wait (&status);  
+                    //} while (waitPid != childPid);      
+                
+                temp_des[0]  = f_des[0];
+                cout<<"in the parent now"<<endl;
+                // dup2(f_des[0], fileno(stdin));
+                 //   close(f_des[0]);
+                      //  close(f_des[1]);
+                       // execlp("grep", "grep","toyshell", NULL);
+                        //exit(4);
+                
+            }
+
+
+
+
+
+            
+            
+            
+            
+            
+        }   
+    }
+    
+    //dup2(temp_des[0], fileno(stdin));
+    dup2(fileno(stdout),temp_des[1] );
+      
+
+  
+}
+    
+    
+string ToyShell::checkPath(string command){
+    //first get full path 
+    char* pPath;
+    pPath = getenv ("PATH");
+    string spath="";
+    bool found = false;
+    if (pPath!=NULL){
+        //then seperate and tokenize the path by :
+        tokenizePath(pPath);
+
+        //loop through each name in path/
+        for(int i=0; i<path->size; i++){
+
+        //append command to the end
+        spath= path->token[i];
+        spath +="/";
+        spath +=command;
+
+        //check if file is there 
+        //and if it is executable
+        if((access(spath.c_str(), X_OK))==0){
+            found=true;
+            break;
+        }
+                
+        }
+    }
+    //frees up each space in memory->clears out tokenize
+    for (int i=0; i<path->size; i++)
+            free(path->token[i]); 
+
+    //Clean up the array of words
+    delete [] path->token;
+    if(found)
+        return spath;
+    else
+        return command;
 }
