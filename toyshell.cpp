@@ -1208,7 +1208,7 @@ int ToyShell::piping(){
     {
         int tempi =i;
         string temp= workCommand->token[i];
-        if(!temp.compare("@") || i== workCommand->size-1)//hit pipe or end of command
+        if(!temp.compare("@") || tempi== workCommand->size-1)//hit pipe or end of command
         {
             
             if(i-1<0 || i>= workCommand->size)
@@ -1304,26 +1304,23 @@ int ToyShell::piping(){
                      //   close(f_des[0]);
                      //   close(f_des[1]);
                         //execlp(command1.c_str(), command1.c_str(), NULL);
-                cout<<"Bad things happened"<<endl;
+                
                         exit(3);
                 
             }
             //in parent
             else
             {
-                
-                
-               
-                
                 cout<<"in the parent now"<< f_des[0]<<" "<<f_des[1]<<" "<<temp_des[0]<<" "<<temp_des[1]<<" "<<fileno(stdin)<<endl;
-                 dup2(f_des[1], temp_des[0]);
+                 dup2(f_des[0], temp_des[0]);
                 
                  //temp_des[0]=f_des[1] ;
                   cout<<"in the parent now afer"<< f_des[0]<<" "<<f_des[1]<<" "<<temp_des[0]<<" "<<temp_des[1]<<" "<<fileno(stdin)<<endl;
                 
-                 //close(f_des[0]);
-                        close(f_des[1]);
-                   sleep(50);    
+                 close(f_des[0]);
+                        //close(f_des[1]);
+                cout<<"tempi "<<tempi<<endl;
+                   sleep(20);    
                 
             }
 
