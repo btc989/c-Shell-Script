@@ -1201,8 +1201,12 @@ int ToyShell::piping(){
     temp_des[0] = fileno(stdin);
     temp_des[1] = fileno(stdout);
     
+    dup2( fileno(stdin),temp_des[0]);
+    dup2( fileno(stdout),temp_des[1]);
+    
     for(int i=0; i<workCommand->size; i++)
     {
+        int tempi =i;
         string temp= workCommand->token[i];
         if(!temp.compare("@") || i== workCommand->size-1)//hit pipe or end of command
         {
@@ -1250,7 +1254,7 @@ int ToyShell::piping(){
         
             
             tokenizeTemp(commandRest);
-         
+           tempCommand->token[tempCommand->size]= '\0';
             //Check if both commands are unix commands
             
             string spath1 = checkPath(command1);
@@ -1282,12 +1286,15 @@ int ToyShell::piping(){
             //in child process
             if (childPid == 0)
             {
-                dup2(f_des[1], temp_des[1]);
+                if(tempi= workCommand->size-1)
+                   dup2(f_des[1], fileno(stdout)); 
+                else
+                    dup2(f_des[1], temp_des[1]);
                 close(f_des[0]);
                 close(f_des[1]);
                 
                 
-               
+               cout<<"tester "<<temp_des[1]<<endl;
                 execve(spath1.c_str(),tempCommand->token, environ);
                 //unixExecution(spath1);
                 //return 10 to stop shell if error has occurred with execve
@@ -1306,20 +1313,17 @@ int ToyShell::piping(){
             {
                 
                 
-                //if parent should wait for child to return
+               
                 
-                   // do
-                   // {
-                       // waitPid = wait (&status);  
-                    //} while (waitPid != childPid);      
+                cout<<"in the parent now"<< f_des[0]<<" "<<f_des[1]<<" "<<temp_des[0]<<" "<<temp_des[1]<<" "<<fileno(stdin)<<endl;
+                 dup2(f_des[1], temp_des[0]);
                 
-                temp_des[0]  = f_des[0];
-                cout<<"in the parent now"<<endl;
-                // dup2(f_des[0], fileno(stdin));
-                 //   close(f_des[0]);
-                      //  close(f_des[1]);
-                       // execlp("grep", "grep","toyshell", NULL);
-                        //exit(4);
+                 //temp_des[0]=f_des[1] ;
+                  cout<<"in the parent now afer"<< f_des[0]<<" "<<f_des[1]<<" "<<temp_des[0]<<" "<<temp_des[1]<<" "<<fileno(stdin)<<endl;
+                
+                 //close(f_des[0]);
+                        close(f_des[1]);
+                   sleep(50);    
                 
             }
 
@@ -1336,7 +1340,7 @@ int ToyShell::piping(){
     }
     
     //dup2(temp_des[0], fileno(stdin));
-    dup2(fileno(stdout),temp_des[1] );
+    //dup2(fileno(stdout),temp_des[1] );
       
 
   
