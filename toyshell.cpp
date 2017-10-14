@@ -13,7 +13,7 @@
 #include <sys/types.h>
 #include <cstdio>
 #include <dirent.h>
-
+#include <fcntl.h>
 
 
 
@@ -34,8 +34,18 @@ ToyShell::ToyShell()
    historyArraySize=10;
    oldpwd = getenv ("PWD");
 
-   input=0;
-   output=1;
+    
+    
+    
+    //link variable to stdin and stdout
+   input=fileno(stdin);
+   output=fileno(stdout);
+   dup2(input, fileno(stdin));
+   dup2(output, fileno(stdout));
+    
+    
+    
+    
    jobs = new job[10];
     
   //get shellname and terminator from file 
@@ -257,6 +267,42 @@ int ToyShell::execute( ){
              return status;
          }
      }
+    //check for any input file
+    for(int i=0; i<workCommand->size; i++){
+        string temp = workCommand->token[i];
+        if(!temp.compare("[")){
+            
+            if(i+1 < workCommand->size){
+                
+                string filename = workCommand->token[i+1];
+                status = inputFile(filename);   
+            }
+            else{
+                cout<< "Error: missing file name"<<endl;
+                return 1;
+            }
+            
+            break; 
+        } 
+    }
+    //check for any output file
+    for(int i=0; i<workCommand->size; i++){
+        string temp = workCommand->token[i];
+        if(!temp.compare("]")){
+            if(i+1 < workCommand->size){
+                
+                string filename = workCommand->token[i+1];
+                status = outputFile(filename);   
+            }
+            else{
+                cout<< "Error: missing file name"<<endl;
+                return 1;
+            }
+            
+            break; 
+        }
+    }
+    
     
     //Check for any pipe commands
     for(int i=0; i<workCommand->size; i++){
@@ -1495,4 +1541,36 @@ int ToyShell::executeScript(){
         return 1;
     }
     
+}
+
+
+int ToyShell::inputFile(string fileName){
+  
+   int inFile;
+   inFile=open(fileName.c_str(),O_RDONLY);
+   if(inFile != -1){
+       //copy file over to input varaible which is hopefully linked to stdin
+       input = inFile;
+       dup2( inFile, input);  
+       close(inFile);
+   }
+   else{
+       cout<<"Error could not open file"<<endl;
+       return 1;
+   }
+}
+int ToyShell::outputFile(string fileName){
+  
+   int outFile;
+   outFile=open(fileName.c_str(),O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR);
+   if(outFile != -1){
+       //copy file over to output varaible which is hopefully linked to stdout
+       output = outFile;
+       dup2( outFile, output);  
+       close(outFile);
+   }
+   else{
+       cout<<"Error could not open file"<<endl;
+       return 1;
+   }  
 }

@@ -81,4 +81,6 @@ class ToyShell
     string checkPath(string);
     int executeScript();
     int piping();
+    int inputFile(string);
+    int outputFile(string);
 };
