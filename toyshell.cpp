@@ -281,15 +281,19 @@ int ToyShell::execute( ){
     else if(!command.compare("setshellname")){
         if(workCommand->size>1)
             setShellName(workCommand->token[1]);
-        else
+        else{
              cout<<"Missing Parameter: new shell name"<<endl;
+             status=1;
+        }
     }
     //sets terminator
     else if( !command.compare("setterminator")){
         if(workCommand->size>1)
             setShellTerminator(workCommand->token[1]);
-        else
+        else{
              cout<<"Missing Parameter: new shell terminator"<<endl;
+             status =1;
+        }
     }
 
     //lists current history -> default array of 10
@@ -310,16 +314,20 @@ int ToyShell::execute( ){
      else if( !command.compare("savenewnames")){
         if(workCommand->size>1)
             saveAlias(workCommand->token[1]);
-        else
+        else{
              cout<<"Missing Parameter: file name"<<endl;
+            status = 1;
+        }
     } 
 
       //readnewnames read all aliases from file
     else if( !command.compare("readnewnames")){
         if(workCommand->size>1)
             readAlias(workCommand->token[1]);
-        else
+        else{
              cout<<"Missing Parameter: file name"<<endl;
+            status =1;
+        }
     } 
 
     //output all background process
@@ -330,21 +338,27 @@ int ToyShell::execute( ){
      else if( !command.compare("frontjob")){
         if(workCommand->size>1)
             frontJob(workCommand->token[1]);
-        else
+        else{
              cout<<"Missing Parameter: job id"<<endl;
+             status=1;
+        }
     } 
     
     // moves kill background job
      else if(!command.compare("cull")){
         if(workCommand->size>1)
             status=cull(workCommand->token[1]);
-        else
+        else{
              cout<<"Missing Parameter: job id"<<endl;
+             status=1;
+        }
     } 
 
     else if (!command.compare("back")){
-        if(workCommand->size>1)
+        if(workCommand->size>1){
             cout << "Too may parameters" << endl;
+            status=1;
+        }
         else
             backCommand();
     }
@@ -360,8 +374,10 @@ int ToyShell::execute( ){
             temp = condition();
             status = conditionHelper(temp);
         }
-        else
+        else{
             cout << "Missing Parameters" << endl;
+            status=1;
+        }
     }
 
     //conditional excecution command
@@ -372,16 +388,26 @@ int ToyShell::execute( ){
             temp = condition();
             status = conditionHelper(!temp);
         }
-        else
+        else{
             cout << "Missing Parameters" << endl;
+            status=1;
+        }
     }
-    else if ( !command.compare("display")){
+    else if ( !command.compare("output")){
         //print any text after display
        for(int i=1; i<workCommand->size; i++)
        {
            cout<<workCommand->token[i]<<" ";
        }
         cout<<endl;
+    }
+    else if ( !command.compare("usescript")){
+         if(workCommand->size<2){
+            cout << "Missing Parameters" << endl;
+            status=1;
+         }
+        else
+           status= executeScript();
     }
     //if not a shell command try and execute as UNIX Command
     else{
@@ -1191,7 +1217,7 @@ int ToyShell::piping(){
     pid_t waitPid;
     int status;
 
- 
+ int count =0;
     bool isWait1 = true;
     bool isWait2 = true;
     string spath="";
@@ -1286,26 +1312,38 @@ int ToyShell::piping(){
             //in child process
             if (childPid == 0)
             {
-                if(tempi= workCommand->size-1)
+                
+                dup2(temp_des[0], fileno(stdin));
+                
+                
+               if(tempi == workCommand->size-1){
                    dup2(f_des[1], fileno(stdout)); 
-                else
-                    dup2(f_des[1], temp_des[1]);
+                   
+                   
+                   
+                   
+                   
+                   
+                   
+                   char foo[4096];
+                int nbytes = read(fileno(stdin), foo, sizeof(foo));
+    printf("Output child : (%.*s)\n", nbytes, foo);
+                   
+                   
+                    
+                }
+               else
+                dup2(f_des[1], temp_des[1]);
+                
+                
                 close(f_des[0]);
                 close(f_des[1]);
-                
-                
-               cout<<"tester "<<temp_des[1]<<endl;
+                close(temp_des[0]);
+                   
                 execve(spath1.c_str(),tempCommand->token, environ);
-                //unixExecution(spath1);
-                //return 10 to stop shell if error has occurred with execve
-                //return 10;
                 
-               // dup2(f_des[1], fileno(stdout));
-                     //   close(f_des[0]);
-                     //   close(f_des[1]);
-                        //execlp(command1.c_str(), command1.c_str(), NULL);
-                
-                        exit(3);
+               // cout<<"bad things happend "<<endl;
+                exit(3);
                 
             }
             //in parent
@@ -1314,14 +1352,21 @@ int ToyShell::piping(){
                 cout<<"in the parent now"<< f_des[0]<<" "<<f_des[1]<<" "<<temp_des[0]<<" "<<temp_des[1]<<" "<<fileno(stdin)<<endl;
                  dup2(f_des[0], temp_des[0]);
                 
+                temp_des[0]= f_des[0];
                  //temp_des[0]=f_des[1] ;
                   cout<<"in the parent now afer"<< f_des[0]<<" "<<f_des[1]<<" "<<temp_des[0]<<" "<<temp_des[1]<<" "<<fileno(stdin)<<endl;
+                 
+                    //close(f_des[0]);
+                        close(f_des[1]);
                 
-                 close(f_des[0]);
-                        //close(f_des[1]);
+                char foo[4096];
+                int nbytes = read(f_des[0], foo, sizeof(foo));
+    printf("Output: (%.*s)\n", nbytes, foo);
+                
+                
                 cout<<"tempi "<<tempi<<endl;
-                   sleep(20);    
-                
+                      
+                count++;
             }
 
 
@@ -1339,7 +1384,7 @@ int ToyShell::piping(){
     //dup2(temp_des[0], fileno(stdin));
     //dup2(fileno(stdout),temp_des[1] );
       
-
+ sleep(20);
   
 }
     
@@ -1381,4 +1426,73 @@ string ToyShell::checkPath(string command){
         return spath;
     else
         return command;
+}
+
+
+
+int ToyShell::executeScript(){
+    
+    
+   string fileName = workCommand->token[1];
+    //get shellname and terminator from file 
+   fstream read;
+   string command;
+   bool aliasTest = false;
+   int found =0;
+    int status =0;
+    
+   read.open(fileName.c_str());
+   if(read.is_open()){
+       while(!read.eof()){
+           getline(read, command);
+           
+           cout<<"command "<<command<<endl;
+           //frees up each space in memory->clears out tokenize
+            for (int i=0; i<workCommand->size; i++)
+                    free(workCommand->token[i]); 
+
+            //Clean up the array of words
+            delete [] workCommand->token;
+           
+          
+           //find if any comments are in string
+           found = command.find('$');
+            if(found >=0){ //omit any text after comment
+                if(found==0 )
+                    command="";
+                else
+                    command = command.substr(0,found);
+            }  
+
+           
+            if(!command.empty()){     
+
+                   tokenize(command);
+
+                    aliasTest = true;
+                    //check if command is alias
+                    //if no more aliases are found variable is set to false;
+                    do{ 
+                        aliasTest = alias(); 
+                    }while(aliasTest);   
+
+                
+                  //Execute Command
+                  status = execute();
+                cout<<"after execute "<<status<<endl;
+                  if(status != 0){
+                    cout << "Stopping Script" << endl;
+                      read.close(); 
+                      return 1;
+                    }
+               }
+       }
+        read.close(); 
+       return 0;
+   }
+    else{
+       cout<<"Error: could not open script file"<<endl;   
+        return 1;
+    }
+    
 }

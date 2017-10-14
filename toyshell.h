@@ -79,5 +79,6 @@ class ToyShell
     int conditionHelper(bool);
     void changeDirectories();
     string checkPath(string);
+    int executeScript();
     int piping();
 };
