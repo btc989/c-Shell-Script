@@ -83,4 +83,5 @@ class ToyShell
     int piping();
     int inputFile(string);
     int outputFile(string);
+    int subProcess(string path, int inputStream);
 };

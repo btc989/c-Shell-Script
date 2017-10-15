@@ -1259,9 +1259,8 @@ int ToyShell::conditionHelper(bool found) {
 
 int ToyShell::piping(){
     
-    pid_t childPid = 0;
-    pid_t waitPid;
-    int status;
+    
+  
 
  int count =0;
     bool isWait1 = true;
@@ -1270,11 +1269,18 @@ int ToyShell::piping(){
     int tempIn= input;
     int tempOut = output;
     int temp_des[2];
-    temp_des[0] = fileno(stdin);
-    temp_des[1] = fileno(stdout);
     
-    dup2( fileno(stdin),temp_des[0]);
-    dup2( fileno(stdout),temp_des[1]);
+    //will be changed to input and output variables
+   // temp_des[0] = fileno(stdin);
+    //temp_des[1] = fileno(stdout);
+    
+   // dup2( fileno(stdin),temp_des[0]);
+    //dup2( fileno(stdout),temp_des[1]);
+    
+    
+   // dup2( temp_des[0], fileno(stdin));
+    //dup2( temp_des[1],fileno(stdout) );
+    int fd = dup(0);
     
     for(int i=0; i<workCommand->size; i++)
     {
@@ -1325,7 +1331,7 @@ int ToyShell::piping(){
             cout<<"test  "<<commandRest<<endl;
         
             
-            tokenizeTemp(commandRest);
+           tokenizeTemp(commandRest);
            tempCommand->token[tempCommand->size]= '\0';
             //Check if both commands are unix commands
             
@@ -1340,100 +1346,73 @@ int ToyShell::piping(){
                 return 1;
             }
            
-            
-            int f_des[2];
-
-            if (pipe(f_des)==-1)
+            fd = subProcess(spath1,fd);
+            if (fd < 0)
             {
-                    perror("Pipe");
-                    return 1;
-            }
-         
-            childPid = fork ();
-            if (childPid == -1)
-            {
-                fprintf (stderr, "Process %d failed to fork!\n", getpid ());
-                return 1 ;
-            }
-            //in child process
-            if (childPid == 0)
-            {
-                
-                dup2(temp_des[0], fileno(stdin));
-                
-                
-               if(tempi == workCommand->size-1){
-                   dup2(f_des[1], fileno(stdout)); 
-                   
-                   
-                   
-                   
-                   
-                   
-                   
-                   char foo[4096];
-                int nbytes = read(fileno(stdin), foo, sizeof(foo));
-    printf("Output child : (%.*s)\n", nbytes, foo);
-                   
-                   
-                    
-                }
-               else
-                dup2(f_des[1], temp_des[1]);
-                
-                
-                close(f_des[0]);
-                close(f_des[1]);
-                close(temp_des[0]);
-                   
-                execve(spath1.c_str(),tempCommand->token, environ);
-                
-               // cout<<"bad things happend "<<endl;
-                exit(3);
-                
-            }
-            //in parent
-            else
-            {
-                cout<<"in the parent now"<< f_des[0]<<" "<<f_des[1]<<" "<<temp_des[0]<<" "<<temp_des[1]<<" "<<fileno(stdin)<<endl;
-                 dup2(f_des[0], temp_des[0]);
-                
-                temp_des[0]= f_des[0];
-                 //temp_des[0]=f_des[1] ;
-                  cout<<"in the parent now afer"<< f_des[0]<<" "<<f_des[1]<<" "<<temp_des[0]<<" "<<temp_des[1]<<" "<<fileno(stdin)<<endl;
-                 
-                    //close(f_des[0]);
-                        close(f_des[1]);
-                
-                char foo[4096];
-                int nbytes = read(f_des[0], foo, sizeof(foo));
-    printf("Output: (%.*s)\n", nbytes, foo);
-                
-                
-                cout<<"tempi "<<tempi<<endl;
-                      
-                count++;
-            }
-
-
-
-
-
-            
-            
-            
-            
-            
+                return 1;
+            }   
         }   
     }
     
-    //dup2(temp_des[0], fileno(stdin));
-    //dup2(fileno(stdout),temp_des[1] );
-      
- sleep(20);
+    char foo[4096];
+    int nbytes = read(fd, foo, sizeof(foo));
+    printf("Output: (%.*s)\n", nbytes, foo); 
+    
+    close(0);
+    dup(fd);
+    close(fd);
+     
+    
+    sleep(20);
+    return 0;
+ 
   
 }
+
+int ToyShell::subProcess( string path, int inputStream){
     
+     int f_des[2];
+     pid_t childPid = 0;
+     if (pipe(f_des)==-1)
+     {
+        perror("Pipe");
+        close(inputStream);
+        return 1;
+     }
+         
+     childPid = fork ();
+    if (childPid == -1)
+    {
+        fprintf (stderr, "Process %d failed to fork!\n", getpid ());
+        close(f_des[0]);
+        close(f_des[1]);
+        close(inputStream);
+        return 1 ;
+    }
+    //in child process
+    if (childPid == 0)
+    {
+        close(f_des[0]);
+
+        close(0);
+        dup(inputStream);
+        close(inputStream);
+
+        close(1);
+        dup(f_des[1]);
+        close(f_des[1]);
+           
+        execve(path.c_str(),tempCommand->token, environ);
+        perror("execve");       
+        exit(3);
+                
+     }
+           
+     close(inputStream);
+     close(f_des[1]);
+
+    return f_des[0];
+}
     
 string ToyShell::checkPath(string command){
     //first get full path 
