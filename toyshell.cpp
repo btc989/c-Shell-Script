@@ -303,7 +303,6 @@ int ToyShell::execute( ){
         }
     }
     
-    
     //Check for any pipe commands
     for(int i=0; i<workCommand->size; i++){
         string temp = workCommand->token[i];
@@ -312,18 +311,15 @@ int ToyShell::execute( ){
     
         if(!temp.compare("@")){
             status = piping();
-            cout<<"status "<<status<<endl;
             dup2( tempin, 0);
             dup2( tempout, 1);
             close(tempin);
             close(tempout);
             
             return status;
-        }
-        
+        } 
     }
-    
-    
+     
     //make all lowercase
     for(int i=0; i<command.length(); i++)
         command[i] = tolower(command[i]);
@@ -836,11 +832,7 @@ int ToyShell::unixCommand(){
             }
             else{
                 //store not waited for job
-                
-                storeBackJob(childPid);
-                
-                
-                
+                storeBackJob(childPid);   
             }
             //otherwise continue
             return 0;
@@ -1269,7 +1261,17 @@ int ToyShell::conditionHelper(bool found) {
 int ToyShell::piping(){
     
     int fd = dup(0); //will have to change to proper input 
-    
+    bool isWait = true;
+      string bcommand = workCommand->token[workCommand->size-1];
+
+    //if process is  not supposed to wait
+    if(!bcommand.compare("-")){
+        
+        isWait = false;
+        //remove - sign 
+        workCommand->token[workCommand->size-1]= '\0';
+        workCommand->size=workCommand->size-1 ;  
+    } 
     for(int i=0; i<workCommand->size; i++)
     {
         int tempi =i;
@@ -1323,7 +1325,7 @@ int ToyShell::piping(){
                 return 1;
             }
            
-            fd = subProcess(spath1,fd);
+            fd = subProcess(spath1,fd, isWait);
             if (fd < 0)
             {
                 return 1;
@@ -1345,7 +1347,7 @@ int ToyShell::piping(){
   
 }
 
-int ToyShell::subProcess( string path, int inputStream){
+int ToyShell::subProcess( string path, int inputStream, bool isWait){
     
      int f_des[2];
      pid_t childPid = 0;
@@ -1383,7 +1385,9 @@ int ToyShell::subProcess( string path, int inputStream){
         exit(3);
                 
      }
-           
+     if(!isWait) 
+         storeBackJob(childPid);
+    
      close(inputStream);
      close(f_des[1]);
 
