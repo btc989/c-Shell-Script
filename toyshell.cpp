@@ -13,10 +13,8 @@
 #include <sys/types.h>
 #include <cstdio>
 #include <dirent.h>
+#include <fcntl.h>
 
-
-#include <stdio.h>
-#include <stdlib.h>
 
 
 /* Constructor called on inital creation of toyshell object
@@ -36,6 +34,18 @@ ToyShell::ToyShell()
    historyArraySize=10;
    oldpwd = getenv ("PWD");
 
+    
+    
+    
+    //link variable to stdin and stdout
+   input=fileno(stdin);
+   output=fileno(stdout);
+   dup2(input, fileno(stdin));
+   dup2(output, fileno(stdout));
+    
+    
+    
+    
    jobs = new job[10];
     
   //get shellname and terminator from file 
@@ -123,6 +133,33 @@ void ToyShell::tokenize(string commandLine){
        workCommand->size = i;    
   }
 }
+void ToyShell::tokenizeTemp(string commandLine){
+    
+   if(!commandLine.empty()){  
+       
+       tempCommand = new command; 
+
+       char delim[]=" ,;";
+       char *workCommandLine = new char [commandLine.length() + 1];  //c-string use$
+       tempCommand->token= new char*[commandLine.length()];
+       strcpy(workCommandLine, commandLine.c_str());
+       int i=0; //initilize the counter
+
+       tempCommand->token[i] = strdup(strtok(workCommandLine, delim));
+
+       char *test; 
+       do
+       {
+        i++;
+        test=strtok(NULL, delim);
+        if(test==NULL)
+            break;
+        tempCommand->token[i]=strdup(test);  
+       } while(test!=NULL); 
+
+       tempCommand->size = i;    
+  }
+}
 /* TokenizePath is called when a unix command needs to be executed
 * It converts the passed string into a cstring
 * This cstring is then broken apart into seperate words using strtok
@@ -134,7 +171,7 @@ void ToyShell::tokenizePath(char* commandLine){
        
        path = new command; 
 
-       char delim[]=":";
+       char delim[]=" :";
        char *workCommandLine = new char [strlen(commandLine) + 1];  //c-string use$
        path->token= new char*[strlen(commandLine)];
        strcpy(workCommandLine, commandLine);
@@ -230,7 +267,61 @@ int ToyShell::execute( ){
              return status;
          }
      }
+    //check for any input file
+    for(int i=0; i<workCommand->size; i++){
+        string temp = workCommand->token[i];
+        if(!temp.compare("[")){
+            
+            if(i+1 < workCommand->size){
+                
+                string filename = workCommand->token[i+1];
+                status = inputFile(filename);   
+            }
+            else{
+                cout<< "Error: missing file name"<<endl;
+                return 1;
+            }
+            
+            break; 
+        } 
+    }
+    //check for any output file
+    for(int i=0; i<workCommand->size; i++){
+        string temp = workCommand->token[i];
+        if(!temp.compare("]")){
+            if(i+1 < workCommand->size){
+                
+                string filename = workCommand->token[i+1];
+                status = outputFile(filename);   
+            }
+            else{
+                cout<< "Error: missing file name"<<endl;
+                return 1;
+            }
+            
+            break; 
+        }
+    }
     
+    
+    //Check for any pipe commands
+    for(int i=0; i<workCommand->size; i++){
+        string temp = workCommand->token[i];
+        int tempin=dup(0);
+        int tempout=dup(1);
+    
+        if(!temp.compare("@")){
+            status = piping();
+            cout<<"status "<<status<<endl;
+            dup2( tempin, 0);
+            dup2( tempout, 1);
+            close(tempin);
+            close(tempout);
+            
+            return status;
+        }
+        
+    }
     
     
     //make all lowercase
@@ -245,15 +336,19 @@ int ToyShell::execute( ){
     else if(!command.compare("setshellname")){
         if(workCommand->size>1)
             setShellName(workCommand->token[1]);
-        else
+        else{
              cout<<"Missing Parameter: new shell name"<<endl;
+             status=1;
+        }
     }
     //sets terminator
     else if( !command.compare("setterminator")){
         if(workCommand->size>1)
             setShellTerminator(workCommand->token[1]);
-        else
+        else{
              cout<<"Missing Parameter: new shell terminator"<<endl;
+             status =1;
+        }
     }
 
     //lists current history -> default array of 10
@@ -274,16 +369,20 @@ int ToyShell::execute( ){
      else if( !command.compare("savenewnames")){
         if(workCommand->size>1)
             saveAlias(workCommand->token[1]);
-        else
+        else{
              cout<<"Missing Parameter: file name"<<endl;
+            status = 1;
+        }
     } 
 
       //readnewnames read all aliases from file
     else if( !command.compare("readnewnames")){
         if(workCommand->size>1)
             readAlias(workCommand->token[1]);
-        else
+        else{
              cout<<"Missing Parameter: file name"<<endl;
+            status =1;
+        }
     } 
 
     //output all background process
@@ -294,21 +393,27 @@ int ToyShell::execute( ){
      else if( !command.compare("frontjob")){
         if(workCommand->size>1)
             frontJob(workCommand->token[1]);
-        else
+        else{
              cout<<"Missing Parameter: job id"<<endl;
+             status=1;
+        }
     } 
     
     // moves kill background job
      else if(!command.compare("cull")){
         if(workCommand->size>1)
             status=cull(workCommand->token[1]);
-        else
+        else{
              cout<<"Missing Parameter: job id"<<endl;
+             status=1;
+        }
     } 
 
     else if (!command.compare("back")){
-        if(workCommand->size>1)
+        if(workCommand->size>1){
             cout << "Too may parameters" << endl;
+            status=1;
+        }
         else
             backCommand();
     }
@@ -324,8 +429,10 @@ int ToyShell::execute( ){
             temp = condition();
             status = conditionHelper(temp);
         }
-        else
+        else{
             cout << "Missing Parameters" << endl;
+            status=1;
+        }
     }
 
     //conditional excecution command
@@ -336,16 +443,26 @@ int ToyShell::execute( ){
             temp = condition();
             status = conditionHelper(!temp);
         }
-        else
+        else{
             cout << "Missing Parameters" << endl;
+            status=1;
+        }
     }
-    else if ( !command.compare("display")){
+    else if ( !command.compare("output")){
         //print any text after display
        for(int i=1; i<workCommand->size; i++)
        {
            cout<<workCommand->token[i]<<" ";
        }
         cout<<endl;
+    }
+    else if ( !command.compare("usescript")){
+         if(workCommand->size<2){
+            cout << "Missing Parameters" << endl;
+            status=1;
+         }
+        else
+           status= executeScript();
     }
     //if not a shell command try and execute as UNIX Command
     else{
@@ -1146,4 +1263,269 @@ int ToyShell::conditionHelper(bool found) {
         return status;
     } 
     return 0;
+}
+
+
+int ToyShell::piping(){
+    
+    int fd = dup(0); //will have to change to proper input 
+    
+    for(int i=0; i<workCommand->size; i++)
+    {
+        int tempi =i;
+        string temp= workCommand->token[i];
+        if(!temp.compare("@") || tempi== workCommand->size-1)//hit pipe or end of command
+        {
+            if(i-1<0 || i>= workCommand->size)
+            {
+                cout<<"Error: formatting of pipe command is off"<<endl;
+                return 1;
+            }
+            
+            //get all parts of first UNIX command
+            string command1="";
+            int j=0;
+            if(i== workCommand->size-1)
+            {
+                for( j =i; j>-1; j--)
+                {
+                    string temp= workCommand->token[j];
+                    if(!temp.compare("@")){
+                        j++;;
+                        i++;
+                        break;
+                    }
+                }
+            }
+            else{
+                for( j =i-1; j>=0; j--)
+                {
+                    string temp= workCommand->token[j];
+                    if(!temp.compare("@") || j==0)
+                        break;
+                }
+            }
+           
+            command1 = workCommand->token[j];
+            string commandRest="";
+            for(int k=j; k<i; k++)
+                commandRest += string(workCommand->token[k])+" ";
+            
+           tokenizeTemp(commandRest);
+           tempCommand->token[tempCommand->size]= '\0';
+            //Check if both commands are unix commands
+            
+            string spath1 = checkPath(command1);
+            
+            if(!spath1.compare(command1))
+            {
+                cout<<"Error: UNIX command "<<command1<<" entered was not recongized"<<endl;
+                return 1;
+            }
+           
+            fd = subProcess(spath1,fd);
+            if (fd < 0)
+            {
+                return 1;
+            }   
+        }   
+    }
+    
+    //Will have to change to proper output location
+    char foo[4096];
+    int nbytes = read(fd, foo, sizeof(foo));
+    printf("%.*s\n", nbytes, foo); 
+    
+    close(0);
+    dup(fd);
+    close(fd);
+     
+    return 0;
+ 
+  
+}
+
+int ToyShell::subProcess( string path, int inputStream){
+    
+     int f_des[2];
+     pid_t childPid = 0;
+     if (pipe(f_des)==-1)
+     {
+        perror("Pipe");
+        close(inputStream);
+        return 1;
+     }
+         
+     childPid = fork ();
+    if (childPid == -1)
+    {
+        fprintf (stderr, "Process %d failed to fork!\n", getpid ());
+        close(f_des[0]);
+        close(f_des[1]);
+        close(inputStream);
+        return 1 ;
+    }
+    //in child process
+    if (childPid == 0)
+    {
+        close(f_des[0]);
+
+        close(0);
+        dup(inputStream);
+        close(inputStream);
+
+        close(1);
+        dup(f_des[1]);
+        close(f_des[1]);
+           
+        execve(path.c_str(),tempCommand->token, environ);
+        perror("execve");       
+        exit(3);
+                
+     }
+           
+     close(inputStream);
+     close(f_des[1]);
+
+    return f_des[0];
+}
+    
+string ToyShell::checkPath(string command){
+    //first get full path 
+    char* pPath;
+    pPath = getenv ("PATH");
+    string spath="";
+    bool found = false;
+    if (pPath!=NULL){
+        //then seperate and tokenize the path by :
+        tokenizePath(pPath);
+
+        //loop through each name in path/
+        for(int i=0; i<path->size; i++){
+
+        //append command to the end
+        spath= path->token[i];
+        spath +="/";
+        spath +=command;
+
+        //check if file is there 
+        //and if it is executable
+        if((access(spath.c_str(), X_OK))==0){
+            found=true;
+            break;
+        }
+                
+        }
+    }
+    //frees up each space in memory->clears out tokenize
+    for (int i=0; i<path->size; i++)
+            free(path->token[i]); 
+
+    //Clean up the array of words
+    delete [] path->token;
+    if(found)
+        return spath;
+    else
+        return command;
+}
+
+
+
+int ToyShell::executeScript(){
+    
+    
+   string fileName = workCommand->token[1];
+    //get shellname and terminator from file 
+   fstream read;
+   string command;
+   bool aliasTest = false;
+   int found =0;
+    int status =0;
+    
+   read.open(fileName.c_str());
+   if(read.is_open()){
+       while(!read.eof()){
+           getline(read, command);
+           
+           cout<<"command "<<command<<endl;
+           //frees up each space in memory->clears out tokenize
+            for (int i=0; i<workCommand->size; i++)
+                    free(workCommand->token[i]); 
+
+            //Clean up the array of words
+            delete [] workCommand->token;
+           
+          
+           //find if any comments are in string
+           found = command.find('$');
+            if(found >=0){ //omit any text after comment
+                if(found==0 )
+                    command="";
+                else
+                    command = command.substr(0,found);
+            }  
+
+           
+            if(!command.empty()){     
+
+                   tokenize(command);
+
+                    aliasTest = true;
+                    //check if command is alias
+                    //if no more aliases are found variable is set to false;
+                    do{ 
+                        aliasTest = alias(); 
+                    }while(aliasTest);   
+
+                
+                  //Execute Command
+                  status = execute();
+                cout<<"after execute "<<status<<endl;
+                  if(status != 0){
+                    cout << "Stopping Script" << endl;
+                      read.close(); 
+                      return 1;
+                    }
+               }
+       }
+        read.close(); 
+       return 0;
+   }
+    else{
+       cout<<"Error: could not open script file"<<endl;   
+        return 1;
+    }
+    
+}
+
+
+int ToyShell::inputFile(string fileName){
+  
+   int inFile;
+   inFile=open(fileName.c_str(),O_RDONLY);
+   if(inFile != -1){
+       //copy file over to input varaible which is hopefully linked to stdin
+       input = inFile;
+       dup2( inFile, input);  
+       close(inFile);
+   }
+   else{
+       cout<<"Error could not open file"<<endl;
+       return 1;
+   }
+}
+int ToyShell::outputFile(string fileName){
+  
+   int outFile;
+   outFile=open(fileName.c_str(),O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR);
+   if(outFile != -1){
+       //copy file over to output varaible which is hopefully linked to stdout
+       output = outFile;
+       dup2( outFile, output);  
+       close(outFile);
+   }
+   else{
+       cout<<"Error could not open file"<<endl;
+       return 1;
+   }  
 }
