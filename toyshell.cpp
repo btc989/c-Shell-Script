@@ -1270,16 +1270,6 @@ int ToyShell::piping(){
     int tempOut = output;
     int temp_des[2];
     
-    //will be changed to input and output variables
-   // temp_des[0] = fileno(stdin);
-    //temp_des[1] = fileno(stdout);
-    
-   // dup2( fileno(stdin),temp_des[0]);
-    //dup2( fileno(stdout),temp_des[1]);
-    
-    
-   // dup2( temp_des[0], fileno(stdin));
-    //dup2( temp_des[1],fileno(stdout) );
     int fd = dup(0);
     
     for(int i=0; i<workCommand->size; i++)
@@ -1288,7 +1278,6 @@ int ToyShell::piping(){
         string temp= workCommand->token[i];
         if(!temp.compare("@") || tempi== workCommand->size-1)//hit pipe or end of command
         {
-            
             if(i-1<0 || i>= workCommand->size)
             {
                 cout<<"Error: formatting of pipe command is off"<<endl;
@@ -1319,26 +1308,16 @@ int ToyShell::piping(){
                 }
             }
            
-           
             command1 = workCommand->token[j];
             string commandRest="";
             for(int k=j; k<i; k++)
                 commandRest += string(workCommand->token[k])+" ";
-            
-            
-            
-            
-            cout<<"test  "<<commandRest<<endl;
-        
             
            tokenizeTemp(commandRest);
            tempCommand->token[tempCommand->size]= '\0';
             //Check if both commands are unix commands
             
             string spath1 = checkPath(command1);
-            cout<<"spath1 "<<spath1<<endl;
-            for(int i=0; i<tempCommand->size; i++)
-                cout<<tempCommand->token[i]<<endl;
             
             if(!spath1.compare(command1))
             {
@@ -1356,7 +1335,7 @@ int ToyShell::piping(){
     
     char foo[4096];
     int nbytes = read(fd, foo, sizeof(foo));
-    printf("Output: (%.*s)\n", nbytes, foo); 
+    printf("%.*s\n", nbytes, foo); 
     
     close(0);
     dup(fd);
