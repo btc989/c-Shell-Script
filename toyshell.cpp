@@ -307,8 +307,17 @@ int ToyShell::execute( ){
     //Check for any pipe commands
     for(int i=0; i<workCommand->size; i++){
         string temp = workCommand->token[i];
+        int tempin=dup(0);
+        int tempout=dup(1);
+    
         if(!temp.compare("@")){
             status = piping();
+            cout<<"status "<<status<<endl;
+            dup2( tempin, 0);
+            dup2( tempout, 1);
+            close(tempin);
+            close(tempout);
+            
             return status;
         }
         
@@ -1331,8 +1340,6 @@ int ToyShell::piping(){
     dup(fd);
     close(fd);
      
-    
-    sleep(20);
     return 0;
  
   
