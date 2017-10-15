@@ -1259,18 +1259,7 @@ int ToyShell::conditionHelper(bool found) {
 
 int ToyShell::piping(){
     
-    
-  
-
- int count =0;
-    bool isWait1 = true;
-    bool isWait2 = true;
-    string spath="";
-    int tempIn= input;
-    int tempOut = output;
-    int temp_des[2];
-    
-    int fd = dup(0);
+    int fd = dup(0); //will have to change to proper input 
     
     for(int i=0; i<workCommand->size; i++)
     {
@@ -1333,6 +1322,7 @@ int ToyShell::piping(){
         }   
     }
     
+    //Will have to change to proper output location
     char foo[4096];
     int nbytes = read(fd, foo, sizeof(foo));
     printf("%.*s\n", nbytes, foo); 
