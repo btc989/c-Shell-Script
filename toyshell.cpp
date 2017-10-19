@@ -247,6 +247,8 @@ bool ToyShell::alias(){
 */
 int ToyShell::execute( ){
 
+    input=dup(0);
+    output=dup(1);
     int status = 0;
     //just set command to make life easier
     string command = workCommand->token[0];
@@ -267,58 +269,7 @@ int ToyShell::execute( ){
              return status;
          }
      }
-    //check for any input file
-    for(int i=0; i<workCommand->size; i++){
-        string temp = workCommand->token[i];
-        if(!temp.compare("[")){
-            
-            if(i+1 < workCommand->size){
-                
-                string filename = workCommand->token[i+1];
-                status = inputFile(filename);   
-            }
-            else{
-                cout<< "Error: missing file name"<<endl;
-                return 1;
-            }
-            
-            break; 
-        } 
-    }
-    //check for any output file
-    for(int i=0; i<workCommand->size; i++){
-        string temp = workCommand->token[i];
-        if(!temp.compare("]")){
-            if(i+1 < workCommand->size){
-                
-                string filename = workCommand->token[i+1];
-                status = outputFile(filename);   
-            }
-            else{
-                cout<< "Error: missing file name"<<endl;
-                return 1;
-            }
-            
-            break; 
-        }
-    }
     
-    //Check for any pipe commands
-    for(int i=0; i<workCommand->size; i++){
-        string temp = workCommand->token[i];
-        int tempin=dup(0);
-        int tempout=dup(1);
-    
-        if(!temp.compare("@")){
-            status = piping();
-            dup2( tempin, 0);
-            dup2( tempout, 1);
-            close(tempin);
-            close(tempout);
-            
-            return status;
-        } 
-    }
      
     //make all lowercase
     for(int i=0; i<command.length(); i++)
@@ -722,6 +673,7 @@ int ToyShell::saveAlias(string fileName){
 int ToyShell::readAlias(string fileName){
     string newAlias="";
     string command="";
+    
     fstream read;    
     read.open(fileName.c_str());
     if(read.is_open()){
@@ -767,7 +719,78 @@ int ToyShell::unixCommand(){
     pid_t childPid = 0;
     pid_t waitPid;
     int status;
-
+    int tempin=dup(0);
+    int tempout=dup(1);
+    
+    //check for any input file
+    for(int i=0; i<workCommand->size; i++){
+        string temp = workCommand->token[i];
+        if(!temp.compare("[")){
+            
+            if(i+1 < workCommand->size){
+                
+                string filename = workCommand->token[i+1];
+                status = inputFile(filename);  
+                dup2( input, 0);
+                
+                for(int j = i; j< workCommand->size; j++)
+                {
+                    
+                    if(j<workCommand->size-1)
+                        workCommand->token[j] = workCommand->token[j+1];
+                    else
+                        workCommand->token[workCommand->size-1]= '\0';
+                    
+                }
+                workCommand->size--;
+            }
+            else{
+                cout<< "Error: missing file name"<<endl;
+                return 1;
+            }
+            break; 
+        } 
+    }
+    //check for any output file
+    for(int i=0; i<workCommand->size; i++){
+        string temp = workCommand->token[i];
+        if(!temp.compare("]")){
+            if(i+1 < workCommand->size){
+                
+                string filename = workCommand->token[i+1];
+                status = outputFile(filename);  
+                dup2( output, 1);
+                
+                //Assume output file is alway last 2 commands
+                workCommand->token[workCommand->size-2]= '\0';
+                   
+                workCommand->size = workCommand->size-2;
+            }
+            else{
+                cout<< "Error: missing file name"<<endl;
+                return 1;
+            }
+            
+            break; 
+        }
+    }
+    
+    //Check for any pipe commands
+    for(int i=0; i<workCommand->size; i++){
+        string temp = workCommand->token[i];
+        
+        
+        if(!temp.compare("@")){
+            int status = piping();
+             dup2( tempin, 0);
+            dup2( tempout, 1);
+            close(tempin);
+            close(tempout);  
+            return status;
+        } 
+    }
+    
+    
     //first get full path 
     char* pPath;
     pPath = getenv ("PATH");
@@ -835,6 +858,11 @@ int ToyShell::unixCommand(){
                 storeBackJob(childPid);   
             }
             //otherwise continue
+            dup2( tempin, 0);
+            dup2( tempout, 1);
+            close(tempin);
+            close(tempout);  
+            
             return 0;
         }
      }
@@ -848,6 +876,11 @@ int ToyShell::unixCommand(){
     //Clean up the array of words
     delete [] path->token;
   }
+   dup2( tempin, 0);
+            dup2( tempout, 1);
+            close(tempin);
+            close(tempout);  
+           
 }
 
 void ToyShell::unixExecution(string spath){
@@ -1044,7 +1077,6 @@ int ToyShell::cull(string temp){
             jobs[j].line=jobs[jobSize-1].line; 
             jobs[j].timeInfo=jobs[jobSize-1].timeInfo;
         }
-        cout<<"hehe "<<endl;
         jobSize--;   
     }
     else{
@@ -1260,7 +1292,7 @@ int ToyShell::conditionHelper(bool found) {
 
 int ToyShell::piping(){
     
-    int fd = dup(0); //will have to change to proper input 
+    int fd = dup(input); //will have to change to proper input 
     bool isWait = true;
       string bcommand = workCommand->token[workCommand->size-1];
 
@@ -1303,12 +1335,18 @@ int ToyShell::piping(){
                 for( j =i-1; j>=0; j--)
                 {
                     string temp= workCommand->token[j];
-                    if(!temp.compare("@") || j==0)
+                    if(!temp.compare("@")){
+                        j++;
                         break;
+                    }
+                    else if (j==0){
+                        break;
+                    }
                 }
             }
            
             command1 = workCommand->token[j];
+            
             string commandRest="";
             for(int k=j; k<i; k++)
                 commandRest += string(workCommand->token[k])+" ";
@@ -1336,6 +1374,9 @@ int ToyShell::piping(){
     //Will have to change to proper output location
     char foo[4096];
     int nbytes = read(fd, foo, sizeof(foo));
+    
+    dup2(output, fileno(stdout));
+    
     printf("%.*s\n", nbytes, foo); 
     
     close(0);
@@ -1511,7 +1552,7 @@ int ToyShell::inputFile(string fileName){
        //copy file over to input varaible which is hopefully linked to stdin
        input = inFile;
        dup2( inFile, input);  
-       close(inFile);
+       //close(inFile);
    }
    else{
        cout<<"Error could not open file"<<endl;
@@ -1526,7 +1567,7 @@ int ToyShell::outputFile(string fileName){
        //copy file over to output varaible which is hopefully linked to stdout
        output = outFile;
        dup2( outFile, output);  
-       close(outFile);
+       //close(outFile);
    }
    else{
        cout<<"Error could not open file"<<endl;
