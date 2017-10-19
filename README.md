@@ -18,3 +18,5 @@ Functions in progress:
 -Front Jobs
 
 
+Broken Spots (Assignment 3)
+- sort [ file1 @ grep bananas ] file5 - $ Background? Will the pain never end?
