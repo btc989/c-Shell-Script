@@ -20,7 +20,7 @@ Functions in progress:
 
 Broken Spots (Assignment 3)
 - sort [ file1 @ grep bananas ] file5 - $ Background? Will the pain never end?
-  <br>Error: grep: ]: No such file or directory
+  <br>Error: sort: ]: No such file or directory
 - NEWNAME wow sort [ dot.cpp @ grep .h @ grep sys @ grep wait ] file7 -
 - USESCRIPT script1 (backjob input output redirection issue)
 - USESCRIPT script2 (core dump, think its related to backjobs)
