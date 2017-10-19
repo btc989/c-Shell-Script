@@ -761,9 +761,16 @@ int ToyShell::unixCommand(){
                 status = outputFile(filename);  
                 dup2( output, 1);
                 
-                //Assume output file is alway last 2 commands
-                workCommand->token[workCommand->size-2]= '\0';
-                   
+                for(int j = i; j< workCommand->size; j++)
+                {
+                    
+                    if(j<workCommand->size-2)
+                        workCommand->token[j] = workCommand->token[j+2];
+                    else
+                        workCommand->token[workCommand->size-1]= '\0';
+                        workCommand->token[workCommand->size-2]= '\0';
+                    
+                }
                 workCommand->size = workCommand->size-2;
             }
             else{
