@@ -942,7 +942,7 @@ void ToyShell::backJobs(){
     pid_t waitPid;
     pid_t pid;
     int status;
-    
+    dup2(1, fileno(stdout);
     if(jobSize==0){
         cout<<"There are no background jobs executing"<<endl;
         return;
@@ -979,7 +979,8 @@ void ToyShell::backJobs(){
             }
             jobSize--;  
         }
-    }  
+    } 
+     dup2(output, fileno(stdout);
 }
 
 void ToyShell::frontJob(string temp){
