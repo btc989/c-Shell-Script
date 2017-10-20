@@ -33,7 +33,8 @@ ToyShell::ToyShell()
    historySize=0;
    historyArraySize=10;
    oldpwd = getenv ("PWD");
-
+   aInput=dup(0);
+   aOutput=dup(1);
     
     
     
@@ -249,6 +250,8 @@ int ToyShell::execute( ){
 
     input=dup(0);
     output=dup(1);
+    aInput=dup(0);
+    aOutput=dup(1);
     int status = 0;
     //just set command to make life easier
     string command = workCommand->token[0];
@@ -721,6 +724,8 @@ int ToyShell::unixCommand(){
     int status;
     int tempin=dup(0);
     int tempout=dup(1);
+    aInput=dup(0);
+    aOutput=dup(1);
     
     //check for any input file
     for(int i=0; i<workCommand->size; i++){
@@ -905,6 +910,7 @@ void ToyShell::unixExecution(string spath){
     
 void ToyShell::storeBackJob(int processId){
     
+    dup2(aOutput, fileno(stdout));
     if(jobLimit-1 < jobSize){
         cout<<"Error: Maximum number of jobs being executed, please wait for process to finish then try again"<<endl;
         return;
@@ -935,6 +941,8 @@ void ToyShell::storeBackJob(int processId){
     jobSize++;
     jobStored++;
     
+    dup2(output, fileno(stdout));
+    
 }
 
 void ToyShell::backJobs(){
@@ -942,7 +950,7 @@ void ToyShell::backJobs(){
     pid_t waitPid;
     pid_t pid;
     int status;
-    dup2(1, fileno(stdout);
+    dup2(1, fileno(stdout));
     if(jobSize==0){
         cout<<"There are no background jobs executing"<<endl;
         return;
@@ -1299,11 +1307,12 @@ int ToyShell::conditionHelper(bool found) {
 
 int ToyShell::piping(){
     
-    int fd = dup(input); //will have to change to proper input 
+    int status;
+    pid_t waitPid;
+    pid_t childPid;
     bool isWait = true;
-      string bcommand = workCommand->token[workCommand->size-1];
-
-    //if process is  not supposed to wait
+      //if process is  not supposed to wait
+    string bcommand = workCommand->token[workCommand->size-1];
     if(!bcommand.compare("-")){
         
         isWait = false;
@@ -1311,88 +1320,114 @@ int ToyShell::piping(){
         workCommand->token[workCommand->size-1]= '\0';
         workCommand->size=workCommand->size-1 ;  
     } 
-    for(int i=0; i<workCommand->size; i++)
-    {
-        int tempi =i;
-        string temp= workCommand->token[i];
-        if(!temp.compare("@") || tempi== workCommand->size-1)//hit pipe or end of command
+     
+        childPid = fork ();
+        if (childPid == -1)
         {
-            if(i-1<0 || i>= workCommand->size)
+            fprintf (stderr, "Process %d failed to fork!\n", getpid ());
+            return 1 ;
+        }
+        //in child process
+        if (childPid == 0)
+        {
+            int fd = dup(input); //will have to change to proper input 
+            for(int i=0; i<workCommand->size; i++)
             {
-                cout<<"Error: formatting of pipe command is off"<<endl;
-                return 1;
-            }
-            
-            //get all parts of first UNIX command
-            string command1="";
-            int j=0;
-            if(i== workCommand->size-1)
-            {
-                for( j =i; j>-1; j--)
+                int tempi =i;
+                string temp= workCommand->token[i];
+                if(!temp.compare("@") || tempi== workCommand->size-1)//hit pipe or end of command
                 {
-                    string temp= workCommand->token[j];
-                    if(!temp.compare("@")){
-                        j++;;
-                        i++;
-                        break;
+                    if(i-1<0 || i>= workCommand->size)
+                    {
+                        cout<<"Error: formatting of pipe command is off"<<endl;
+                        return 1;
                     }
-                }
+
+                    //get all parts of first UNIX command
+                    string command1="";
+                    int j=0;
+                    if(i== workCommand->size-1)
+                    {
+                        for( j =i; j>-1; j--)
+                        {
+                            string temp= workCommand->token[j];
+                            if(!temp.compare("@")){
+                                j++;;
+                                i++;
+                                break;
+                            }
+                        }
+                    }
+                    else{
+                        for( j =i-1; j>=0; j--)
+                        {
+                            string temp= workCommand->token[j];
+                            if(!temp.compare("@")){
+                                j++;
+                                break;
+                            }
+                            else if (j==0){
+                                break;
+                            }
+                        }
+                    }
+
+                    command1 = workCommand->token[j];
+
+                    string commandRest="";
+                    for(int k=j; k<i; k++)
+                        commandRest += string(workCommand->token[k])+" ";
+
+                   tokenizeTemp(commandRest);
+                   tempCommand->token[tempCommand->size]= '\0';
+                    //Check if both commands are unix commands
+
+                    string spath1 = checkPath(command1);
+
+                    if(!spath1.compare(command1))
+                    {
+                        cout<<"Error: UNIX command "<<command1<<" entered was not recongized"<<endl;
+                        return 1;
+                    }
+
+                    fd = subProcess(spath1,fd, isWait);
+                    if (fd < 0)
+                    {
+                        return 1;
+                    }   
+                }   
+            }
+
+            //Will have to change to proper output location
+            char foo[4096];
+            int nbytes = read(fd, foo, sizeof(foo));
+
+            dup2(output, fileno(stdout));
+
+            printf("%.*s\n", nbytes, foo); 
+
+            close(0);
+            dup(fd);
+            close(fd);
+
+            exit(0);
+        }
+        //in parent
+        else
+        {
+            //if parent should wait for child to return
+            if(isWait){
+                do
+                {
+                    waitPid = wait (&status);  
+                } while (waitPid != childPid);      
             }
             else{
-                for( j =i-1; j>=0; j--)
-                {
-                    string temp= workCommand->token[j];
-                    if(!temp.compare("@")){
-                        j++;
-                        break;
-                    }
-                    else if (j==0){
-                        break;
-                    }
-                }
-            }
-           
-            command1 = workCommand->token[j];
-            
-            string commandRest="";
-            for(int k=j; k<i; k++)
-                commandRest += string(workCommand->token[k])+" ";
-            
-           tokenizeTemp(commandRest);
-           tempCommand->token[tempCommand->size]= '\0';
-            //Check if both commands are unix commands
-            
-            string spath1 = checkPath(command1);
-            
-            if(!spath1.compare(command1))
-            {
-                cout<<"Error: UNIX command "<<command1<<" entered was not recongized"<<endl;
-                return 1;
-            }
-           
-            fd = subProcess(spath1,fd, isWait);
-            if (fd < 0)
-            {
-                return 1;
-            }   
-        }   
-    }
-    
-    //Will have to change to proper output location
-    char foo[4096];
-    int nbytes = read(fd, foo, sizeof(foo));
-    
-    dup2(output, fileno(stdout));
-    
-    printf("%.*s\n", nbytes, foo); 
-    
-    close(0);
-    dup(fd);
-    close(fd);
-     
-    return 0;
- 
-  
+                //store not waited for job
+                storeBackJob(childPid);   
+            }    
+            return 0;
+        } 
 }
 
 int ToyShell::subProcess( string path, int inputStream, bool isWait){

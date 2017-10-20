@@ -58,7 +58,8 @@ class ToyShell
     int historyArraySize;
     int input;
     int output;
-    
+    int aInput;
+    int aOutput;
     void increaseCount();
    private:
     
