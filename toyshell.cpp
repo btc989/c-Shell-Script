@@ -980,7 +980,6 @@ void ToyShell::backJobs(){
             jobSize--;  
         }
     } 
-     dup2(output, fileno(stdout);
 }
 
 void ToyShell::frontJob(string temp){
