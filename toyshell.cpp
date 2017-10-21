@@ -1536,11 +1536,11 @@ int ToyShell::executeScript(){
            
            cout<<"command "<<command<<endl;
            //frees up each space in memory->clears out tokenize
-            for (int i=0; i<workCommand->size; i++)
-                    free(workCommand->token[i]); 
+            //for (int i=0; i<workCommand->size; i++)
+              //      free(workCommand->token[i]); 
 
             //Clean up the array of words
-            delete [] workCommand->token;
+            //delete [] workCommand->token;
            
           
            //find if any comments are in string
