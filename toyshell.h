@@ -42,6 +42,7 @@ class ToyShell
     string name;
     int count;
     string terminator;
+    string scriptName;
     command * workCommand;
     command * tempCommand;
     command * path;

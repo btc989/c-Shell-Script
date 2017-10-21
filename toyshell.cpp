@@ -94,7 +94,13 @@ ToyShell::~ToyShell(){
       //Clean up the array of words
       delete [] workCommand->token;     // cleans up words allocated space
     }
+    close(input);
+    close(output); 
+    close(aInput);
+    close(aOutput);
+    
 }
+
 /* IncreaseCount is called at the end on loop in main
 * Keeps track of how many commands have been entered
 * 
@@ -722,8 +728,6 @@ int ToyShell::unixCommand(){
     pid_t childPid = 0;
     pid_t waitPid;
     int status;
-    int tempin=dup(0);
-    int tempout=dup(1);
     aInput=dup(0);
     aOutput=dup(1);
     
@@ -790,14 +794,11 @@ int ToyShell::unixCommand(){
     //Check for any pipe commands
     for(int i=0; i<workCommand->size; i++){
         string temp = workCommand->token[i];
-        
-        
+         
         if(!temp.compare("@")){
             int status = piping();
-             dup2( tempin, 0);
-            dup2( tempout, 1);
-            close(tempin);
-            close(tempout);  
+            dup2( aInput, 0);
+            dup2( aOutput, 1);
             return status;
         } 
     }
@@ -870,11 +871,8 @@ int ToyShell::unixCommand(){
                 storeBackJob(childPid);   
             }
             //otherwise continue
-            dup2( tempin, 0);
-            dup2( tempout, 1);
-            close(tempin);
-            close(tempout);  
-            
+            dup2( aInput, 0);
+            dup2( aOutput, 1);
             return 0;
         }
      }
@@ -888,10 +886,8 @@ int ToyShell::unixCommand(){
     //Clean up the array of words
     delete [] path->token;
   }
-   dup2( tempin, 0);
-            dup2( tempout, 1);
-            close(tempin);
-            close(tempout);  
+   dup2( aInput, 0);
+   dup2( aOutput, 1); 
            
 }
 
@@ -950,7 +946,6 @@ void ToyShell::backJobs(){
     pid_t waitPid;
     pid_t pid;
     int status;
-    dup2(1, fileno(stdout));
     if(jobSize==0){
         cout<<"There are no background jobs executing"<<endl;
         return;
@@ -1409,6 +1404,10 @@ int ToyShell::piping(){
             close(0);
             dup(fd);
             close(fd);
+            close(input);
+            close(output); 
+            close(aInput);
+            close(aOutput);
 
             exit(0);
         }
@@ -1464,9 +1463,12 @@ int ToyShell::subProcess( string path, int inputStream, bool isWait){
         close(f_des[1]);
            
         execve(path.c_str(),tempCommand->token, environ);
-        perror("execve");       
-        exit(3);
-                
+        perror("execve"); 
+        close(input);
+        close(output); 
+        close(aInput);
+        close(aOutput);
+        exit(3);          
      }
      if(!isWait) 
          storeBackJob(childPid);
@@ -1520,66 +1522,71 @@ string ToyShell::checkPath(string command){
 
 int ToyShell::executeScript(){
     
-    
    string fileName = workCommand->token[1];
     //get shellname and terminator from file 
    fstream read;
    string command;
    bool aliasTest = false;
    int found =0;
-    int status =0;
-    
-   read.open(fileName.c_str());
-   if(read.is_open()){
-       while(!read.eof()){
-           getline(read, command);
-           
-           cout<<"command "<<command<<endl;
-           //frees up each space in memory->clears out tokenize
-            //for (int i=0; i<workCommand->size; i++)
-              //      free(workCommand->token[i]); 
+   int status =0;
+   if(scriptName != fileName){
+       read.open(fileName.c_str());
+       if(read.is_open()){
+           scriptName = fileName;
+           while(!read.eof()){
+               getline(read, command);
 
-            //Clean up the array of words
-            //delete [] workCommand->token;
-           
-          
-           //find if any comments are in string
-           found = command.find('$');
-            if(found >=0){ //omit any text after comment
-                if(found==0 )
-                    command="";
-                else
-                    command = command.substr(0,found);
-            }  
+               cout<<"command "<<command<<endl;
+               //frees up each space in memory->clears out tokenize
+                //for (int i=0; i<workCommand->size; i++)
+                  //      free(workCommand->token[i]); 
 
-           
-            if(!command.empty()){     
+                //Clean up the array of words
+                //delete [] workCommand->token;
 
-                   tokenize(command);
 
-                    aliasTest = true;
-                    //check if command is alias
-                    //if no more aliases are found variable is set to false;
-                    do{ 
-                        aliasTest = alias(); 
-                    }while(aliasTest);   
+               //find if any comments are in string
+               found = command.find('$');
+                if(found >=0){ //omit any text after comment
+                    if(found==0 )
+                        command="";
+                    else
+                        command = command.substr(0,found);
+                }  
 
-                
-                  //Execute Command
-                  status = execute();
-                cout<<"after execute "<<status<<endl;
-                  if(status != 0){
-                    cout << "Stopping Script" << endl;
-                      read.close(); 
-                      return 1;
-                    }
-               }
+
+                if(!command.empty()){     
+
+                       tokenize(command);
+
+                        aliasTest = true;
+                        //check if command is alias
+                        //if no more aliases are found variable is set to false;
+                        do{ 
+                            aliasTest = alias(); 
+                        }while(aliasTest);   
+
+
+                      //Execute Command
+                      status = execute();
+                    cout<<"after execute "<<status<<endl;
+                      if(status != 0){
+                        cout << "Stopping Script" << endl;
+                          read.close(); 
+                          return 1;
+                        }
+                   }
+           }
+            read.close(); 
+           return 0;
        }
-        read.close(); 
-       return 0;
+        else{
+           cout<<"Error: could not open script file"<<endl;   
+            return 1;
+        }
    }
     else{
-       cout<<"Error: could not open script file"<<endl;   
+        cout<<"Error: Can not execute script of the same name as current script"<<endl;
         return 1;
     }
     
@@ -1587,31 +1594,17 @@ int ToyShell::executeScript(){
 
 
 int ToyShell::inputFile(string fileName){
-  
-   int inFile;
-   inFile=open(fileName.c_str(),O_RDONLY);
-   if(inFile != -1){
-       //copy file over to input varaible which is hopefully linked to stdin
-       input = inFile;
-       dup2( inFile, input);  
-       //close(inFile);
-   }
-   else{
+
+   input=open(fileName.c_str(),O_RDONLY);
+   if(input == -1){
        cout<<"Error could not open file"<<endl;
        return 1;
    }
 }
 int ToyShell::outputFile(string fileName){
   
-   int outFile;
-   outFile=open(fileName.c_str(),O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR);
-   if(outFile != -1){
-       //copy file over to output varaible which is hopefully linked to stdout
-       output = outFile;
-       dup2( outFile, output);  
-       //close(outFile);
-   }
-   else{
+   output=open(fileName.c_str(),O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR);
+   if(output == -1){
        cout<<"Error could not open file"<<endl;
        return 1;
    }  
