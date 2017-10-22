@@ -1529,7 +1529,6 @@ int ToyShell::executeScript(){
    bool aliasTest = false;
    int found =0;
    int status =0;
-    cout<<"HEELLLO"<<fileName<< " "<<pScriptName << "  "<< scriptName<<endl;
    if(scriptName != fileName && pScriptName != fileName){
        read.open(fileName.c_str());
        if(read.is_open()){
