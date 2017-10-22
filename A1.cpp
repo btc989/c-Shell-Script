@@ -58,6 +58,8 @@ int main()
       shell.saveHistory();
         //increase command count
       shell.increaseCount();
+      shell.pScriptName = "";
+      shell.scriptName = "";
    }
   }while(status != 10);  
 
