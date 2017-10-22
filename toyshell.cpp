@@ -165,9 +165,7 @@ void ToyShell::tokenizeTemp(string commandLine){
 * The seperated command is stored as well as its size.
 */
 void ToyShell::tokenizePath(char* commandLine){
-    
- 
-       
+     
        path = new command; 
 
        char delim[]=" :";
@@ -1377,7 +1375,7 @@ int ToyShell::piping(){
                         return 1;
                     }
 
-                    fd = subProcess(spath1,fd, isWait);
+                    fd = subProcess(spath1,fd);
                     if (fd < 0)
                     {
                         return 1;
@@ -1421,7 +1419,7 @@ int ToyShell::piping(){
         } 
 }
 
-int ToyShell::subProcess( string path, int inputStream, bool isWait){
+int ToyShell::subProcess( string path, int inputStream){
     
      int f_des[2];
      pid_t childPid = 0;
@@ -1462,9 +1460,7 @@ int ToyShell::subProcess( string path, int inputStream, bool isWait){
         close(aOutput);
         exit(3);          
      }
-     if(!isWait) 
-         storeBackJob(childPid);
-    
+     
      close(inputStream);
      close(f_des[1]);
 
