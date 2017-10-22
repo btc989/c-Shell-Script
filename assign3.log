@@ -1,0 +1,913 @@
+Script started on Sat Oct 21 18:25:13 2017
+Script on a049405[1]% ./run
+toyshell[0]%cp    cp /home/venus/hilder/cs330/assignment3/datafiles/file1 file1
+toyshell[1]%OUTPUT *** cat file1
+*** cat file1 
+toyshell[2]%cat file1
+apples
+cucumbers
+oranges
+bananas
+grapefruit
+grapes
+tangarines
+grape fruit
+toyshell[3]%sort [ file1 ] file3 $ Input and output re-direction
+toyshell[4]%OUTPUT *** cat file3
+*** cat file3 
+toyshell[5]%cat file3
+apples
+bananas
+cucumbers
+grape fruit
+grapefruit
+grapes
+oranges
+tangarines
+toyshell[6]%sort file1 @ grep bananas $ Pipeline
+bananas
+
+toyshell[7]%head [ file1 @ grep bananas
+bananas
+
+toyshell[8]%sort [ file1 @ grep bananas ] file4 $ Foreground
+toyshell[9]%OUTPUT *** tail file4
+*** tail file4 
+toyshell[10]%tail file4
+bananas
+
+toyshell[11]%sort [ file1 @ grep bananas ] file5 - $ Background? Will the pain never end?
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+1   32285   sort file1 @ grep bananas   Sat Oct 21 18:26:21 2017
+   
+toyshell[12]%Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+1   32286   sort file1 @ grep bananas   Sat Oct 21 18:26:21 2017
+   
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+2   32287   sort file1 @ grep bananas   Sat Oct 21 18:26:21 2017
+   
+
+toyshell[12]%BAKC  CKJOBS
+Status   Job Id  Process Id  Command  Time Created   
+Done 1   32285   sort file1 @ grep bananas   Sat Oct 21 18:26:21 2017
+   
+toyshell[13]%sleep 1
+toyshell[14]%NEWNAME dog cat
+toyshell[15]%OUTPUT *** dog file5
+*** cat file5 
+toyshell[16]%go  dog file5
+bananas
+
+toyshell[17]%cp /home/venus/hilder/cs330/assignment3/datafiles/dot.cpp dot.cpp
+toyshell[18]%OUTPUT *** cat dot.cpp
+*** cat dot.cpp 
+toyshell[19]%cat dot.cpp
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <iomanip>
+#include <cstdlib>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/wait.h>
+#include <sys/types.h>
+#include <signal.h>
+#include <time.h>
+#include <fcntl.h>
+#include <errno.h>
+toyshell[20]%sort [ dot.cpp @ grep .h @ grep sys ] file6
+toyshell[21]%OUTPUT *** cat file6
+*** cat file6 
+toyshell[22]%cat file6
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+
+toyshell[23]%NEWNAME wow sort [ dot.cpp @ grep .h @ grep sys @ grep wait ] file7 -
+toyshell[24]%wow $ Did you make it this far?
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+2   32298   sort dot.cpp @ grep .h @ grep sys @ grep wait   Sat Oct 21 18:27:27 2017
+   
+toyshell[25]%Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+2   32299   sort dot.cpp @ grep .h @ grep sys @ grep wait   Sat Oct 21 18:27:27 2017
+   
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+3   32300   sort dot.cpp @ grep .h @ grep sys @ grep wait   Sat Oct 21 18:27:27 2017
+   
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+4   32301   sort dot.cpp @ grep .h @ grep sys @ grep wait   Sat Oct 21 18:27:27 2017
+   
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+5   32302   sort dot.cpp @ grep .h @ grep sys @ grep wait   Sat Oct 21 18:27:27 2017
+   
+
+toyshell[25]%BAKC  CKJOBS
+Status   Job Id  Process Id  Command  Time Created   
+Done 2   32298   sort dot.cpp @ grep .h @ grep sys @ grep wait   Sat Oct 21 18:27:27 2017
+   
+toyshell[26]%sleep 1
+toyshell[27]%OUTPUT *** dog file7
+*** cat file7 
+toyshell[28]%dog file7
+#include <sys/wait.h>
+
+toyshell[29]%BACKJOBS
+There are no background jobs executing
+toyshell[30]%NEWNAME cleanup rm file1 file3 file4 file5 file6 file7 dot.cpp
+toyshell[31]%cleanup
+toyshell[32]%ls
+A1.cpp			 final_script_A1      shellTerminator.txt
+A1.o			 final_script_A2.log  test.txt
+Assignment_1.zip	 junkdir	      testdir
+README.md		 myaliases	      toyshell.cpp
+additional_features.log  partners	      toyshell.h
+assign3.log		 run		      toyshell.o
+errorTesting.log	 savealiases
+error_testing_A2.log	 shellName.txt
+toyshell[33]%cp /home/venus/hilder/cs330/assignment3/datafiles/script1 script1
+toyshell[34]%usescript scr             USESCRIPT script1
+command output *** START OF SCRIPT 1 *** $ Yeah, baby! A comment after a message
+*** START OF SCRIPT 1 *** 
+after execute 0
+command cp /home/venus/hilder/cs330/assignment3/datafiles/file1 file1
+after execute 0
+command output *** cat file1
+*** cat file1 
+after execute 0
+command cat file1
+apples
+cucumbers
+oranges
+bananas
+grapefruit
+grapes
+tangarines
+grape fruit
+after execute 0
+command sort [ file1 ] file3 $ Input and output re-direction
+after execute 0
+command output *** cat file3
+*** cat file3 
+after execute 0
+command cat file3
+apples
+bananas
+cucumbers
+grape fruit
+grapefruit
+grapes
+oranges
+tangarines
+after execute 0
+command sort file1 @ grep bananas $ Pipeline
+bananas
+
+after execute 0
+command head [ file1 @ grep bananas
+bananas
+
+after execute 0
+command sort [ file1 @ grep bananas ] file4
+after execute 0
+command output *** tail file4
+*** tail file4 
+after execute 0
+command tail file4
+bananas
+
+after execute 0
+command sort [ file1 @ grep bananas ] file5 - $ Will the pain never end
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+3   32322   sort file1 @ grep bananas   Sat Oct 21 18:28:31 2017
+   
+after execute 0
+command backjobs
+Status   Job Id  Process Id  Command  Time Created   
+Running 3   32322   sort file1 @ grep bananas   Sat Oct 21 18:28:31 2017
+   
+after execute 0
+command sleep 1
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+3   32324   sort file1 @ grep bananas   Sat Oct 21 18:28:31 2017
+   
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+4   32325   sort file1 @ grep bananas   Sat Oct 21 18:28:31 2017
+   
+after execute 0
+command newname dog cat
+after execute 0
+command output *** dog file5
+*** cat file5 
+after execute 0
+command dog file5
+bananas
+
+after execute 0
+command cp /home/venus/hilder/cs330/assignment3/datafiles/dot.cpp dot.cpp
+after execute 0
+command output *** cat dot.cpp
+*** cat dot.cpp 
+after execute 0
+command cat dot.cpp
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <iomanip>
+#include <cstdlib>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/wait.h>
+#include <sys/types.h>
+#include <signal.h>
+#include <time.h>
+#include <fcntl.h>
+#include <errno.h>
+after execute 0
+command sort [ dot.cpp @ grep .h @ grep sys ] file6
+after execute 0
+command output *** cat file6
+*** cat file6 
+after execute 0
+command cat file6
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+
+after execute 0
+command newname wow sort [ dot.cpp @ grep .h @ grep sys @ grep wait ] file7 -
+after execute 0
+command wow $ Did you make it this far?
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+4   32334   sort dot.cpp @ grep .h @ grep sys @ grep wait   Sat Oct 21 18:28:32 2017
+   
+after execute 0
+command backjobs
+Status   Job Id  Process Id  Command  Time Created   
+Done 3   32322   sort file1 @ grep bananas   Sat Oct 21 18:28:32 2017
+   
+Running 4   32334   sort dot.cpp @ grep .h @ grep sys @ grep wait   Sat Oct 21 18:28:32 2017
+   
+after execute 0
+command sleep 1
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+4   32336   sort dot.cpp @ grep .h @ grep sys @ grep wait   Sat Oct 21 18:28:32 2017
+   
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+5   32337   sort dot.cpp @ grep .h @ grep sys @ grep wait   Sat Oct 21 18:28:32 2017
+   
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+6   32338   sort dot.cpp @ grep .h @ grep sys @ grep wait   Sat Oct 21 18:28:32 2017
+   
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+7   32339   sort dot.cpp @ grep .h @ grep sys @ grep wait   Sat Oct 21 18:28:32 2017
+   
+after execute 0
+command output *** dog file7
+*** cat file7 
+after execute 0
+command dog file7
+#include <sys/wait.h>
+
+after execute 0
+command backjobs
+Status   Job Id  Process Id  Command  Time Created   
+Done 4   32334   sort dot.cpp @ grep .h @ grep sys @ grep wait   Sat Oct 21 18:28:32 2017
+   
+after execute 0
+command output *** END OF SCRIPT 1 ***
+*** END OF SCRIPT 1 *** 
+after execute 0
+command 
+toyshell[35]%cp /home/venus/hilder/cs330/assignment3/datafiles/script2 script2
+toyshell[36]%USESCRTIP   ITP  PT script2
+command output *** START OF SCRIPT 2 ***
+*** START OF SCRIPT 2 *** 
+after execute 0
+command rm file1 file3 file4 file5 file6 file7 dot.cpp
+after execute 0
+command usescript script1
+command output *** START OF SCRIPT 1 *** $ Yeah, baby! A comment after a message
+*** START OF SCRIPT 1 *** 
+after execute 0
+command cp /home/venus/hilder/cs330/assignment3/datafiles/file1 file1
+after execute 0
+command output *** cat file1
+*** cat file1 
+after execute 0
+command cat file1
+apples
+cucumbers
+oranges
+bananas
+grapefruit
+grapes
+tangarines
+grape fruit
+after execute 0
+command sort [ file1 ] file3 $ Input and output re-direction
+after execute 0
+command output *** cat file3
+*** cat file3 
+after execute 0
+command cat file3
+apples
+bananas
+cucumbers
+grape fruit
+grapefruit
+grapes
+oranges
+tangarines
+after execute 0
+command sort file1 @ grep bananas $ Pipeline
+bananas
+
+after execute 0
+command head [ file1 @ grep bananas
+bananas
+
+after execute 0
+command sort [ file1 @ grep bananas ] file4
+after execute 0
+command output *** tail file4
+*** tail file4 
+after execute 0
+command tail file4
+bananas
+
+after execute 0
+command sort [ file1 @ grep bananas ] file5 - $ Will the pain never end
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+5   32361   sort file1 @ grep bananas   Sat Oct 21 18:28:49 2017
+   
+after execute 0
+command backjobs
+Status   Job Id  Process Id  Command  Time Created   
+Running 5   32361   sort file1 @ grep bananas   Sat Oct 21 18:28:49 2017
+   
+after execute 0
+command sleep 1
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+5   32363   sort file1 @ grep bananas   Sat Oct 21 18:28:49 2017
+   
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+6   32364   sort file1 @ grep bananas   Sat Oct 21 18:28:49 2017
+   
+after execute 0
+command newname dog cat
+after execute 0
+command output *** dog file5
+*** cat file5 
+after execute 0
+command dog file5
+bananas
+
+after execute 0
+command cp /home/venus/hilder/cs330/assignment3/datafiles/dot.cpp dot.cpp
+after execute 0
+command output *** cat dot.cpp
+*** cat dot.cpp 
+after execute 0
+command cat dot.cpp
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <iomanip>
+#include <cstdlib>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/wait.h>
+#include <sys/types.h>
+#include <signal.h>
+#include <time.h>
+#include <fcntl.h>
+#include <errno.h>
+after execute 0
+command sort [ dot.cpp @ grep .h @ grep sys ] file6
+after execute 0
+command output *** cat file6
+*** cat file6 
+after execute 0
+command cat file6
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+
+after execute 0
+command newname wow sort [ dot.cpp @ grep .h @ grep sys @ grep wait ] file7 -
+after execute 0
+command wow $ Did you make it this far?
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+6   32373   sort dot.cpp @ grep .h @ grep sys @ grep wait   Sat Oct 21 18:28:50 2017
+   
+after execute 0
+command backjobs
+Status   Job Id  Process Id  Command  Time Created   
+Done 5   32361   sort file1 @ grep bananas   Sat Oct 21 18:28:50 2017
+   
+Running 6   32373   sort dot.cpp @ grep .h @ grep sys @ grep wait   Sat Oct 21 18:28:50 2017
+   
+after execute 0
+command sleep 1
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+6   32374   sort dot.cpp @ grep .h @ grep sys @ grep wait   Sat Oct 21 18:28:50 2017
+   
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+7   32376   sort dot.cpp @ grep .h @ grep sys @ grep wait   Sat Oct 21 18:28:50 2017
+   
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+8   32377   sort dot.cpp @ grep .h @ grep sys @ grep wait   Sat Oct 21 18:28:50 2017
+   
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+9   32378   sort dot.cpp @ grep .h @ grep sys @ grep wait   Sat Oct 21 18:28:50 2017
+   
+after execute 0
+command output *** dog file7
+*** cat file7 
+after execute 0
+command dog file7
+#include <sys/wait.h>
+
+after execute 0
+command backjobs
+Status   Job Id  Process Id  Command  Time Created   
+Done 6   32373   sort dot.cpp @ grep .h @ grep sys @ grep wait   Sat Oct 21 18:28:50 2017
+   
+after execute 0
+command output *** END OF SCRIPT 1 ***
+*** END OF SCRIPT 1 *** 
+after execute 0
+command 
+after execute 0
+command output *** END OF SCRIPT 2 ***
+*** END OF SCRIPT 2 *** 
+after execute 0
+command 
+toyshell[37]%cp /home/venus/hilder/cs330/assignment3/datafiles/script3 script3
+toyshell[38]%USESCRIPT scr ript3
+command output *** START OF SCRIPT 3 ***
+*** START OF SCRIPT 3 *** 
+after execute 0
+command usescript script3
+Error: Can not execute script of the same name as current script
+after execute 1
+Stopping Script
+toyshell[39]%cleanup
+toyshell[40]%cp /home/venus/hilder/cs330/assignment3/datafiles/script4 script4
+toyshell[41]%USESCRTIP scri        i IPT script4
+command output *** START OF SCRIPT 4 ***
+*** START OF SCRIPT 4 *** 
+after execute 0
+command usescript script1
+command output *** START OF SCRIPT 1 *** $ Yeah, baby! A comment after a message
+*** START OF SCRIPT 1 *** 
+after execute 0
+command cp /home/venus/hilder/cs330/assignment3/datafiles/file1 file1
+after execute 0
+command output *** cat file1
+*** cat file1 
+after execute 0
+command cat file1
+apples
+cucumbers
+oranges
+bananas
+grapefruit
+grapes
+tangarines
+grape fruit
+after execute 0
+command sort [ file1 ] file3 $ Input and output re-direction
+after execute 0
+command output *** cat file3
+*** cat file3 
+after execute 0
+command cat file3
+apples
+bananas
+cucumbers
+grape fruit
+grapefruit
+grapes
+oranges
+tangarines
+after execute 0
+command sort file1 @ grep bananas $ Pipeline
+bananas
+
+after execute 0
+command head [ file1 @ grep bananas
+bananas
+
+after execute 0
+command sort [ file1 @ grep bananas ] file4
+after execute 0
+command output *** tail file4
+*** tail file4 
+after execute 0
+command tail file4
+bananas
+
+after execute 0
+command sort [ file1 @ grep bananas ] file5 - $ Will the pain never end
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+7   32398   sort file1 @ grep bananas   Sat Oct 21 18:29:35 2017
+   
+after execute 0
+command backjobs
+Status   Job Id  Process Id  Command  Time Created   
+Running 7   32398   sort file1 @ grep bananas   Sat Oct 21 18:29:35 2017
+   
+after execute 0
+command sleep 1
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+7   32399   sort file1 @ grep bananas   Sat Oct 21 18:29:35 2017
+   
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+8   32401   sort file1 @ grep bananas   Sat Oct 21 18:29:35 2017
+   
+after execute 0
+command newname dog cat
+after execute 0
+command output *** dog file5
+*** cat file5 
+after execute 0
+command dog file5
+bananas
+
+after execute 0
+command cp /home/venus/hilder/cs330/assignment3/datafiles/dot.cpp dot.cpp
+after execute 0
+command output *** cat dot.cpp
+*** cat dot.cpp 
+after execute 0
+command cat dot.cpp
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <iomanip>
+#include <cstdlib>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/wait.h>
+#include <sys/types.h>
+#include <signal.h>
+#include <time.h>
+#include <fcntl.h>
+#include <errno.h>
+after execute 0
+command sort [ dot.cpp @ grep .h @ grep sys ] file6
+after execute 0
+command output *** cat file6
+*** cat file6 
+after execute 0
+command cat file6
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+
+after execute 0
+command newname wow sort [ dot.cpp @ grep .h @ grep sys @ grep wait ] file7 -
+after execute 0
+command wow $ Did you make it this far?
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+8   32410   sort dot.cpp @ grep .h @ grep sys @ grep wait   Sat Oct 21 18:29:36 2017
+   
+after execute 0
+command backjobs
+Status   Job Id  Process Id  Command  Time Created   
+Done 7   32398   sort file1 @ grep bananas   Sat Oct 21 18:29:36 2017
+   
+Running 8   32410   sort dot.cpp @ grep .h @ grep sys @ grep wait   Sat Oct 21 18:29:36 2017
+   
+after execute 0
+command sleep 1
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+8   32411   sort dot.cpp @ grep .h @ grep sys @ grep wait   Sat Oct 21 18:29:36 2017
+   
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+9   32413   sort dot.cpp @ grep .h @ grep sys @ grep wait   Sat Oct 21 18:29:36 2017
+   
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+10   32414   sort dot.cpp @ grep .h @ grep sys @ grep wait   Sat Oct 21 18:29:36 2017
+   
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+11   32415   sort dot.cpp @ grep .h @ grep sys @ grep wait   Sat Oct 21 18:29:36 2017
+   
+after execute 0
+command output *** dog file7
+*** cat file7 
+after execute 0
+command dog file7
+#include <sys/wait.h>
+
+after execute 0
+command backjobs
+Status   Job Id  Process Id  Command  Time Created   
+Done 8   32410   sort dot.cpp @ grep .h @ grep sys @ grep wait   Sat Oct 21 18:29:36 2017
+   
+after execute 0
+command output *** END OF SCRIPT 1 ***
+*** END OF SCRIPT 1 *** 
+after execute 0
+command 
+after execute 0
+command usescript script2
+command output *** START OF SCRIPT 2 ***
+*** START OF SCRIPT 2 *** 
+after execute 0
+command rm file1 file3 file4 file5 file6 file7 dot.cpp
+after execute 0
+command usescript script1
+Error: Can not execute script of the same name as current script
+after execute 1
+Stopping Script
+after execute 1
+Stopping Script
+toyshell[42]%cleanup
+rm: cannot remove `file1': No such file or directory
+rm: cannot remove `file3': No such file or directory
+rm: cannot remove `file4': No such file or directory
+rm: cannot remove `file5': No such file or directory
+rm: cannot remove `file6': No such file or directory
+rm: cannot remove `file7': No such file or directory
+rm: cannot remove `dot.cpp': No such file or directory
+toyshell[43]%cp /home/venus/hilder/cs330/assignment3/datafiles/script5 script5
+toyshell[44]%cp /home/venus/hilder/cs330/assignment3/datafiles/script6 script6
+toyshell[45]%USESCRTIP   IPT script5
+command output *** START OF SCRIPT 5 ***
+*** START OF SCRIPT 5 *** 
+after execute 0
+command usescript script1
+command output *** START OF SCRIPT 1 *** $ Yeah, baby! A comment after a message
+*** START OF SCRIPT 1 *** 
+after execute 0
+command cp /home/venus/hilder/cs330/assignment3/datafiles/file1 file1
+after execute 0
+command output *** cat file1
+*** cat file1 
+after execute 0
+command cat file1
+apples
+cucumbers
+oranges
+bananas
+grapefruit
+grapes
+tangarines
+grape fruit
+after execute 0
+command sort [ file1 ] file3 $ Input and output re-direction
+after execute 0
+command output *** cat file3
+*** cat file3 
+after execute 0
+command cat file3
+apples
+bananas
+cucumbers
+grape fruit
+grapefruit
+grapes
+oranges
+tangarines
+after execute 0
+command sort file1 @ grep bananas $ Pipeline
+bananas
+
+after execute 0
+command head [ file1 @ grep bananas
+bananas
+
+after execute 0
+command sort [ file1 @ grep bananas ] file4
+after execute 0
+command output *** tail file4
+*** tail file4 
+after execute 0
+command tail file4
+bananas
+
+after execute 0
+command sort [ file1 @ grep bananas ] file5 - $ Will the pain never end
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+9   32439   sort file1 @ grep bananas   Sat Oct 21 18:30:05 2017
+   
+after execute 0
+command backjobs
+Status   Job Id  Process Id  Command  Time Created   
+Running 9   32439   sort file1 @ grep bananas   Sat Oct 21 18:30:05 2017
+   
+after execute 0
+command sleep 1
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+9   32441   sort file1 @ grep bananas   Sat Oct 21 18:30:05 2017
+   
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+10   32442   sort file1 @ grep bananas   Sat Oct 21 18:30:05 2017
+   
+after execute 0
+command newname dog cat
+after execute 0
+command output *** dog file5
+*** cat file5 
+after execute 0
+command dog file5
+bananas
+
+after execute 0
+command cp /home/venus/hilder/cs330/assignment3/datafiles/dot.cpp dot.cpp
+after execute 0
+command output *** cat dot.cpp
+*** cat dot.cpp 
+after execute 0
+command cat dot.cpp
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <iomanip>
+#include <cstdlib>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/wait.h>
+#include <sys/types.h>
+#include <signal.h>
+#include <time.h>
+#include <fcntl.h>
+#include <errno.h>
+after execute 0
+command sort [ dot.cpp @ grep .h @ grep sys ] file6
+after execute 0
+command output *** cat file6
+*** cat file6 
+after execute 0
+command cat file6
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+
+after execute 0
+command newname wow sort [ dot.cpp @ grep .h @ grep sys @ grep wait ] file7 -
+after execute 0
+command wow $ Did you make it this far?
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+10   32451   sort dot.cpp @ grep .h @ grep sys @ grep wait   Sat Oct 21 18:30:06 2017
+   
+after execute 0
+command backjobs
+Status   Job Id  Process Id  Command  Time Created   
+Done 9   32439   sort file1 @ grep bananas   Sat Oct 21 18:30:06 2017
+   
+Running 10   32451   sort dot.cpp @ grep .h @ grep sys @ grep wait   Sat Oct 21 18:30:06 2017
+   
+after execute 0
+command sleep 1
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+10   32452   sort dot.cpp @ grep .h @ grep sys @ grep wait   Sat Oct 21 18:30:06 2017
+   
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+11   32454   sort dot.cpp @ grep .h @ grep sys @ grep wait   Sat Oct 21 18:30:06 2017
+   
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+12   32455   sort dot.cpp @ grep .h @ grep sys @ grep wait   Sat Oct 21 18:30:06 2017
+   
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+13   32456   sort dot.cpp @ grep .h @ grep sys @ grep wait   Sat Oct 21 18:30:06 2017
+   
+after execute 0
+command output *** dog file7
+*** cat file7 
+after execute 0
+command dog file7
+#include <sys/wait.h>
+
+after execute 0
+command backjobs
+Status   Job Id  Process Id  Command  Time Created   
+Done 10   32451   sort dot.cpp @ grep .h @ grep sys @ grep wait   Sat Oct 21 18:30:06 2017
+   
+after execute 0
+command output *** END OF SCRIPT 1 ***
+*** END OF SCRIPT 1 *** 
+after execute 0
+command 
+after execute 0
+command usescript script6
+command output *** START OF SCRIPT 6 ***
+*** START OF SCRIPT 6 *** 
+after execute 0
+command usescript script1
+Error: Can not execute script of the same name as current script
+after execute 1
+Stopping Script
+after execute 1
+Stopping Script
+toyshell[46]%sleep 20 -
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+11   32458   sleep 20   Sat Oct 21 18:30:14 2017
+   
+toyshell[47]%sleep: error while loading shared libraries: libc.so.6: cannot open shared object file: Error 24
+cull    
+toyshell[47]%CULL 11
+kill: error while loading shared libraries: libc.so.6: cannot open shared object file: Error 24
+toyshell[48]%sleep 1000 -
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+12   32461   sleep 1000   Sat Oct 21 18:31:08 2017
+   
+toyshell[49]%sleep: error while loading shared libraries: libc.so.6: cannot open shared object file: Error 24
+
+toyshell[49]%^[[A^[[A        sleep 1000 -
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+13   32463   sleep 1000   Sat Oct 21 18:31:16 2017
+   
+toyshell[50]%sleep: error while loading shared libraries: libc.so.6: cannot open shared object file: Error 24
+
+toyshell[50]%sleep 1000 -
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+14   32464   sleep 1000   Sat Oct 21 18:31:20 2017
+   
+toyshell[51]%sleep: error while loading shared libraries: libc.so.6: cannot open shared object file: Error 24
+
+toyshell[51]%sleeep    p 1000 -
+Job has been added to background process
+Job Id  Process Id  Command  Time Created   
+15   32465   sleep 1000   Sat Oct 21 18:31:28 2017
+   
+toyshell[52]%sleep: error while loading shared libraries: libc.so.6: cannot open shared object file: Error 24
+
+toyshell[52]%BACKJOBS
+Status   Job Id  Process Id  Command  Time Created   
+Done 12   32461   sleep 1000   Sat Oct 21 18:31:28 2017
+   
+Done 13   32463   sleep 1000   Sat Oct 21 18:31:28 2017
+   
+Done 14   32464   sleep 1000   Sat Oct 21 18:31:28 2017
+   
+Done 15   32465   sleep 1000   Sat Oct 21 18:31:28 2017
+   
+toyshell[53]%OUT   OUTPUT                         $ Comment with output command
+
+toyshell[54]%OUTPUT $
+
+toyshell[55]%OUTPUT            That’s the way, uh-huh, uh-huh, $ this should work!
+That’s the way uh-huh uh-huh 
+toyshell[56]%BACKJOBS
+Status   Job Id  Process Id  Command  Time Created   
+Done 0   32465   sleep 1000   Sat Oct 21 18:31:28 2017
+   
+Done 0   32464   sleep 1000   Sat Oct 21 18:31:28 2017
+   
+toyshell[57]%BACKJOBS
+Status   Job Id  Process Id  Command  Time Created   
+Done 0   32464   sleep 1000   Sat Oct 21 18:31:28 2017
+   
+toyshell[58]%STOP
+Stopping Shell
+Script on a049405[2]% exit
+exit
+
+Script done on Sat Oct 21 18:32:11 2017
