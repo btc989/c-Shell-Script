@@ -35,17 +35,9 @@ ToyShell::ToyShell()
    oldpwd = getenv ("PWD");
    aInput=dup(0);
    aOutput=dup(1);
-    
-    
-    
-    //link variable to stdin and stdout
-   input=fileno(stdin);
-   output=fileno(stdout);
-   dup2(input, fileno(stdin));
-   dup2(output, fileno(stdout));
-    
-    
-    
+   input=dup(0);
+   output=dup(1);    
+     
     
    jobs = new job[10];
     
@@ -254,10 +246,10 @@ bool ToyShell::alias(){
 */
 int ToyShell::execute( ){
 
-    input=dup(0);
-    output=dup(1);
-    aInput=dup(0);
-    aOutput=dup(1);
+    //input=dup(0);
+    //output=dup(1);
+    //aInput=dup(0);
+    //aOutput=dup(1);
     int status = 0;
     //just set command to make life easier
     string command = workCommand->token[0];
@@ -728,8 +720,8 @@ int ToyShell::unixCommand(){
     pid_t childPid = 0;
     pid_t waitPid;
     int status;
-    aInput=dup(0);
-    aOutput=dup(1);
+    //aInput=dup(0);
+    //aOutput=dup(1);
     
     //check for any input file
     for(int i=0; i<workCommand->size; i++){
@@ -1580,9 +1572,6 @@ int ToyShell::executeScript(){
                    }
            }
             read.close(); 
-           
-           
-           
            return 0;
        }
         else{
